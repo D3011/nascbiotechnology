@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-W8NNBBH2');</script>
+<!-- End Google Tag Manager -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Department of Biotechnology | Nandha Arts & Science College (Autonomous)</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root{
+  --navy:      #0b2545;
+  --navy2:     #13315c;
+  --blue:      #134074;
+  --sky:       #1a6fab;
+  --sky-dim:   rgba(26,111,171,0.09);
+  --gold:      #c9882a;
+  --gold-lt:   #f5a623;
+  --gold-dim:  rgba(201,136,42,0.12);
+  --white:     #ffffff;
+  --off:       #f7f9fc;
+  --off2:      #eef2f7;
+  --border:    #dce4ef;
+  --text:      #1e2d40;
+  --muted:     #4a6080;
+  --light:     #7a95b5;
+  --green:     #1b5e42;
+  --green-dim: rgba(27,94,66,0.09);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Source Sans 3',sans-serif;background:#fff;color:var(--text);overflow-x:hidden;line-height:1.65;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--sky);border-radius:3px;}
+
+/* ══ TOP BAR ══ */
+.topbar{
+  background:var(--navy);color:rgba(255,255,255,0.75);
+  padding:0.4rem 2.5rem;font-size:0.75rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;
+}
+.topbar-left{display:flex;align-items:center;gap:1.5rem;}
+.topbar-left a{color:rgba(255,255,255,0.7);text-decoration:none;display:flex;align-items:center;gap:0.35rem;transition:color 0.2s;}
+.topbar-left a:hover{color:#fff;}
+.topbar-right{display:flex;align-items:center;gap:0.8rem;}
+.topbar-right a{
+  color:rgba(255,255,255,0.7);text-decoration:none;font-size:0.72rem;font-weight:600;
+  padding:0.22rem 0.7rem;border-radius:3px;border:1px solid rgba(255,255,255,0.18);
+  transition:all 0.2s;
+}
+.topbar-right a:hover{background:rgba(255,255,255,0.12);color:#fff;}
+.topbar-right a.ig:hover{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);border-color:transparent;color:#fff;}
+
+/* ══ HEADER ══ */
+header{
+  background:#fff;border-bottom:3px solid var(--gold);
+  padding:0.9rem 2.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 16px rgba(11,37,69,0.10);
+}
+.header-brand{display:flex;align-items:center;gap:1rem;text-decoration:none;}
+.header-brand img{height:52px;width:auto;object-fit:contain;}
+.header-brand-text{}
+.college-name{font-family:'Merriweather',serif;font-size:0.95rem;font-weight:700;color:var(--navy);line-height:1.3;}
+.dept-name{font-size:0.72rem;font-weight:600;color:var(--sky);letter-spacing:0.07em;text-transform:uppercase;margin-top:0.15rem;}
+.header-nav{display:flex;align-items:center;gap:0;}
+.header-nav ul{display:flex;list-style:none;gap:0;}
+.header-nav a{
+  display:block;padding:0.5rem 0.9rem;
+  font-size:0.82rem;font-weight:600;color:var(--navy2);
+  text-decoration:none;letter-spacing:0.01em;
+  border-bottom:3px solid transparent;
+  transition:all 0.2s;
+}
+.header-nav a:hover{color:var(--sky);border-bottom-color:var(--gold);}
+.header-cta{
+  background:var(--sky);color:#fff;
+  padding:0.55rem 1.4rem;border-radius:4px;
+  font-size:0.82rem;font-weight:700;text-decoration:none;
+  letter-spacing:0.03em;transition:all 0.2s;white-space:nowrap;
+  border-bottom:3px solid transparent !important;
+}
+.header-cta:hover{background:var(--navy);transform:none !important;color:#fff !important;}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+.ham span{width:24px;height:2px;background:var(--navy);display:block;border-radius:2px;}
+
+/* ══ MOBILE NAV ══ */
+#mobileMenu{
+  display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:300;
+  background:var(--navy);padding:1.5rem;flex-direction:column;gap:0;overflow-y:auto;
+}
+.mob-close{align-self:flex-end;background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer;padding:0.5rem;margin-bottom:1rem;}
+#mobileMenu a{display:block;padding:0.85rem 1rem;color:rgba(255,255,255,0.85);text-decoration:none;font-weight:600;font-size:1rem;border-bottom:1px solid rgba(255,255,255,0.08);}
+#mobileMenu a:hover{color:#fff;background:rgba(255,255,255,0.07);}
+
+/* ══ HERO BANNER ══ */
+#hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg, var(--navy) 0%, var(--blue) 60%, var(--sky) 100%);
+  padding:5rem 2.5rem 4rem;
+}
+.hero-bg-img{
+  position:absolute;inset:0;
+  background-image:url('https://www.nandhaarts.org/wp-content/uploads/2022/06/since_logo.jpeg');
+  background-size:cover;background-position:center;
+  opacity:0.12;
+}
+.hero-pattern{
+  position:absolute;inset:0;opacity:0.04;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,255,255,0.5) 40px,rgba(255,255,255,0.5) 41px),
+                   repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,0.5) 40px,rgba(255,255,255,0.5) 41px);
+}
+.hero-inner{position:relative;z-index:2;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.1fr 0.9fr;gap:4rem;align-items:center;}
+.hero-breadcrumb{font-size:0.75rem;color:rgba(255,255,255,0.55);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:1rem;}
+.hero-breadcrumb span{color:var(--gold-lt);}
+.hero-h1{
+  font-family:'Merriweather',serif;
+  font-size:clamp(2rem,4.5vw,3.5rem);
+  font-weight:700;line-height:1.2;color:#fff;
+  animation:fadeUp 0.7s ease both;
+}
+.hero-h1 em{font-style:italic;color:var(--gold-lt);}
+.hero-sub{margin-top:1rem;font-size:1rem;color:rgba(255,255,255,0.75);line-height:1.75;max-width:480px;animation:fadeUp 0.7s 0.15s ease both;}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.8rem;animation:fadeUp 0.7s 0.25s ease both;}
+.btn-hero{background:var(--gold);color:#fff;padding:0.78rem 1.8rem;border-radius:4px;font-size:0.9rem;font-weight:700;text-decoration:none;transition:all 0.25s;letter-spacing:0.02em;}
+.btn-hero:hover{background:var(--gold-lt);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2);}
+.btn-hero-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.45);padding:0.78rem 1.8rem;border-radius:4px;font-size:0.9rem;font-weight:600;text-decoration:none;transition:all 0.25s;}
+.btn-hero-ghost:hover{border-color:#fff;background:rgba(255,255,255,0.1);}
+
+/* Stats bar inside hero */
+.hero-stats{
+  display:flex;gap:0;margin-top:2.5rem;
+  border-top:1px solid rgba(255,255,255,0.18);padding-top:2rem;
+  flex-wrap:wrap;animation:fadeUp 0.7s 0.35s ease both;
+}
+.hstat{text-align:center;padding:0 2rem 0 0;border-right:1px solid rgba(255,255,255,0.18);}
+.hstat:last-child{border-right:none;}
+.hstat-n{font-family:'Merriweather',serif;font-size:2.2rem;font-weight:700;color:var(--gold-lt);line-height:1;}
+.hstat-l{font-size:0.72rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.07em;margin-top:0.25rem;}
+
+/* Hero right – image card */
+.hero-card{
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);
+  border-radius:8px;overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,0.25);
+  animation:fadeUp 0.8s 0.2s ease both;
+}
+.hero-card img{width:100%;height:260px;object-fit:cover;display:block;opacity:0.9;}
+.hero-card-body{padding:1.2rem 1.4rem;background:rgba(255,255,255,0.05);}
+.hero-card-body h3{font-family:'Merriweather',serif;font-size:1rem;color:#fff;font-weight:700;margin-bottom:0.35rem;}
+.hero-card-body p{font-size:0.8rem;color:rgba(255,255,255,0.6);line-height:1.6;}
+.accred-chips{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.8rem;}
+.accred-chip{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.85);border:1px solid rgba(255,255,255,0.2);padding:0.2rem 0.65rem;border-radius:3px;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;}
+
+/* ══ BREADCRUMB BAR ══ */
+.page-bar{
+  background:var(--off2);border-bottom:1px solid var(--border);
+  padding:0.6rem 2.5rem;
+}
+.page-bar-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;color:var(--light);}
+.page-bar-inner a{color:var(--sky);text-decoration:none;}
+.page-bar-inner a:hover{text-decoration:underline;}
+.page-bar-inner span{color:var(--muted);}
+
+/* ══ COMMON SECTION ══ */
+section{position:relative;}
+.section-pad{padding:4.5rem 2.5rem;}
+.container{max-width:1100px;margin:0 auto;}
+.section-header{margin-bottom:2.5rem;}
+.sec-tag{
+  display:inline-flex;align-items:center;gap:0.45rem;
+  color:var(--sky);font-size:0.72rem;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.6rem;
+}
+.sec-tag::before{content:'';width:20px;height:2px;background:var(--gold);border-radius:2px;}
+.sec-h2{
+  font-family:'Merriweather',serif;
+  font-size:clamp(1.6rem,3vw,2.3rem);
+  font-weight:700;color:var(--navy);line-height:1.25;
+}
+.sec-h2 span{color:var(--sky);}
+.sec-line{width:50px;height:3px;background:var(--gold);border-radius:2px;margin-top:0.75rem;}
+.sec-lead{color:var(--muted);font-size:0.96rem;line-height:1.8;max-width:600px;margin-top:0.75rem;}
+
+/* ══ ABOUT ══ */
+#about{background:#fff;}
+.about-layout{display:grid;grid-template-columns:0.9fr 1.1fr;gap:4rem;align-items:center;}
+.about-imgstack{position:relative;}
+.about-img-main{border-radius:6px;overflow:hidden;border:3px solid var(--border);box-shadow:0 16px 48px rgba(0,0,0,0.1);}
+.about-img-main img{width:100%;height:320px;object-fit:cover;display:block;}
+.about-img-accent{
+  position:absolute;bottom:-1.5rem;right:-1.5rem;
+  width:160px;height:120px;border-radius:6px;overflow:hidden;
+  border:3px solid #fff;box-shadow:0 8px 28px rgba(0,0,0,0.15);
+}
+.about-img-accent img{width:100%;height:100%;object-fit:cover;}
+.about-banner{
+  position:absolute;top:-1.2rem;left:-1.2rem;
+  background:var(--navy);color:#fff;border-radius:6px;
+  padding:1rem 1.2rem;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  border-bottom:3px solid var(--gold);
+}
+.about-banner .bnum{font-family:'Merriweather',serif;font-size:1.8rem;font-weight:700;color:var(--gold-lt);line-height:1;}
+.about-banner .btxt{font-size:0.65rem;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.07em;margin-top:0.25rem;}
+.about-points{display:flex;flex-direction:column;gap:0.75rem;margin-top:1.5rem;}
+.about-pt{display:flex;gap:0.85rem;align-items:flex-start;padding:0.9rem 1rem;background:var(--off);border-left:3px solid var(--sky);border-radius:0 6px 6px 0;}
+.about-pt-ico{color:var(--sky);font-size:1rem;flex-shrink:0;margin-top:0.1rem;}
+.about-pt-title{font-size:0.87rem;font-weight:700;color:var(--navy);margin-bottom:0.18rem;}
+.about-pt-desc{font-size:0.8rem;color:var(--muted);line-height:1.6;}
+
+/* ══ QUICK LINKS BAR ══ */
+.quicklinks{background:var(--navy);padding:1.5rem 2.5rem;}
+.quicklinks-inner{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:center;}
+.ql-item{
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.85);text-decoration:none;
+  padding:0.55rem 1.3rem;border-radius:4px;
+  font-size:0.8rem;font-weight:600;letter-spacing:0.03em;
+  transition:all 0.2s;display:flex;align-items:center;gap:0.5rem;
+}
+.ql-item:hover{background:var(--gold);border-color:var(--gold);color:#fff;}
+
+/* ══ PROGRAMS ══ */
+#programs{background:var(--off);}
+.prog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.2rem;margin-top:0.5rem;}
+.prog-card{
+  background:#fff;border:1px solid var(--border);
+  border-radius:6px;overflow:hidden;transition:all 0.3s;
+  display:flex;flex-direction:column;
+}
+.prog-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(11,37,69,0.12);}
+.prog-card-top{background:var(--navy);padding:1.2rem 1.4rem;position:relative;}
+.prog-card-top::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);}
+.prog-badge{font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;}
+.prog-name{font-family:'Merriweather',serif;font-size:1.05rem;font-weight:700;color:#fff;line-height:1.3;}
+.prog-body{padding:1.2rem 1.4rem;flex:1;display:flex;flex-direction:column;gap:0.6rem;}
+.prog-desc{font-size:0.82rem;color:var(--muted);line-height:1.7;flex:1;}
+.prog-tags{display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:auto;padding-top:0.75rem;border-top:1px solid var(--border);}
+.prog-tag{background:var(--sky-dim);color:var(--sky);padding:0.18rem 0.6rem;border-radius:3px;font-size:0.67rem;font-weight:600;}
+
+/* ══ SCOPE ══ */
+#scope{background:#fff;}
+.scope-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-top:0.5rem;}
+.scope-card{
+  border:1px solid var(--border);border-radius:6px;padding:1.3rem;
+  transition:all 0.25s;background:#fff;
+  border-top:3px solid var(--border);
+}
+.scope-card:hover{border-top-color:var(--sky);box-shadow:0 8px 28px rgba(11,37,69,0.09);transform:translateY(-2px);}
+.scope-ico{width:40px;height:40px;border-radius:6px;background:var(--sky-dim);color:var(--sky);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:0.8rem;}
+.scope-title{font-size:0.88rem;font-weight:700;color:var(--navy);margin-bottom:0.35rem;}
+.scope-desc{font-size:0.78rem;color:var(--muted);line-height:1.65;}
+.career-section{margin-top:2.5rem;padding:1.8rem 2rem;background:var(--off);border:1px solid var(--border);border-radius:6px;border-left:4px solid var(--sky);}
+.career-section h3{font-family:'Merriweather',serif;font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:1rem;}
+.career-pills{display:flex;flex-wrap:wrap;gap:0.5rem;}
+.career-pill{background:#fff;border:1px solid var(--border);color:var(--muted);padding:0.32rem 0.85rem;border-radius:3px;font-size:0.78rem;font-weight:500;transition:all 0.2s;cursor:default;}
+.career-pill:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* ══ WHY US ══ */
+#why{background:var(--navy);position:relative;overflow:hidden;}
+#why::before{content:'';position:absolute;inset:0;background:url('https://www.nandhaarts.org/wp-content/uploads/2022/06/since_logo.jpeg') center/cover;opacity:0.05;}
+.why-inner{position:relative;z-index:1;}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem;margin-top:0.5rem;}
+.why-card{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
+  border-radius:6px;padding:1.5rem;transition:all 0.25s;
+}
+.why-card:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.25);}
+.why-num{font-family:'Merriweather',serif;font-size:1.8rem;font-weight:700;color:var(--gold-lt);opacity:0.4;line-height:1;margin-bottom:0.7rem;}
+.why-title{font-size:0.92rem;font-weight:700;color:#fff;margin-bottom:0.35rem;}
+.why-desc{font-size:0.8rem;color:rgba(255,255,255,0.55);line-height:1.65;}
+.why-sec-h2{color:#fff;}
+.why-sec-h2 span{color:var(--gold-lt);}
+.why-sec-tag{color:var(--gold-lt);}
+.why-sec-tag::before{background:var(--gold-lt);}
+.why-sec-line{background:var(--gold);}
+
+/* ══ ACCREDITATION STRIP ══ */
+.accred-strip{
+  background:var(--off2);border-top:3px solid var(--gold);border-bottom:1px solid var(--border);
+  padding:1.5rem 2.5rem;
+}
+.accred-strip-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;flex-wrap:wrap;gap:2rem;}
+.accred-strip-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--light);white-space:nowrap;}
+.accred-badges{display:flex;flex-wrap:wrap;gap:0.6rem;}
+.accred-badge{
+  background:#fff;border:1.5px solid var(--border);
+  color:var(--navy);padding:0.4rem 1rem;border-radius:4px;
+  font-size:0.75rem;font-weight:700;letter-spacing:0.04em;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* ══ FACULTY ══ */
+#faculty{background:var(--off);}
+.fac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.1rem;margin-top:0.5rem;}
+.fac-card{
+  background:#fff;border:1px solid var(--border);border-radius:6px;
+  overflow:hidden;transition:all 0.25s;
+}
+.fac-card:hover{box-shadow:0 12px 32px rgba(11,37,69,0.10);transform:translateY(-3px);}
+.fac-card-top{
+  background:var(--blue);padding:1.2rem;text-align:center;
+  border-bottom:3px solid var(--gold);position:relative;
+}
+.fac-av{
+  width:58px;height:58px;border-radius:50%;
+  background:var(--sky);color:#fff;margin:0 auto;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Merriweather',serif;font-size:1.2rem;font-weight:700;
+  border:3px solid rgba(255,255,255,0.25);
+}
+.fac-body{padding:1rem 1.1rem;}
+.fac-name{font-size:0.9rem;font-weight:700;color:var(--navy);margin-bottom:0.22rem;}
+.fac-deg{font-size:0.73rem;color:var(--muted);line-height:1.5;margin-bottom:0.4rem;}
+.fac-role{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--sky);padding-top:0.5rem;border-top:1px solid var(--border);}
+.fac-badge{display:inline-flex;align-items:center;gap:0.25rem;background:var(--gold-dim);color:#7a5a1a;border:1px solid rgba(201,136,42,0.25);padding:0.18rem 0.5rem;border-radius:3px;font-size:0.63rem;font-weight:700;margin-top:0.5rem;}
+.fac-badge.pursuing{background:var(--sky-dim);color:var(--sky);border-color:rgba(26,111,171,0.2);}
+
+/* ══ PUBLICATIONS ══ */
+#publications{background:#fff;}
+.pub-list{display:flex;flex-direction:column;gap:0.9rem;margin-top:0.5rem;}
+.pub-card{
+  background:var(--off);border:1px solid var(--border);border-radius:6px;
+  padding:1.2rem 1.4rem;display:flex;gap:1.2rem;align-items:flex-start;
+  transition:all 0.2s;border-left:4px solid var(--border);
+}
+.pub-card:hover{border-left-color:var(--sky);background:#fff;box-shadow:0 4px 16px rgba(11,37,69,0.07);}
+.pub-yr{
+  font-size:0.72rem;font-weight:700;color:var(--sky);
+  background:var(--sky-dim);padding:0.28rem 0.6rem;border-radius:3px;
+  flex-shrink:0;white-space:nowrap;border:1px solid rgba(26,111,171,0.18);
+  font-family:'Source Sans 3',sans-serif;letter-spacing:0.03em;
+}
+.pub-title{font-size:0.88rem;color:var(--navy);font-weight:700;line-height:1.5;margin-bottom:0.3rem;}
+.pub-journal{font-size:0.78rem;color:var(--muted);font-style:italic;}
+.pub-idx{display:inline-flex;margin-top:0.45rem;background:var(--gold-dim);color:#7a5a1a;border:1px solid rgba(201,136,42,0.2);padding:0.18rem 0.55rem;border-radius:3px;font-size:0.67rem;font-weight:700;}
+
+/* ══ GALLERY ══ */
+#gallery{background:var(--off);}
+.gal-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:220px 175px;gap:0.7rem;margin-top:0.5rem;}
+.gal-item{border-radius:6px;overflow:hidden;border:1px solid var(--border);position:relative;}
+.gal-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+.gal-item:hover img{transform:scale(1.06);}
+.gal-item.big{grid-column:span 2;grid-row:span 2;}
+.gal-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,37,69,0.75) 0%,transparent 50%);opacity:0;transition:opacity 0.3s;display:flex;align-items:flex-end;padding:0.9rem;}
+.gal-item:hover .gal-overlay{opacity:1;}
+.gal-cap{color:#fff;font-size:0.78rem;font-weight:600;}
+
+/* ══ RECRUITERS ══ */
+#recruiters{background:#fff;}
+.ticker-wrap{overflow:hidden;margin-top:1.5rem;padding:0.5rem 0;border:1px solid var(--border);border-radius:6px;background:var(--off);}
+.ticker{display:flex;gap:0.8rem;width:max-content;animation:ticker 30s linear infinite;}
+.ticker:hover{animation-play-state:paused;}
+@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.rec-pill{background:#fff;border:1px solid var(--border);border-radius:4px;padding:0.55rem 1.2rem;white-space:nowrap;font-size:0.82rem;font-weight:600;color:var(--navy);flex-shrink:0;transition:all 0.2s;}
+.rec-pill:hover{border-color:var(--sky);color:var(--sky);background:var(--sky-dim);}
+
+/* ══ RANK HOLDERS ══ */
+#rankers{background:var(--off);}
+.rankers-intro{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;margin-top:0.5rem;}
+.rank-table-wrap{overflow-x:auto;border-radius:6px;border:1px solid var(--border);}
+.rank-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+.rank-table th{background:var(--navy);color:#fff;padding:0.7rem 0.9rem;text-align:left;font-weight:700;font-size:0.76rem;letter-spacing:0.04em;white-space:nowrap;}
+.rank-table th:first-child{width:40px;}
+.rank-table td{padding:0.6rem 0.9rem;border-bottom:1px solid var(--border);color:var(--text);}
+.rank-table tr:last-child td{border-bottom:none;}
+.rank-table tr:nth-child(even) td{background:var(--off);}
+.rank-table tr:hover td{background:var(--sky-dim);}
+.rank-gold{background:var(--gold-dim);font-weight:700;color:#7a5a1a;}
+.rank-highlight{display:inline-flex;align-items:center;gap:0.3rem;}
+
+/* ══ TESTIMONIALS ══ */
+#testimonials{background:#fff;}
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;margin-top:0.5rem;}
+.testi-card{
+  border:1px solid var(--border);border-radius:6px;padding:1.6rem;
+  transition:all 0.25s;position:relative;background:var(--off);
+  border-top:3px solid var(--sky);
+}
+.testi-card:hover{box-shadow:0 12px 32px rgba(11,37,69,0.09);background:#fff;}
+.testi-q{font-size:3rem;font-family:'Merriweather',serif;color:var(--sky);line-height:1;position:absolute;top:0.8rem;right:1.2rem;opacity:0.15;}
+.stars{color:var(--gold);font-size:0.78rem;letter-spacing:2px;margin-bottom:0.75rem;}
+.testi-text{font-size:0.87rem;color:var(--text);line-height:1.8;font-style:italic;margin-bottom:1.3rem;}
+.testi-meta{border-top:1px solid var(--border);padding-top:0.8rem;}
+.testi-name{font-size:0.88rem;font-weight:700;color:var(--navy);}
+.testi-info{font-size:0.73rem;color:var(--muted);margin-top:0.2rem;}
+
+/* ══ CONTACT ══ */
+#contact{background:var(--off);}
+.contact-layout{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.contact-info-list{display:flex;flex-direction:column;gap:0.8rem;margin-top:1.5rem;}
+.ci-row{display:flex;gap:1rem;align-items:flex-start;padding:1rem 1.1rem;background:#fff;border:1px solid var(--border);border-radius:6px;border-left:3px solid var(--sky);}
+.ci-ico{width:36px;height:36px;background:var(--sky-dim);color:var(--sky);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.95rem;}
+.ci-label{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--light);margin-bottom:0.2rem;font-weight:700;}
+.ci-val{font-size:0.86rem;color:var(--navy);line-height:1.6;font-weight:500;}
+.ci-val a{color:var(--sky);text-decoration:none;}
+.ci-val a:hover{text-decoration:underline;}
+.map-box{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.map-img{width:100%;height:200px;object-fit:cover;display:block;background:linear-gradient(135deg,var(--navy),var(--sky));display:flex;align-items:center;justify-content:center;}
+.map-placeholder{height:200px;background:linear-gradient(135deg,var(--navy2),var(--blue));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;}
+.map-placeholder .pin{font-size:2.5rem;}
+.map-placeholder p{color:rgba(255,255,255,0.7);font-size:0.82rem;}
+.map-footer{padding:1.2rem 1.4rem;border-top:1px solid var(--border);}
+.map-name{font-size:0.9rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem;}
+.map-addr{font-size:0.78rem;color:var(--muted);line-height:1.65;margin-bottom:0.9rem;}
+.map-btn{display:inline-flex;align-items:center;gap:0.4rem;background:var(--sky);color:#fff;padding:0.5rem 1.1rem;border-radius:4px;font-size:0.78rem;font-weight:700;text-decoration:none;transition:all 0.2s;}
+.map-btn:hover{background:var(--navy);}
+.contact-btns{display:flex;flex-direction:column;gap:0.7rem;margin-top:1.2rem;}
+.btn-cta{display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.82rem 1.5rem;border-radius:4px;font-size:0.88rem;font-weight:700;text-decoration:none;transition:all 0.25s;}
+.btn-call{background:var(--sky);color:#fff;}
+.btn-call:hover{background:var(--navy);}
+.btn-mail{background:#fff;color:var(--navy);border:1.5px solid var(--border);}
+.btn-mail:hover{border-color:var(--sky);color:var(--sky);}
+.btn-insta{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff;}
+.btn-insta:hover{opacity:0.9;}
+
+/* ══ FOOTER ══ */
+footer{background:var(--navy);}
+.footer-main{padding:3rem 2.5rem 2rem;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2.5rem;}
+.footer-brand{}
+.footer-logo{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.9rem;}
+.footer-logo img{height:44px;width:auto;filter:brightness(0) invert(1);opacity:0.85;}
+.footer-logo-name{font-family:'Merriweather',serif;font-size:0.92rem;font-weight:700;color:#fff;}
+.footer-desc{font-size:0.8rem;color:rgba(255,255,255,0.45);line-height:1.8;max-width:240px;}
+.footer-social{display:flex;gap:0.5rem;margin-top:1rem;}
+.fsoc{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.65);padding:0.35rem 0.8rem;border-radius:4px;font-size:0.74rem;font-weight:600;text-decoration:none;transition:all 0.2s;}
+.fsoc:hover{background:rgba(255,255,255,0.15);color:#fff;}
+.fsoc.ig:hover{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);border-color:transparent;color:#fff;}
+.footer-col-h{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.85);margin-bottom:1.1rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(255,255,255,0.1);}
+.footer-col a{display:block;font-size:0.8rem;color:rgba(255,255,255,0.48);text-decoration:none;margin-bottom:0.5rem;transition:color 0.2s;}
+.footer-col a:hover{color:var(--gold-lt);}
+.footer-bottom{
+  background:rgba(0,0,0,0.25);padding:1rem 2.5rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.footer-bottom-inner{max-width:1100px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:0.74rem;color:rgba(255,255,255,0.35);}
+.footer-badges{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.f-badge{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.5);padding:0.2rem 0.6rem;border-radius:3px;font-size:0.67rem;font-weight:700;}
+.footer-dev{font-size:0.74rem;color:rgba(255,255,255,0.35);}
+.footer-dev strong{color:var(--gold-lt);font-weight:700;}
+
+/* ══ STICKY CTA ══ */
+.sticky-cta{position:fixed;bottom:1.5rem;right:1.5rem;z-index:300;}
+.scall{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  background:var(--sky);color:#fff;
+  padding:0.7rem 1.3rem;border-radius:4px;
+  font-size:0.82rem;font-weight:700;text-decoration:none;
+  box-shadow:0 6px 20px rgba(11,37,69,0.3);transition:all 0.25s;
+}
+.scall:hover{background:var(--navy);}
+
+/* ══ REVEAL ══ */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.reveal.visible{opacity:1;transform:none;}
+.d1{transition-delay:0.1s;}.d2{transition-delay:0.18s;}.d3{transition-delay:0.26s;}.d4{transition-delay:0.34s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:960px){
+  .hero-inner{grid-template-columns:1fr;gap:2.5rem;}
+  .hero-card{display:none;}
+  .about-layout{grid-template-columns:1fr;gap:2.5rem;}
+  .about-imgstack{display:none;}
+  .rankers-intro{grid-template-columns:1fr;}
+  .contact-layout{grid-template-columns:1fr;gap:2rem;}
+  .footer-main{grid-template-columns:1fr 1fr;gap:2rem;}
+  .gal-grid{grid-template-columns:repeat(2,1fr);grid-template-rows:auto;}
+  .gal-item.big{grid-column:span 2;grid-row:span 1;}
+  .header-nav ul{display:none;}
+  .ham{display:flex;}
+  .topbar{padding:0.4rem 1.2rem;}
+  header{padding:0.9rem 1.2rem;}
+  .section-pad{padding:3.5rem 1.5rem;}
+}
+@media(max-width:540px){
+  .gal-grid{grid-template-columns:1fr;}
+  .gal-item.big{grid-column:span 1;}
+  .footer-main{grid-template-columns:1fr;}
+  .hero-stats{gap:1rem;}
+  .hstat{padding:0 1rem 0 0;}
+}
+</style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W8NNBBH2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- ══ TOP BAR ══ -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="mailto:info@nandhaarts.org">✉ info@nandhaarts.org</a>
+    <a href="tel:+917373724422">📞 +91 73737 24422</a>
+    <a href="https://www.nandhaarts.org" target="_blank">🌐 nandhaarts.org</a>
+  </div>
+  <div class="topbar-right">
+    <a href="https://www.nandhaarts.org/iqac" target="_blank">IQAC</a>
+    <a href="https://www.nandhaarts.org/nirf/" target="_blank">NIRF</a>
+    <a href="https://www.nandhaarts.org/scholarship-details/" target="_blank">Scholarships</a>
+    <a href="https://www.instagram.com/nandha_biohive/" target="_blank" class="ig">📸 Instagram</a>
+  </div>
+</div>
+
+<!-- ══ HEADER ══ -->
+<header id="mainHeader">
+  <a href="#" class="header-brand">
+    <img src="https://www.nandhaarts.org/wp-content/uploads/2022/06/Logo_NASC.png" alt="Nandha College Logo">
+    <div class="header-brand-text">
+      <div class="college-name">Nandha Arts &amp; Science College (Autonomous)</div>
+      <div class="dept-name">Department of Biotechnology</div>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#programs">Programs</a></li>
+      <li><a href="#scope">Scope</a></li>
+      <li><a href="#faculty">Faculty</a></li>
+      <li><a href="#publications">Research</a></li>
+      <li><a href="#rankers">Rank Holders</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#contact" class="header-cta">📞 Enquire Now</a></li>
+    </ul>
+  </nav>
+  <div class="ham" onclick="toggleNav()"><span></span><span></span><span></span></div>
+</header>
+
+<!-- ══ MOBILE MENU ══ -->
+<div id="mobileMenu">
+  <button class="mob-close" onclick="closeNav()">✕</button>
+  <a href="#about" onclick="closeNav()">About Department</a>
+  <a href="#programs" onclick="closeNav()">Academic Programs</a>
+  <a href="#scope" onclick="closeNav()">Career Scope</a>
+  <a href="#faculty" onclick="closeNav()">Faculty Profile</a>
+  <a href="#publications" onclick="closeNav()">Research &amp; Publications</a>
+  <a href="#rankers" onclick="closeNav()">University Rank Holders</a>
+  <a href="#gallery" onclick="closeNav()">Gallery</a>
+  <a href="#contact" onclick="closeNav()">Contact Us</a>
+</div>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-bg-img"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-breadcrumb">Home &rsaquo; Departments &rsaquo; <span>Biotechnology</span></div>
+      <h1 class="hero-h1">Department of<br><em>Bio-Technology</em></h1>
+      <p class="hero-sub">Nandha Arts &amp; Science College (Autonomous), Erode — offering rigorous undergraduate, postgraduate and doctoral programmes in Biotechnology since 2002. NAAC B+ Accredited · Bharathiar University Affiliated.</p>
+      <div class="hero-actions">
+        <a href="tel:+917373724422" class="btn-hero">📞 Call Admissions</a>
+        <a href="#programs" class="btn-hero-ghost">Explore Programs →</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><div class="hstat-n" id="ctr1">0</div><div class="hstat-l">Years of Excellence</div></div>
+        <div class="hstat"><div class="hstat-n" id="ctr2">0</div><div class="hstat-l">University Rank Holders</div></div>
+        <div class="hstat"><div class="hstat-n" id="ctr3">0</div><div class="hstat-l">Research Publications</div></div>
+        <div class="hstat"><div class="hstat-n">B+</div><div class="hstat-l">NAAC Grade</div></div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <img src="https://www.nandhaarts.org/wp-content/uploads/2022/06/since_logo.jpeg" alt="Nandha Arts & Science College">
+      <div class="hero-card-body">
+        <h3>Nandha Arts &amp; Science College</h3>
+        <p>Koorapalayam Pirivu, Erode – 638 052, Tamil Nadu</p>
+        <div class="accred-chips">
+          <span class="accred-chip">NAAC B+</span>
+          <span class="accred-chip">AICTE</span>
+          <span class="accred-chip">AUTONOMOUS</span>
+          <span class="accred-chip">UGC 2(f)&amp;12B</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BREADCRUMB ══ -->
+<div class="page-bar">
+  <div class="page-bar-inner">
+    <a href="https://www.nandhaarts.org" target="_blank">Home</a>
+    <span>›</span>
+    <a href="https://www.nandhaarts.org/bio-technology/" target="_blank">Departments</a>
+    <span>›</span>
+    <span>Biotechnology</span>
+  </div>
+</div>
+
+<!-- ══ QUICK LINKS ══ -->
+<div class="quicklinks">
+  <div class="quicklinks-inner">
+    <a href="#about" class="ql-item">📖 About Dept.</a>
+    <a href="#programs" class="ql-item">🎓 Programs</a>
+    <a href="#faculty" class="ql-item">👨‍🏫 Faculty</a>
+    <a href="#publications" class="ql-item">📄 Research</a>
+    <a href="#rankers" class="ql-item">🏆 Rank Holders</a>
+    <a href="https://www.nandhaarts.org/lab-facilities-bio-tech/" target="_blank" class="ql-item">🔬 Lab Facilities</a>
+    <a href="https://www.instagram.com/nandha_biohive/" target="_blank" class="ql-item">📸 Instagram</a>
+    <a href="#contact" class="ql-item">📞 Contact</a>
+  </div>
+</div>
+
+<!-- ══ ABOUT ══ -->
+<section id="about" class="section-pad">
+  <div class="container">
+    <div class="about-layout">
+      <div class="about-imgstack reveal">
+        <div class="about-banner">
+          <div class="bnum">2002</div>
+          <div class="btxt">Est. Year</div>
+        </div>
+        <div class="about-img-main">
+          <img src="https://www.nandhaarts.org/wp-content/uploads/2022/06/since_logo.jpeg" alt="Nandha College">
+        </div>
+        <div class="about-img-accent">
+          <img src="https://www.nandhaarts.org/wp-content/uploads/2022/08/NASC_BCA.png" alt="Campus">
+        </div>
+      </div>
+      <div class="reveal d1">
+        <div class="section-header">
+          <div class="sec-tag">Our Department</div>
+          <h2 class="sec-h2">Rooted in Science,<br><span>Built for Tomorrow</span></h2>
+          <div class="sec-line"></div>
+        </div>
+        <p style="font-size:0.93rem;color:var(--muted);line-height:1.85;margin-bottom:1.5rem;">The Department of Biotechnology was established in 2002 with both UG and PG courses. Upgraded to a Research Department in 2015, offering Ph.D guidance under Bharathiar University. We blend rigorous academics with hands-on research and industry exposure to shape competent biotechnologists.</p>
+        <div class="about-points">
+          <div class="about-pt">
+            <div class="about-pt-ico">🔬</div>
+            <div>
+              <div class="about-pt-title">State-of-the-Art Laboratories</div>
+              <div class="about-pt-desc">DNA Sequencer, PCR Machine, CO₂ Incubator, Bioreactor, Gel Documentation and more — open till 6 PM daily.</div>
+            </div>
+          </div>
+          <div class="about-pt">
+            <div class="about-pt-ico">🌿</div>
+            <div>
+              <div class="about-pt-title">Greenhouse &amp; Medicinal Garden</div>
+              <div class="about-pt-desc">Live research environment for plant propagation, extraction and applied botany studies.</div>
+            </div>
+          </div>
+          <div class="about-pt">
+            <div class="about-pt-ico">🏛️</div>
+            <div>
+              <div class="about-pt-title">National Conferences &amp; INSA Workshops</div>
+              <div class="about-pt-desc">Regular DST-INSPIRE Camps and State / National level scientific knowledge-sharing platforms.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ACCREDITATION STRIP ══ -->
+<div class="accred-strip">
+  <div class="accred-strip-inner">
+    <div class="accred-strip-label">Recognised &amp; Accredited By</div>
+    <div class="accred-badges">
+      <span class="accred-badge">NAAC — B+ Grade</span>
+      <span class="accred-badge">AICTE, New Delhi</span>
+      <span class="accred-badge">UGC — 2(f) &amp; 12(B)</span>
+      <span class="accred-badge">Bharathiar University</span>
+      <span class="accred-badge">Autonomous Status</span>
+      <span class="accred-badge">ISO 9001:2015</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PROGRAMS ══ -->
+<section id="programs" class="section-pad">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="sec-tag">Academic Programs</div>
+      <h2 class="sec-h2">Courses Offered</h2>
+      <div class="sec-line"></div>
+      <p class="sec-lead">From undergraduate foundations to doctoral research — a rigorous programme tailored to your academic and career goals.</p>
+    </div>
+    <div class="prog-grid">
+      <div class="prog-card reveal d1">
+        <div class="prog-card-top">
+          <div class="prog-badge">Undergraduate · 3 Years</div>
+          <div class="prog-name">B.Sc. Biotechnology</div>
+        </div>
+        <div class="prog-body">
+          <div class="prog-desc">A rigorous foundation in molecular biology, genetics, microbiology and biochemistry with intensive lab training and industry-oriented curriculum.</div>
+          <div class="prog-tags"><span class="prog-tag">Molecular Biology</span><span class="prog-tag">Genetics</span><span class="prog-tag">Lab Intensive</span></div>
+        </div>
+      </div>
+      <div class="prog-card reveal d2">
+        <div class="prog-card-top">
+          <div class="prog-badge">Postgraduate · 2 Years</div>
+          <div class="prog-name">M.Sc. Biotechnology</div>
+        </div>
+        <div class="prog-body">
+          <div class="prog-desc">Advanced specialisation in bioinformatics, nanotechnology and plant/animal tissue culture with research publication opportunities.</div>
+          <div class="prog-tags"><span class="prog-tag">Bioinformatics</span><span class="prog-tag">Nanotechnology</span><span class="prog-tag">Research</span></div>
+        </div>
+      </div>
+      <div class="prog-card reveal d3">
+        <div class="prog-card-top">
+          <div class="prog-badge">Research Programme</div>
+          <div class="prog-name">Ph.D. Research</div>
+        </div>
+        <div class="prog-body">
+          <div class="prog-desc">Doctoral programme under Bharathiar University with recognised guides in nano-biotechnology and phytochemistry. SCOPUS indexed publications.</div>
+          <div class="prog-tags"><span class="prog-tag">Ph.D Guidance</span><span class="prog-tag">SCOPUS</span><span class="prog-tag">Publications</span></div>
+        </div>
+      </div>
+      <div class="prog-card reveal d4">
+        <div class="prog-card-top">
+          <div class="prog-badge">Value Added Course</div>
+          <div class="prog-name">Diploma in MLT</div>
+        </div>
+        <div class="prog-body">
+          <div class="prog-desc">BSS Certified (Govt. of India) Diploma in Medical Laboratory Technology — a government-recognised, career-accelerating certification.</div>
+          <div class="prog-tags"><span class="prog-tag">Govt. Certified</span><span class="prog-tag">BSS</span><span class="prog-tag">Career Ready</span></div>
+        </div>
+      </div>
+      <div class="prog-card reveal d1">
+        <div class="prog-card-top">
+          <div class="prog-badge">Value Added Course</div>
+          <div class="prog-name">Bioinformatics</div>
+        </div>
+        <div class="prog-body">
+          <div class="prog-desc">Skill-enhancing course bridging biology and computing — covering sequence analysis, biological databases, molecular modelling and computational research tools.</div>
+          <div class="prog-tags"><span class="prog-tag">Sequence Analysis</span><span class="prog-tag">Molecular Modelling</span><span class="prog-tag">Databases</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SCOPE ══ -->
+<section id="scope" class="section-pad">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="sec-tag">Career &amp; Industry Scope</div>
+      <h2 class="sec-h2">What Can You Do with a <span>Biotechnology Degree?</span></h2>
+      <div class="sec-line"></div>
+      <p class="sec-lead">Biotechnology is one of the fastest-growing fields of the 21st century. Our graduates contribute across medicine, agriculture, industry, environment and research.</p>
+    </div>
+    <div class="scope-grid">
+      <div class="scope-card reveal d1"><div class="scope-ico">💊</div><div class="scope-title">Pharmaceutical &amp; Healthcare</div><div class="scope-desc">Drug discovery, vaccine development, clinical research and diagnostics with top pharma companies.</div></div>
+      <div class="scope-card reveal d2"><div class="scope-ico">🧬</div><div class="scope-title">Genomics &amp; Molecular Biology</div><div class="scope-desc">Genetic engineering, DNA sequencing, bioinformatics and personalized medicine at global research labs.</div></div>
+      <div class="scope-card reveal d3"><div class="scope-ico">🌾</div><div class="scope-title">Agricultural Biotechnology</div><div class="scope-desc">Improved crops, biopesticides and biofertilizers for sustainable, food-secure agriculture.</div></div>
+      <div class="scope-card reveal d4"><div class="scope-ico">🏭</div><div class="scope-title">Industrial &amp; Fermentation</div><div class="scope-desc">Enzyme production, biofuels, fermentation technology and quality control in bio-manufacturing.</div></div>
+      <div class="scope-card reveal d1"><div class="scope-ico">🌊</div><div class="scope-title">Environmental Biotechnology</div><div class="scope-desc">Bioremediation, waste treatment, pollution control and green energy solutions.</div></div>
+      <div class="scope-card reveal d2"><div class="scope-ico">🔬</div><div class="scope-title">Research &amp; Academia</div><div class="scope-desc">Ph.D. or postdoctoral research at national labs, IITs, IISc and international universities.</div></div>
+      <div class="scope-card reveal d3"><div class="scope-ico">🧪</div><div class="scope-title">Clinical &amp; Medical Labs</div><div class="scope-desc">Medical Lab Technologist, Microbiologist or Pathology assistant in hospitals and diagnostic labs.</div></div>
+      <div class="scope-card reveal d4"><div class="scope-ico">💻</div><div class="scope-title">Bioinformatics &amp; IT</div><div class="scope-desc">Pharmaceutical IT, clinical data management and research software development.</div></div>
+    </div>
+    <div class="career-section reveal">
+      <h3>Popular Job Roles for Our Graduates</h3>
+      <div class="career-pills">
+        <span class="career-pill">Research Scientist</span>
+        <span class="career-pill">Clinical Research Associate</span>
+        <span class="career-pill">Medical Lab Technologist</span>
+        <span class="career-pill">Bioinformatics Analyst</span>
+        <span class="career-pill">Quality Control Analyst</span>
+        <span class="career-pill">Microbiologist</span>
+        <span class="career-pill">Pharmacovigilance Officer</span>
+        <span class="career-pill">Genetic Counselor</span>
+        <span class="career-pill">Bioprocess Engineer</span>
+        <span class="career-pill">Regulatory Affairs Officer</span>
+        <span class="career-pill">Environmental Consultant</span>
+        <span class="career-pill">Lecturer / Professor</span>
+        <span class="career-pill">Plant Tissue Culture Scientist</span>
+        <span class="career-pill">Fermentation Technologist</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHY US ══ -->
+<section id="why" class="section-pad">
+  <div class="why-inner container">
+    <div class="section-header reveal">
+      <div class="sec-tag why-sec-tag">Why Choose Us</div>
+      <h2 class="sec-h2 why-sec-h2">Why Choose <span>Our Department?</span></h2>
+      <div class="sec-line why-sec-line"></div>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal d1"><div class="why-num">01</div><div class="why-title">Research-First Culture</div><div class="why-desc">SCOPUS &amp; WoS indexed publications. A patent filed in Chemical Sciences. Active Ph.D guidance with recognized university guides.</div></div>
+      <div class="why-card reveal d2"><div class="why-num">02</div><div class="why-title">Expert Faculty</div><div class="why-desc">Ph.D holders, SLET-qualified staff and industry-connected lecturers dedicated to student success.</div></div>
+      <div class="why-card reveal d3"><div class="why-num">03</div><div class="why-title">Blended Teaching</div><div class="why-desc">Chalk &amp; talk, animations, practical exposure, interface teaching and project-based learning methodologies.</div></div>
+      <div class="why-card reveal d4"><div class="why-num">04</div><div class="why-title">Industry Placements</div><div class="why-desc">Biocon, TCS, Zifo RnD &amp; 12+ recruiters conduct campus placements every academic year.</div></div>
+      <div class="why-card reveal d1"><div class="why-num">05</div><div class="why-title">University Toppers</div><div class="why-desc">Consistent Gold Medalists and rank holders at Bharathiar University — 29+ rank holders since 2004.</div></div>
+      <div class="why-card reveal d2"><div class="why-num">06</div><div class="why-title">Rural Empowerment</div><div class="why-desc">Mission-driven to uplift rural students with world-class biotechnology education and career opportunities.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FACULTY ══ -->
+<section id="faculty" class="section-pad">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="sec-tag">Faculty Profile</div>
+      <h2 class="sec-h2">Meet Our <span>Faculty</span></h2>
+      <div class="sec-line"></div>
+      <p class="sec-lead">Our team of dedicated researchers and educators are committed to academic excellence and student success.</p>
+    </div>
+    <div class="fac-grid">
+      <div class="fac-card reveal">
+        <div class="fac-card-top"><div class="fac-av">KA</div></div>
+        <div class="fac-body">
+          <div class="fac-name">Dr. K. Abdhul</div>
+          <div class="fac-deg">M.Sc., Ph.D., SLET., MLT</div>
+          <div class="fac-role">HOD, Associate Professor &amp; IQAC Coordinator</div>
+          <span class="fac-badge">★ Ph.D Holder</span>
+        </div>
+      </div>
+      <div class="fac-card reveal d1">
+        <div class="fac-card-top"><div class="fac-av">MP</div></div>
+        <div class="fac-body">
+          <div class="fac-name">Dr. M. Poonkothai</div>
+          <div class="fac-deg">M.Sc., Ph.D.</div>
+          <div class="fac-role">Assistant Professor</div>
+          <span class="fac-badge">★ Ph.D Holder</span>
+        </div>
+      </div>
+      <div class="fac-card reveal d2">
+        <div class="fac-card-top"><div class="fac-av">SK</div></div>
+        <div class="fac-body">
+          <div class="fac-name">Dr. S. Karthik</div>
+          <div class="fac-deg">M.Sc., M.Phil., SLET., (Ph.D)</div>
+          <div class="fac-role">Assistant Professor</div>
+          <span class="fac-badge pursuing">◎ Pursuing Ph.D</span>
+        </div>
+      </div>
+      <div class="fac-card reveal d3">
+        <div class="fac-card-top"><div class="fac-av">VS</div></div>
+        <div class="fac-body">
+          <div class="fac-name">Dr. V. Senthil Kumar</div>
+          <div class="fac-deg">M.Sc., Ph.D.</div>
+          <div class="fac-role">Assistant Professor</div>
+          <span class="fac-badge">★ Ph.D Holder</span>
+        </div>
+      </div>
+      <div class="fac-card reveal">
+        <div class="fac-card-top"><div class="fac-av">KS</div></div>
+        <div class="fac-body">
+          <div class="fac-name">Mr. K. Saravanan</div>
+          <div class="fac-deg">M.Sc., (Ph.D)</div>
+          <div class="fac-role">Assistant Professor</div>
+          <span class="fac-badge pursuing">◎ Pursuing Ph.D</span>
+        </div>
+      </div>
+      <div class="fac-card reveal d1">
+        <div class="fac-card-top"><div class="fac-av">SN</div></div>
+        <div class="fac-body">
+          <div class="fac-name">Mr. S. S. Naveen</div>
+          <div class="fac-deg">M.Sc.</div>
+          <div class="fac-role">Assistant Professor</div>
+          <span class="fac-badge pursuing">◎ Pursuing Ph.D</span>
+        </div>
+      </div>
+      <div class="fac-card reveal d2">
+        <div class="fac-card-top"><div class="fac-av">DS</div></div>
+        <div class="fac-body">
+          <div class="fac-name">Ms. D. Sriya</div>
+          <div class="fac-deg">M.Sc., B.Ed.</div>
+          <div class="fac-role">Assistant Professor</div>
+          <span class="fac-badge pursuing">◎ Pursuing Ph.D</span>
+        </div>
+      </div>
+      <div class="fac-card reveal d3">
+        <div class="fac-card-top"><div class="fac-av">SS</div></div>
+        <div class="fac-body">
+          <div class="fac-name">Ms. S. Sarumathi</div>
+          <div class="fac-deg">M.Sc.</div>
+          <div class="fac-role">Assistant Professor</div>
+          <span class="fac-badge pursuing">◎ Pursuing Ph.D</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PUBLICATIONS ══ -->
+<section id="publications" class="section-pad" style="background:var(--off);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="sec-tag">Research Output</div>
+      <h2 class="sec-h2">Published Research <span>&amp; Patents</span></h2>
+      <div class="sec-line"></div>
+      <p class="sec-lead">Our faculty publish in SCOPUS, WoS-indexed and UGC-CARE listed journals — and hold a recognised patent in Chemical Sciences.</p>
+    </div>
+    <div class="pub-list">
+      <div class="pub-card reveal"><div class="pub-yr">2023</div><div><div class="pub-title">Synergistic antibacterial and mosquitocidal effect of Passiflora foetida synthesized silver nanoparticles</div><div class="pub-journal">Brazilian Journal of Biology, 84: e263391 · doi:10.1590/1519-6984.263391</div><span class="pub-idx">SCOPUS · IF 0.471</span></div></div>
+      <div class="pub-card reveal d1"><div class="pub-yr">2023</div><div><div class="pub-title">Phylogenetic Relationships of Baliospermum solanifolium through DNA Barcoding in South India</div><div class="pub-journal">Biological Forum – An International Journal, 15(5): 125–137</div><span class="pub-idx">UGC-CARE List</span></div></div>
+      <div class="pub-card reveal"><div class="pub-yr">2023</div><div><div class="pub-title">Exploring the Anti-bacterial Potential of Orchid-derived Silver Nanoparticles</div><div class="pub-journal">Nano Biomed. Eng., 15(4): 416–424 · doi:10.26599/NBE.2023.9290038</div><span class="pub-idx">SCOPUS · IF 0.323</span></div></div>
+      <div class="pub-card reveal d1"><div class="pub-yr">2022</div><div><div class="pub-title">Patent: Clay Soil Stabilization using MICP Technique by inducing Microbes and Bacteria</div><div class="pub-journal">Application ID: 202241029830 · Chemical Sciences · Pub. No: 22/2022</div><span class="pub-idx">🔒 PATENT FILED</span></div></div>
+      <div class="pub-card reveal"><div class="pub-yr">2021</div><div><div class="pub-title">Preparation of Activated Carbon from Wrightia tinctoria and its Application</div><div class="pub-journal">International Journal of Botany Studies, 6(3): 267–273</div><span class="pub-idx">WoS · IF 0.5</span></div></div>
+      <div class="pub-card reveal d1"><div class="pub-yr">2020</div><div><div class="pub-title">Book: In Vivo, In Vitro &amp; In Silico Studies — Anticancerous and Antiarthritis Property of Mentha piperata and Citrus sinensis</div><div class="pub-journal">LAP LAMBERT Academic Publishing, Germany · ISBN: 978-620-2-51164-3</div><span class="pub-idx">📘 BOOK PUBLISHED</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ GALLERY ══ -->
+<section id="gallery" class="section-pad">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="sec-tag">Campus Life</div>
+      <h2 class="sec-h2">Photo <span>Gallery</span></h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="gal-grid">
+      <div class="gal-item big reveal">
+        <img src="https://www.nandhaarts.org/wp-content/uploads/2022/06/since_logo.jpeg" alt="Nandha College Campus">
+        <div class="gal-overlay"><span class="gal-cap">Nandha Arts &amp; Science College, Erode</span></div>
+      </div>
+      <div class="gal-item reveal d1"><img src="https://www.nandhaarts.org/wp-content/uploads/2022/08/NASC_BCA.png" alt="BCA"><div class="gal-overlay"><span class="gal-cap">BCA Department</span></div></div>
+      <div class="gal-item reveal d2"><img src="https://www.nandhaarts.org/wp-content/uploads/2022/08/NASC_CS.png" alt="CS"><div class="gal-overlay"><span class="gal-cap">Computer Science</span></div></div>
+      <div class="gal-item reveal d1"><img src="https://www.nandhaarts.org/wp-content/uploads/2022/08/NASC_Maths.jpg" alt="Maths"><div class="gal-overlay"><span class="gal-cap">Mathematics Dept</span></div></div>
+      <div class="gal-item reveal d2"><img src="https://www.nandhaarts.org/wp-content/uploads/2022/08/NASC_Commerce.png" alt="Commerce"><div class="gal-overlay"><span class="gal-cap">Commerce Dept</span></div></div>
+      <div class="gal-item reveal d3"><img src="https://www.nandhaarts.org/wp-content/uploads/2022/11/NASC_Psychology.jpg" alt="Psychology"><div class="gal-overlay"><span class="gal-cap">Psychology Dept</span></div></div>
+    </div>
+    <div style="text-align:center;margin-top:1.5rem;">
+      <a href="https://www.nandhaarts.org/gallery/" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--off2);border:1px solid var(--border);color:var(--navy);padding:0.65rem 1.5rem;border-radius:4px;font-size:0.84rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='var(--sky)';this.style.color='#fff';this.style.borderColor='var(--sky)';" onmouseout="this.style.background='var(--off2)';this.style.color='var(--navy)';this.style.borderColor='var(--border)';">View Full Gallery ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ RECRUITERS ══ -->
+<section id="recruiters" class="section-pad" style="background:var(--off);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="sec-tag">Industry Connect</div>
+      <h2 class="sec-h2">Our <span>Recruiters</span></h2>
+      <div class="sec-line"></div>
+      <p class="sec-lead">Graduates are placed across biotech, pharma, IT and research sectors every year through active campus recruitment drives.</p>
+    </div>
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <span class="rec-pill">🧬 Biocon Pvt. Ltd., Bangalore</span>
+        <span class="rec-pill">💊 Zifo RnD, Chennai</span>
+        <span class="rec-pill">🔬 Bioline Clinical Research, Coimbatore</span>
+        <span class="rec-pill">💻 TCS, Chennai</span>
+        <span class="rec-pill">🌿 Ambrosia Vegetables, Bangalore</span>
+        <span class="rec-pill">🏥 I5 Clinical Research Institute, Bangalore</span>
+        <span class="rec-pill">♻️ Enviro Bionics, Erode</span>
+        <span class="rec-pill">📊 Vee Technologies, Salem</span>
+        <span class="rec-pill">🖥️ Visionary RCM Infotech, Coimbatore</span>
+        <span class="rec-pill">🔧 WTT, Gujarat</span>
+        <span class="rec-pill">🌟 SERCO, Chennai</span>
+        <span class="rec-pill">🎓 Bright Star Educational Institute, Coimbatore</span>
+        <span class="rec-pill">🩺 AEEBEE, Salem</span>
+        <span class="rec-pill">🧬 Biocon Pvt. Ltd., Bangalore</span>
+        <span class="rec-pill">💊 Zifo RnD, Chennai</span>
+        <span class="rec-pill">🔬 Bioline Clinical Research, Coimbatore</span>
+        <span class="rec-pill">💻 TCS, Chennai</span>
+        <span class="rec-pill">🌿 Ambrosia Vegetables, Bangalore</span>
+        <span class="rec-pill">🏥 I5 Clinical Research Institute, Bangalore</span>
+        <span class="rec-pill">♻️ Enviro Bionics, Erode</span>
+        <span class="rec-pill">📊 Vee Technologies, Salem</span>
+        <span class="rec-pill">🖥️ Visionary RCM Infotech, Coimbatore</span>
+        <span class="rec-pill">🔧 WTT, Gujarat</span>
+        <span class="rec-pill">🌟 SERCO, Chennai</span>
+        <span class="rec-pill">🎓 Bright Star Educational Institute, Coimbatore</span>
+        <span class="rec-pill">🩺 AEEBEE, Salem</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ RANK HOLDERS ══ -->
+<section id="rankers" class="section-pad">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="sec-tag">Academic Excellence</div>
+      <h2 class="sec-h2">University <span>Rank Holders</span></h2>
+      <div class="sec-line"></div>
+      <p class="sec-lead">Our students consistently achieve top ranks at Bharathiar University — a testimony to the quality of teaching and research culture in our department.</p>
+    </div>
+    <div class="rankers-intro">
+      <div class="reveal">
+        <div class="rank-table-wrap">
+          <table class="rank-table">
+            <thead><tr><th>#</th><th>Student Name</th><th>Rank</th><th>Batch</th></tr></thead>
+            <tbody>
+              <tr class="rank-gold"><td>1</td><td>Ms. Indubala .S</td><td>🥇 I (Gold)</td><td>2004–2007</td></tr>
+              <tr><td>2</td><td>Mr. Shafeeque. C. M</td><td>VIII</td><td>2007–2010</td></tr>
+              <tr><td>3</td><td>Ms. Kiruthika .S</td><td>VI</td><td>2009–2012</td></tr>
+              <tr><td>4</td><td>Ms. Sruthi .V</td><td>IX</td><td>2009–2012</td></tr>
+              <tr><td>5</td><td>Ms. Preeti Ksoo</td><td>IV</td><td>2011–2014</td></tr>
+              <tr><td>6</td><td>Ms. Sangeetha. T</td><td>II</td><td>2012–2015</td></tr>
+              <tr><td>7</td><td>Ms. Kousalya. C</td><td>III</td><td>2012–2015</td></tr>
+              <tr><td>8</td><td>Ms. Selva Priya. K</td><td>II</td><td>2014–2017</td></tr>
+              <tr><td>9</td><td>Ms. Sangamithra. A</td><td>III</td><td>2014–2017</td></tr>
+              <tr><td>10</td><td>Ms. Umamaheswari. S</td><td>VI</td><td>2014–2017</td></tr>
+              <tr><td>11</td><td>Ms. Sivaranjini. V. P</td><td>VI</td><td>2015–2018</td></tr>
+              <tr><td>12</td><td>Ms. Nivetha. P</td><td>VII</td><td>2015–2018</td></tr>
+              <tr><td>13</td><td>Ms. Sangavi. P</td><td>IV</td><td>2016–2019</td></tr>
+              <tr class="rank-gold"><td>14</td><td>Ms. Srimathi. M</td><td>🥇 I</td><td>2017–2020</td></tr>
+              <tr><td>15</td><td>Ms. Sumithra Devi. K</td><td>III</td><td>2017–2020</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="reveal d2">
+        <div class="rank-table-wrap">
+          <table class="rank-table">
+            <thead><tr><th>#</th><th>Student Name</th><th>Rank</th><th>Batch</th></tr></thead>
+            <tbody>
+              <tr><td>16</td><td>Ms. Santhiya. M</td><td>IV</td><td>2017–2020</td></tr>
+              <tr><td>17</td><td>Ms. Rani. M</td><td>V</td><td>2017–2020</td></tr>
+              <tr><td>18</td><td>Mr. Praveen. P</td><td>VI</td><td>2017–2020</td></tr>
+              <tr><td>19</td><td>Ms. Anusuruthi. B</td><td>VII</td><td>2017–2020</td></tr>
+              <tr><td>20</td><td>Ms. Mohanapriya. T</td><td>VIII</td><td>2017–2020</td></tr>
+              <tr class="rank-gold"><td>21</td><td>Mr. Jithin. B</td><td>🥇 I</td><td>2018–2021</td></tr>
+              <tr><td>22</td><td>Ms. Nivashini. D</td><td>VI</td><td>2018–2021</td></tr>
+              <tr><td>23</td><td>Ms. Ramyadevi. R</td><td>VIII</td><td>2018–2021</td></tr>
+              <tr><td>24</td><td>Ms. Nithya. K</td><td>IX</td><td>2018–2021</td></tr>
+              <tr><td>25</td><td>Ms. Gayathri. J</td><td>III</td><td>2019–2022</td></tr>
+              <tr><td>26</td><td>Ms. Jaishree. A. P</td><td>V</td><td>2019–2022</td></tr>
+              <tr><td>27</td><td>Ms. Nivethitha. V</td><td>II</td><td>2020–2023</td></tr>
+              <tr><td>28</td><td>Ms. Kavi Priya. V</td><td>V</td><td>2020–2023</td></tr>
+              <tr><td>29</td><td>Ms. Madhura. G</td><td>VII</td><td>2020–2023</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section id="testimonials" class="section-pad" style="background:var(--off);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="sec-tag">Alumni Speak</div>
+      <h2 class="sec-h2">What Our <span>Alumni Say</span></h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-q">"</div>
+        <div class="stars">★★★★★</div>
+        <div class="testi-text">The faculty don't just teach — they mentor. The lab facilities are at par with leading research institutes. I secured a postdoctoral fellowship at Weizmann Institute of Science after graduating here.</div>
+        <div class="testi-meta">
+          <div class="testi-name">Dr. Ashok Arasu</div>
+          <div class="testi-info">Postdoctoral Fellow, Weizmann Institute of Science, Israel · Batch 2011–2013</div>
+        </div>
+      </div>
+      <div class="testi-card reveal d1">
+        <div class="testi-q">"</div>
+        <div class="stars">★★★★★</div>
+        <div class="testi-text">Winning the University Gold Medal was possible because of the personalised coaching and constant encouragement from every faculty member. I'm proud to be from this department.</div>
+        <div class="testi-meta">
+          <div class="testi-name">Ms. Indubala S.</div>
+          <div class="testi-info">University Rank 1 – Gold Medal · Batch 2004–2007</div>
+        </div>
+      </div>
+      <div class="testi-card reveal d2">
+        <div class="testi-q">"</div>
+        <div class="stars">★★★★★</div>
+        <div class="testi-text">The research culture pushed me to publish in SCOPUS-indexed journals as a student. Exposure to national conferences and workshops makes this department truly world-class.</div>
+        <div class="testi-meta">
+          <div class="testi-name">Ms. Srimathi M.</div>
+          <div class="testi-info">University Rank 1 · Batch 2017–2020</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact" class="section-pad">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="sec-tag">Get In Touch</div>
+      <h2 class="sec-h2">Contact <span>Us</span></h2>
+      <div class="sec-line"></div>
+      <p class="sec-lead">Admissions open for 2026–2027. Contact the department to learn about eligibility, scholarships, and campus visits.</p>
+    </div>
+    <div class="contact-layout">
+      <div class="reveal">
+        <div class="contact-info-list">
+          <div class="ci-row"><div class="ci-ico">📞</div><div><div class="ci-label">Phone</div><div class="ci-val"><a href="tel:+917373724422">+91 73737 24422</a> &nbsp;/&nbsp; <a href="tel:+919750222788">+91 97502 22788</a><br>04294 – 222788</div></div></div>
+          <div class="ci-row"><div class="ci-ico">✉️</div><div><div class="ci-label">Email</div><div class="ci-val"><a href="mailto:info@nandhaarts.org">info@nandhaarts.org</a></div></div></div>
+          <div class="ci-row"><div class="ci-ico">📸</div><div><div class="ci-label">Instagram</div><div class="ci-val"><a href="https://www.instagram.com/nandha_biohive/" target="_blank">@nandha_biohive</a></div></div></div>
+          <div class="ci-row"><div class="ci-ico">📍</div><div><div class="ci-label">Address</div><div class="ci-val">Koorapalayam Pirivu, Pitchandampalayam Post,<br>Erode – 638 052, Tamil Nadu, India</div></div></div>
+          <div class="ci-row"><div class="ci-ico">🕐</div><div><div class="ci-label">Department Hours</div><div class="ci-val">Monday – Saturday · 9:00 AM – 6:00 PM<br>Labs open until 6:00 PM</div></div></div>
+        </div>
+      </div>
+      <div class="reveal d2">
+        <div class="map-box">
+          <div class="map-placeholder">
+            <div class="pin">🗺️</div>
+            <p>Nandha Arts &amp; Science College, Erode</p>
+          </div>
+          <div class="map-footer">
+            <div class="map-name">Nandha Arts &amp; Science College (Autonomous)</div>
+            <div class="map-addr">Koorapalayam Pirivu, Pitchandampalayam Post,<br>Erode – 638 052, Tamil Nadu, India</div>
+            <a href="https://maps.google.com/?q=Nandha+Arts+and+Science+College+Erode" target="_blank" class="map-btn">📍 Open in Google Maps ↗</a>
+          </div>
+        </div>
+        <div class="contact-btns" style="margin-top:1rem;">
+          <a href="tel:+917373724422" class="btn-cta btn-call">📞 Call Admissions Now</a>
+          <a href="mailto:info@nandhaarts.org" class="btn-cta btn-mail">✉️ Send an Email</a>
+          <a href="https://www.instagram.com/nandha_biohive/" target="_blank" class="btn-cta btn-insta">📸 Follow @nandha_biohive</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-main">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <img src="https://www.nandhaarts.org/wp-content/uploads/2022/06/Logo_NASC.png" alt="Nandha College Logo">
+        <span class="footer-logo-name">Dept. of Biotechnology</span>
+      </div>
+      <p class="footer-desc">Nandha Arts &amp; Science College (Autonomous), Erode. Affiliated to Bharathiar University. NAAC B+ Accredited. Shaping life science leaders since 2002.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/nandha_biohive/" target="_blank" class="fsoc ig">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          @nandha_biohive
+        </a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-h">Quick Links</div>
+      <div class="footer-col">
+        <a href="#about">About Department</a>
+        <a href="#programs">Academic Programs</a>
+        <a href="#scope">Career Scope</a>
+        <a href="#faculty">Faculty Profile</a>
+        <a href="#publications">Research</a>
+        <a href="#rankers">Rank Holders</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-h">College Links</div>
+      <div class="footer-col">
+        <a href="https://www.nandhaarts.org" target="_blank">College Website</a>
+        <a href="https://portal.nandhaarts.org/" target="_blank">Student Login</a>
+        <a href="https://www.nandhaarts.org/iqac" target="_blank">IQAC</a>
+        <a href="https://www.nandhaarts.org/nirf/" target="_blank">NIRF</a>
+        <a href="https://www.nandhaarts.org/scholarship-details/" target="_blank">Scholarships</a>
+        <a href="https://www.nandhaarts.org/lab-facilities-bio-tech/" target="_blank">Lab Facilities</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-h">Contact Info</div>
+      <div class="footer-col">
+        <a href="tel:+917373724422">📞 +91 73737 24422</a>
+        <a href="tel:+919750222788">📞 +91 97502 22788</a>
+        <a href="mailto:info@nandhaarts.org">✉ info@nandhaarts.org</a>
+        <a href="https://www.instagram.com/nandha_biohive/" target="_blank">📸 @nandha_biohive</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <div class="footer-copy">© 2025 Nandha Arts &amp; Science College (Autonomous). All rights reserved.</div>
+      <div class="footer-badges">
+        <span class="f-badge">NAAC B+</span>
+        <span class="f-badge">AICTE</span>
+        <span class="f-badge">AUTONOMOUS</span>
+        <span class="f-badge">UGC RECOGNIZED</span>
+      </div>
+      <div class="footer-dev">Website by <strong>Deepak</strong></div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ STICKY CTA ══ -->
+<div class="sticky-cta">
+  <a href="tel:+917373724422" class="scall">📞 Call Now</a>
+</div>
+
+<script>
+// Scroll reveal
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+// Mobile nav
+function toggleNav() {
+  document.getElementById('mobileMenu').style.display = 'flex';
+}
+function closeNav() {
+  document.getElementById('mobileMenu').style.display = 'none';
+}
+
+// Counters
+function counter(id, target, suffix, dur=1800) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let start = null;
+  const step = ts => {
+    if (!start) start = ts;
+    const p = Math.min((ts - start) / dur, 1);
+    el.textContent = Math.floor(p * target) + suffix;
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+const so = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      counter('ctr1', 20, '+');
+      counter('ctr2', 29, '+');
+      counter('ctr3', 9, '+');
+      so.disconnect();
+    }
+  });
+}, { threshold: 0.5 });
+const stats = document.querySelector('.hero-stats');
+if (stats) so.observe(stats);
+
+// Clipboard protection
+document.addEventListener('keydown', function(e) {
+  const blocked = ['c','a','s','u','p','x'];
+  if ((e.ctrlKey || e.metaKey) && blocked.includes(e.key.toLowerCase())) {
+    e.preventDefault();
+    if (['c','a'].includes(e.key.toLowerCase())) showToast();
+    return false;
+  }
+  if (e.key === 'F12') { e.preventDefault(); return false; }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase())) {
+    e.preventDefault(); return false;
+  }
+});
+document.addEventListener('copy', function(e) {
+  e.clipboardData.setData('text/plain', '');
+  e.preventDefault(); showToast(); return false;
+});
+document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+
+function showToast() {
+  const ex = document.getElementById('cpToast');
+  if (ex) { clearTimeout(ex._t); ex.remove(); }
+  const t = document.createElement('div');
+  t.id = 'cpToast';
+  t.textContent = '🔒 Content is protected and cannot be copied.';
+  t.style.cssText = 'position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:#0b2545;color:#fff;padding:0.72rem 1.5rem;border-radius:4px;font-size:0.82rem;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,0.3);z-index:9999;pointer-events:none;border:1px solid rgba(255,255,255,0.15);';
+  document.body.appendChild(t);
+  t._t = setTimeout(() => t.remove(), 2800);
+}
+</script>
+</body>
+</html>
