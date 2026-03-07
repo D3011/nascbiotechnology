@@ -829,6 +829,21 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
 .hp-preview-chip{display:inline-block;background:var(--gold-dim);color:var(--gold);border-radius:4px;padding:0.1rem 0.45rem;font-size:0.65rem;font-weight:700;margin-left:0.4rem;vertical-align:middle;}
 .hp-dev-tab{display:none;}
 .hp-dev-tab.dev-visible{display:inline-block;}
+
+/* ── Dev portal switcher button (student who is also dev) ── */
+.dev-switch-btn{
+  display:none;
+  align-items:center;gap:0.4rem;
+  background:linear-gradient(135deg,var(--gold),#e09c35);
+  color:#fff;border:none;border-radius:6px;
+  padding:0.35rem 0.85rem;font-size:0.76rem;font-weight:700;
+  cursor:pointer;font-family:'Source Sans 3',sans-serif;
+  box-shadow:0 2px 8px rgba(201,136,42,0.35);
+  transition:all 0.18s;letter-spacing:0.02em;
+}
+.dev-switch-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(201,136,42,0.45);}
+.dev-switch-btn.visible{display:flex;}
+.dev-switch-btn svg{width:13px;height:13px;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -1548,6 +1563,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
     </div>
     <div style="display:flex;align-items:center;gap:0.8rem;">
       <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);" id="facWelcome">Welcome, Faculty</span>
+      <button class="btn-logout" id="backToStudentBtn" style="display:none;background:rgba(201,136,42,0.25);border-color:var(--gold);color:var(--gold-lt);" onclick="switchToStudentPortal()">← Student View</button>
       <button class="btn-logout" onclick="doFacLogout()">Logout</button>
     </div>
   </div>
@@ -1758,7 +1774,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
   "rules": {
     "flashNews":     { ".read": true,  ".write": true  },
     "notifications": { ".read": true,  ".write": true  },
-    "extraUsers":    { ".read": false, ".write": false },
+    "extraUsers":    { ".read": true,  ".write": true  },
     "marks":         { ".read": false, ".write": false },
     "attendance":    { ".read": false, ".write": false }
   }
@@ -1769,6 +1785,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <div class="admin-card">
         <div class="admin-card-header">
           <span class="admin-card-title">Add New User (Student / Faculty)</span>
+          <span style="font-size:0.7rem;color:#68d391;font-weight:600;">✓ Saved permanently to Firebase</span>
         </div>
         <div class="admin-card-body">
           <div class="admin-form-row">
@@ -1888,6 +1905,10 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
     </div>
     <div class="portal-topbar-right">
       <span class="portal-welcome" id="portalWelcome">Welcome, Student</span>
+      <button class="dev-switch-btn" id="devSwitchBtn" onclick="switchToDevPortal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Dev Portal
+      </button>
       <button class="btn-logout" onclick="doLogout()">Logout</button>
     </div>
   </div>
@@ -1912,6 +1933,10 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
           <div class="profile-meta-item">
             <div class="pmeta-label">Year of Study</div>
             <div class="pmeta-val" id="profileYear">II Year</div>
+          </div>
+          <div class="profile-meta-item" id="devProfileBadgeItem" style="display:none;">
+            <div class="pmeta-label">Access Level</div>
+            <div class="pmeta-val" style="color:var(--gold);font-weight:700;">⭐ Student + Developer</div>
           </div>
           <div class="profile-meta-item">
             <div class="pmeta-label">Institution</div>
@@ -2847,12 +2872,13 @@ function formatDateDisplay(str){ if(!str)return''; const [y,m,d]=str.split('-');
 // ═══════════════════════════════════════
 // Passwords stored as SHA-256 hashes — never plain text
 const BASE_USERS=[
-  {email:'24ubio008.deepak_m@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'student'},
+  {email:'24ubio008.deepak_m@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'student',isDev:true},
   {email:'24ubio008.deepak_m@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'faculty',isDev:true}
 ];
 let extraUsers=[];
 let selectedRole='';
 let currentUserInfo=null;
+let currentUserObj=null;     // full user record (includes isDev, role)
 
 function getAllUsers(){ return[...BASE_USERS,...extraUsers]; }
 function getStudentsByYear(yr){
@@ -2867,18 +2893,55 @@ function getSubjectsForYear(yr){ return sylData[yr]||[]; }
 
 // Load users from Firebase
 async function loadExtraUsers(){
-  const data=await fbGet('/extraUsers');
-  if(data&&typeof data==='object'){
-    extraUsers=Object.values(data);
+  // Load independently — don't wait for FB_ONLINE flag
+  // Firebase rules for /extraUsers must be ".read":true for this to work
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),6000);
+    const r=await fetch(DB+'/extraUsers.json',{signal:ctrl.signal});
+    clearTimeout(timer);
+    if(r.ok){
+      const data=await r.json();
+      if(data===null){
+        extraUsers=[];   // empty node — no users saved yet, that is fine
+      } else if(data&&typeof data==='object'){
+        extraUsers=Object.values(data);
+      }
+    }
+  }catch(e){
+    // Firebase offline or rules block read — users stay as empty array
+    // Built-in BASE_USERS still work
   }
 }
 async function saveExtraUserToFB(user){
-  const k=eKey(user.email)+'_'+user.role;
-  await fbSet('/extraUsers/'+k, user);
+  // Direct fetch — bypasses FB_ONLINE guard so saves always reach Firebase
+  const k = eKey(user.email)+'_'+user.role;
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),8000);
+    const r=await fetch(DB+'/extraUsers/'+k+'.json',{
+      method:'PUT',
+      body:JSON.stringify(user),
+      headers:{'Content-Type':'application/json'},
+      signal:ctrl.signal
+    });
+    clearTimeout(timer);
+    if(!r.ok){
+      const err=await r.json().catch(()=>({error:'unknown'}));
+      adminToast('⚠️ Save failed: '+(err.error||r.status)+'. Check Firebase rules.');
+    }
+  }catch(e){
+    adminToast('⚠️ Could not save user to Firebase. Check internet/rules.');
+  }
 }
 async function deleteExtraUserFromFB(user){
-  const k=eKey(user.email)+'_'+user.role;
-  await fbDel('/extraUsers/'+k);
+  const k = eKey(user.email)+'_'+user.role;
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),8000);
+    await fetch(DB+'/extraUsers/'+k+'.json',{method:'DELETE',signal:ctrl.signal});
+    clearTimeout(timer);
+  }catch(e){}
 }
 
 function openLogin(e){
@@ -2905,9 +2968,11 @@ async function doLogin(){
   if(!user){ errEl.textContent='Invalid email or password. Please try again.'; errEl.classList.add('show'); ['loginEmail','loginPass'].forEach(id=>{const el=document.getElementById(id);el.classList.add('error');setTimeout(()=>el.classList.remove('error'),1500);}); return; }
   const info=parseProfile(user.email,user.displayName);
   info.email=user.email.toLowerCase();
+  info.isDev=!!(user.isDev);          // carry dev flag for student-devs
   currentUserInfo=info;
+  currentUserObj=user;                // keep original user object for role-switch
   closeLogin();
-  if(user.role==='faculty') openFacPortal(info,user); else openPortal(info);
+  if(user.role==='faculty') openFacPortal(info,user); else openPortal(info,user);
 }
 
 function parseProfile(email,displayName){
@@ -2924,7 +2989,7 @@ function parseProfile(email,displayName){
 // ═══════════════════════════════════════
 // STUDENT PORTAL
 // ═══════════════════════════════════════
-async function openPortal(info){
+async function openPortal(info,user){
   document.getElementById('profileName').textContent=info.name;
   document.getElementById('profileAvatar').textContent=info.init;
   document.getElementById('profileReg').textContent=info.reg;
@@ -2955,10 +3020,40 @@ async function openPortal(info){
   stdAttActiveSubj=null;
   renderStudentAttendance(info);
 
+  // Show dev access UI for student-developers
+  const devBadgeItem=document.getElementById('devProfileBadgeItem');
+  if(devBadgeItem) devBadgeItem.style.display=info.isDev?'':'none';
+  const dsb=document.getElementById('devSwitchBtn');
+  if(dsb) dsb.classList.toggle('visible', !!(info.isDev));
+
   document.getElementById('portalOverlay').classList.add('active');
   document.body.style.overflow='hidden'; window.scrollTo(0,0);
 }
-function doLogout(){ document.getElementById('portalOverlay').classList.remove('active'); document.body.style.overflow=''; }
+function doLogout(){
+  document.getElementById('portalOverlay').classList.remove('active');
+  document.body.style.overflow='';
+  currentUserObj=null;
+}
+// Called when student-dev clicks "Dev Portal" button
+function switchToDevPortal(){
+  // Find the faculty/dev record for the same email
+  const devUser = getAllUsers().find(u=>
+    u.email.toLowerCase()===currentUserInfo.email&&
+    u.role==='faculty'&&
+    u.isDev
+  );
+  if(!devUser){ alert('Developer access not found for this account.'); return; }
+  // Hide student portal, open faculty portal
+  document.getElementById('portalOverlay').classList.remove('active');
+  openFacPortal(currentUserInfo, devUser);
+}
+// Called from faculty portal to go back to student view
+function switchToStudentPortal(){
+  document.getElementById('facPortalOverlay').classList.remove('active');
+  if(currentUserObj&&currentUserObj.role==='student'){
+    openPortal(currentUserInfo, currentUserObj);
+  }
+}
 
 // ── Student Marks ──
 async function renderStudentMarks(info){
@@ -3082,6 +3177,12 @@ let facSylYear=1,facTTYear=1,facFacYear=1,facMarksYear=1,facAttYear=1;
 
 async function openFacPortal(info,user){
   currentIsDev = !!(user && user.isDev);
+  // Show "← Student View" if this dev also has a student account
+  const backBtn=document.getElementById('backToStudentBtn');
+  if(backBtn){
+    const hasStudentRole=getAllUsers().some(u=>u.email.toLowerCase()===info.email&&u.role==='student');
+    backBtn.style.display=(currentIsDev&&hasStudentRole)?'':'none';
+  }
   document.getElementById('facName').textContent=info.name;
   const devBadgeEl=document.getElementById('devBadge');
   if(devBadgeEl) devBadgeEl.style.display=currentIsDev?'':'none';
@@ -3103,6 +3204,10 @@ async function openFacPortal(info,user){
   renderUserList();
   document.getElementById('facPortalOverlay').classList.add('active');
   document.body.style.overflow='hidden'; window.scrollTo(0,0);
+  // Notify dev of Firebase status
+  setTimeout(()=>{
+    if(!FB_ONLINE) adminToast('⚠️ Firebase offline — users will NOT be permanent until reconnected.');
+  },600);
 }
 function doFacLogout(){ document.getElementById('facPortalOverlay').classList.remove('active'); document.body.style.overflow=''; }
 
@@ -3607,11 +3712,23 @@ async function addNewUser(){
   const hashed=await hashPassword(plain);
   const user={email,password:hashed,role,displayName:dname||undefined};
   extraUsers.push(user);
+  adminToast('Saving to Firebase…');
   await saveExtraUserToFB(user);
+  // Verify it actually saved by re-reading from Firebase
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),5000);
+    const r=await fetch(DB+'/extraUsers.json',{signal:ctrl.signal});
+    clearTimeout(timer);
+    if(r.ok){
+      const data=await r.json();
+      if(data&&typeof data==='object') extraUsers=Object.values(data);
+    }
+  }catch(e){}
   document.getElementById('nuEmail').value=''; document.getElementById('nuPass').value=''; document.getElementById('nuName').value='';
   renderUserList();
   if(role==='student'){ renderMarksAdmin(); renderAttAdmin(); }
-  adminToast('User added! \u2705');
+  adminToast('User saved permanently to Firebase! \u2705');
 }
 async function deleteUser(i){
   const user=extraUsers[i];
@@ -3632,8 +3749,10 @@ function renderUserList(){
         <span style="font-size:0.72rem;color:var(--muted);"> — ${u.email}</span><br>
         <code style="font-size:0.68rem;">${u.role}</code>
         ${u.role==='student'&&yr?`<span style="font-size:0.68rem;color:var(--sky);margin-left:0.3rem;">${yr} Year</span>`:''}
-        <span style="font-size:0.68rem;color:#68d391;margin-left:0.3rem;">🔒 password hashed</span>
+        ${u.isDev?'<span style="font-size:0.68rem;color:var(--gold);margin-left:0.3rem;">⭐ Developer</span>':''}
+        <span style="font-size:0.68rem;color:#68d391;margin-left:0.3rem;">🔒 hashed</span>
         ${i<BASE_USERS.length?'<span style="font-size:0.67rem;color:var(--muted);margin-left:0.3rem;">(built-in)</span>':''}
+        <span style="font-size:0.67rem;color:#48bb78;margin-left:0.3rem;">✓ permanent</span>
       </span>
       ${i>=BASE_USERS.length?`<div class="admin-list-actions"><button class="btn-del" onclick="deleteUser(${i-BASE_USERS.length})">Remove</button></div>`:''}
     </div>`;
@@ -3687,13 +3806,18 @@ window.addEventListener('DOMContentLoaded', async ()=>{
 
   migrateSylData();               // ensure unit objects have topics/lessons keys
   applyHpData();                  // apply default homepage content immediately
-  await testFbConnection();       // ping Firebase first — sets FB_ONLINE flag
+
+  // Load users first (independent fetch) — so login works before full FB test
+  await loadExtraUsers();
+
+  await testFbConnection();       // ping Firebase — sets FB_ONLINE flag
   if(FB_ONLINE){
     await loadHpData();           // pull saved homepage content from Firebase
     applyHpData();                // re-apply with Firebase data
     await loadSyllabusLessons();  // pull faculty-entered lessons from Firebase
-    await loadExtraUsers();
     await loadCoreData();
+    // Re-load users to catch any updates (already loaded above)
+    await loadExtraUsers();
   }
 });
 
@@ -3728,6 +3852,7 @@ window.selectMarksYear=selectMarksYear; window.saveStudentMarks=saveStudentMarks
 window.selectAttYear=selectAttYear; window.setAttToday=setAttToday; window.renderAttAdmin=renderAttAdmin; window.toggleAtt=toggleAtt;
 window.stdAttTab=stdAttTab; window.stdAttNavMonth=stdAttNavMonth;
 window.addNewUser=addNewUser; window.deleteUser=deleteUser;
+window.switchToDevPortal=switchToDevPortal; window.switchToStudentPortal=switchToStudentPortal;
 
 </script>
 </body>
