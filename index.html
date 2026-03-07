@@ -85,7 +85,10 @@ header{
 }
 .header-cta:hover{background:var(--navy);transform:none !important;color:#fff !important;}
 .ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
-.ham span{width:24px;height:2px;background:var(--navy);display:block;border-radius:2px;}
+.ham span{width:24px;height:2px;background:var(--navy);display:block;border-radius:2px;transition:all 0.3s;}
+.ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.ham.open span:nth-child(2){opacity:0;}
+.ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
 
 /* ══ MOBILE NAV ══ */
 #mobileMenu{
@@ -471,7 +474,9 @@ footer{background:var(--navy);}
   .footer-main{grid-template-columns:1fr 1fr;gap:2rem;}
   .gal-grid{grid-template-columns:repeat(2,1fr);grid-template-rows:auto;}
   .gal-item.big{grid-column:span 2;grid-row:span 1;}
-  .header-nav ul{display:none;}
+  .header-nav ul{display:none;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:#fff;padding:0.8rem 0;box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:999;}
+  .header-nav.open ul{display:flex;}
+  .header-nav a{padding:0.75rem 1.5rem;border-bottom:none;width:100%;display:block;}
   .ham{display:flex;}
   .topbar{padding:0.4rem 1.2rem;}
   header{padding:0.9rem 1.2rem;}
@@ -483,6 +488,148 @@ footer{background:var(--navy);}
   .footer-main{grid-template-columns:1fr;}
   .hero-stats{gap:1rem;}
   .hstat{padding:0 1rem 0 0;}
+}
+
+/* ══ LOGIN BTN (topbar) ══ */
+.login-btn{background:var(--gold) !important;color:#fff !important;border-color:var(--gold) !important;font-weight:700 !important;}
+.login-btn:hover{background:var(--gold-lt) !important;}
+
+/* ══ LOGIN MODAL ══ */
+#loginOverlay{
+  display:none;position:fixed;inset:0;z-index:9000;
+  background:rgba(11,37,69,0.92);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;
+}
+#loginOverlay.active{display:flex;}
+.login-box{
+  background:#fff;border-radius:8px;width:100%;max-width:440px;
+  overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.4);
+  animation:popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes popIn{from{opacity:0;transform:scale(0.88);}to{opacity:1;transform:scale(1);}}
+.login-header{background:var(--navy);padding:1.4rem 1.8rem;border-bottom:3px solid var(--gold);}
+.login-header h2{font-family:'Merriweather',serif;font-size:1.1rem;color:#fff;margin-bottom:0.2rem;}
+.login-header p{font-size:0.78rem;color:rgba(255,255,255,0.55);}
+.login-body{padding:1.8rem;}
+.login-step{display:none;}
+.login-step.active{display:block;}
+.role-btns{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;margin-top:0.5rem;}
+.role-btn{
+  padding:1.2rem;border:2px solid var(--border);border-radius:6px;
+  background:#fff;cursor:pointer;text-align:center;transition:all 0.2s;
+  font-family:'Source Sans 3',sans-serif;
+}
+.role-btn:hover,.role-btn.selected{border-color:var(--sky);background:var(--sky-dim);}
+.role-btn .role-ico{font-size:1.8rem;display:block;margin-bottom:0.5rem;}
+.role-btn .role-lbl{font-size:0.85rem;font-weight:700;color:var(--navy);}
+.form-group{margin-bottom:1rem;}
+.form-label{display:block;font-size:0.8rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;letter-spacing:0.03em;}
+.form-input{
+  width:100%;padding:0.68rem 0.9rem;border:1.5px solid var(--border);border-radius:5px;
+  font-size:0.88rem;font-family:'Source Sans 3',sans-serif;color:var(--text);
+  transition:border-color 0.2s;outline:none;
+}
+.form-input:focus{border-color:var(--sky);}
+.form-input.error{border-color:#e53e3e;}
+.login-err{background:#fff5f5;border:1px solid #fed7d7;color:#c53030;padding:0.6rem 0.9rem;border-radius:5px;font-size:0.8rem;margin-bottom:1rem;display:none;}
+.login-err.show{display:block;}
+.btn-login{
+  width:100%;background:var(--sky);color:#fff;border:none;
+  padding:0.82rem;border-radius:5px;font-size:0.92rem;font-weight:700;
+  cursor:pointer;font-family:'Source Sans 3',sans-serif;transition:all 0.2s;
+  letter-spacing:0.02em;
+}
+.btn-login:hover{background:var(--navy);}
+.login-back{background:none;border:none;color:var(--sky);font-size:0.82rem;cursor:pointer;padding:0;margin-top:0.75rem;font-family:'Source Sans 3',sans-serif;}
+.login-back:hover{text-decoration:underline;}
+.login-close-btn{background:none;border:none;color:rgba(255,255,255,0.6);font-size:1.2rem;cursor:pointer;position:absolute;top:1rem;right:1.2rem;}
+.login-header{position:relative;}
+
+/* ══ STUDENT PORTAL ══ */
+#portalOverlay{
+  display:none;position:fixed;inset:0;z-index:8500;
+  background:#f0f4f8;overflow-y:auto;
+}
+#portalOverlay.active{display:block;}
+.portal-topbar{
+  background:var(--navy);padding:0 1.8rem;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:3px solid var(--gold);position:sticky;top:0;z-index:10;
+}
+.portal-topbar-brand{display:flex;align-items:center;gap:0.75rem;}
+.portal-topbar-brand img{height:30px;filter:brightness(0) invert(1);opacity:0.85;}
+.portal-topbar-name{font-family:'Merriweather',serif;font-size:0.82rem;color:#fff;font-weight:700;}
+.portal-topbar-right{display:flex;align-items:center;gap:0.8rem;}
+.portal-welcome{font-size:0.78rem;color:rgba(255,255,255,0.6);}
+.btn-logout{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);color:#fff;padding:0.32rem 0.9rem;border-radius:4px;font-size:0.76rem;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif;transition:all 0.2s;}
+.btn-logout:hover{background:rgba(255,255,255,0.2);}
+.portal-body{max-width:1060px;margin:0 auto;padding:1.8rem 1.5rem 3rem;}
+
+/* Profile card */
+.profile-card{background:#fff;border-radius:8px;border:1px solid #dce4ef;padding:1.6rem 2rem;display:flex;align-items:center;gap:2rem;margin-bottom:1.5rem;border-left:4px solid var(--sky);}
+.profile-avatar{width:70px;height:70px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Merriweather',serif;font-size:1.6rem;font-weight:700;flex-shrink:0;}
+.profile-info{}
+.profile-name{font-family:'Merriweather',serif;font-size:1.3rem;font-weight:700;color:var(--navy);}
+.profile-meta{display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:0.6rem;}
+.profile-meta-item{}
+.pmeta-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--light);}
+.pmeta-val{font-size:0.88rem;font-weight:600;color:var(--navy);margin-top:0.1rem;}
+
+/* Portal section card */
+.portal-section{background:#fff;border-radius:8px;border:1px solid #dce4ef;margin-bottom:1.4rem;overflow:hidden;}
+.portal-sec-header{background:var(--navy2);padding:0.9rem 1.4rem;display:flex;align-items:center;gap:0.7rem;}
+.portal-sec-title{font-family:'Merriweather',serif;font-size:0.95rem;color:#fff;font-weight:700;}
+.portal-sec-badge{background:var(--gold);color:#fff;padding:0.15rem 0.6rem;border-radius:3px;font-size:0.68rem;font-weight:700;}
+.portal-sec-body{padding:1.4rem;}
+
+/* Timetable */
+.tt-table{width:100%;border-collapse:collapse;font-size:0.8rem;}
+.tt-table th{background:var(--navy);color:#fff;padding:0.6rem 0.8rem;text-align:center;font-weight:700;font-size:0.74rem;letter-spacing:0.04em;border:1px solid rgba(255,255,255,0.1);}
+.tt-table td{padding:0.55rem 0.7rem;border:1px solid #dce4ef;text-align:center;vertical-align:top;font-size:0.77rem;color:var(--text);line-height:1.4;}
+.tt-table tr:nth-child(even) td{background:#f7f9fc;}
+.tt-cell-subj{font-weight:700;color:var(--navy);font-size:0.77rem;}
+.tt-cell-staff{font-size:0.68rem;color:var(--muted);margin-top:0.18rem;}
+.tt-practical{background:rgba(201,136,42,0.08) !important;border-left:3px solid var(--gold);}
+.tt-dayorder{background:var(--blue);color:#fff;font-weight:700;font-size:0.8rem;text-align:center;}
+.tt-legend{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1rem;padding-top:0.8rem;border-top:1px solid #dce4ef;}
+.tt-leg-item{display:flex;align-items:center;gap:0.35rem;font-size:0.72rem;color:var(--muted);}
+.tt-leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+
+/* Syllabus */
+.syllabus-tabs{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.2rem;}
+.syl-tab{
+  padding:0.42rem 1rem;border-radius:4px;font-size:0.79rem;font-weight:600;
+  cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--muted);
+  transition:all 0.2s;font-family:'Source Sans 3',sans-serif;
+}
+.syl-tab.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.syl-tab:hover:not(.active){border-color:var(--sky);color:var(--sky);}
+.syl-panel{display:none;}
+.syl-panel.active{display:block;}
+.syl-unit{margin-bottom:1.1rem;}
+.syl-unit-header{
+  background:var(--off);border:1px solid var(--border);border-radius:5px;
+  padding:0.65rem 1rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  transition:all 0.2s;border-left:3px solid var(--sky);
+}
+.syl-unit-header:hover{background:var(--sky-dim);}
+.syl-unit-title{font-size:0.86rem;font-weight:700;color:var(--navy);}
+.syl-unit-arrow{color:var(--sky);font-size:0.8rem;transition:transform 0.25s;}
+.syl-unit-header.open .syl-unit-arrow{transform:rotate(180deg);}
+.syl-unit-body{
+  display:none;border:1px solid var(--border);border-top:none;
+  border-radius:0 0 5px 5px;padding:0.9rem 1.1rem;
+}
+.syl-unit-body.open{display:block;}
+.syl-topics{list-style:none;display:flex;flex-direction:column;gap:0.4rem;}
+.syl-topics li{font-size:0.82rem;color:var(--text);padding:0.3rem 0.5rem 0.3rem 1.1rem;position:relative;border-radius:3px;}
+.syl-topics li::before{content:'›';position:absolute;left:0;color:var(--sky);font-weight:700;}
+.syl-topics li:nth-child(even){background:#f7f9fc;}
+
+@media(max-width:700px){
+  .profile-card{flex-direction:column;align-items:flex-start;gap:1rem;}
+  .tt-table{font-size:0.68rem;}
+  .tt-table th,.tt-table td{padding:0.4rem 0.4rem;}
 }
 </style>
 </head>
@@ -502,6 +649,7 @@ footer{background:var(--navy);}
     <a href="https://www.nandhaarts.org/nirf/" target="_blank">NIRF</a>
     <a href="https://www.nandhaarts.org/scholarship-details/" target="_blank">Scholarships</a>
     <a href="https://www.instagram.com/nandha_biohive/" target="_blank" class="ig">📸 Instagram</a>
+    <a href="#" class="login-btn" onclick="openLogin(event)">Log in</a>
   </div>
 </div>
 
@@ -549,7 +697,7 @@ footer{background:var(--navy);}
   <div class="hero-inner">
     <div>
       <div class="hero-breadcrumb">Home &rsaquo; Departments &rsaquo; <span>Biotechnology</span></div>
-      <h1 class="hero-h1">Department of<br><em>Bio-Technology</em></h1>
+      <h1 class="hero-h1">Department of<br><em>Biotechnology</em></h1>
       <p class="hero-sub">Nandha Arts &amp; Science College (Autonomous), Erode — offering rigorous undergraduate, postgraduate and doctoral programmes in Biotechnology since 2002. NAAC B+ Accredited · Bharathiar University Affiliated.</p>
       <div class="hero-actions">
         <a href="tel:+917373724422" class="btn-hero">📞 Call Admissions</a>
@@ -808,7 +956,7 @@ footer{background:var(--navy);}
         <div class="fac-body">
           <div class="fac-name">Dr. K. Abdhul</div>
           <div class="fac-deg">M.Sc., Ph.D., SLET., MLT</div>
-          <div class="fac-role">HOD, Associate Professor &amp; IQAC Coordinator</div>
+          <div class="fac-role">Associate Professor &amp; IQAC Coordinator</div>
           <span class="fac-badge">★ Ph.D Holder</span>
         </div>
       </div>
@@ -825,9 +973,9 @@ footer{background:var(--navy);}
         <div class="fac-card-top"><div class="fac-av">SK</div></div>
         <div class="fac-body">
           <div class="fac-name">Dr. S. Karthik</div>
-          <div class="fac-deg">M.Sc., M.Phil., SLET., (Ph.D)</div>
+          <div class="fac-deg">M.Sc., M.Phil., SLET., Ph.D</div>
           <div class="fac-role">Assistant Professor</div>
-          <span class="fac-badge pursuing">◎ Pursuing Ph.D</span>
+          <span class="fac-badge">★ Ph.D Holder</span>
         </div>
       </div>
       <div class="fac-card reveal d3">
@@ -835,6 +983,15 @@ footer{background:var(--navy);}
         <div class="fac-body">
           <div class="fac-name">Dr. V. Senthil Kumar</div>
           <div class="fac-deg">M.Sc., Ph.D.</div>
+          <div class="fac-role">Assistant Professor</div>
+          <span class="fac-badge">★ Ph.D Holder</span>
+        </div>
+      </div>
+      <div class="fac-card reveal d4">
+        <div class="fac-card-top"><div class="fac-av">KK</div></div>
+        <div class="fac-body">
+          <div class="fac-name">Dr. K. Karthik</div>
+          <div class="fac-deg">M.Sc., M.Phil., Ph.D.</div>
           <div class="fac-role">Assistant Professor</div>
           <span class="fac-badge">★ Ph.D Holder</span>
         </div>
@@ -1080,7 +1237,7 @@ footer{background:var(--navy);}
       <div class="reveal">
         <div class="contact-info-list">
           <div class="ci-row"><div class="ci-ico">📞</div><div><div class="ci-label">Phone</div><div class="ci-val"><a href="tel:+917373724422">+91 73737 24422</a> &nbsp;/&nbsp; <a href="tel:+919750222788">+91 97502 22788</a><br>04294 – 222788</div></div></div>
-          <div class="ci-row"><div class="ci-ico">✉️</div><div><div class="ci-label">Email</div><div class="ci-val"><a href="mailto:info@nandhaarts.org">info@nandhaarts.org</a></div></div></div>
+          <div class="ci-row"><div class="ci-ico">✉️</div><div><div class="ci-label">Email</div><div class="ci-val"><a href="/cdn-cgi/l/email-protection#f891969e97b89699969c9099998a8c8bd6978a9f"><span class="__cf_email__" data-cfemail="375e59515877595659535f565645434419584550">[email&#160;protected]</span></a></div></div></div>
           <div class="ci-row"><div class="ci-ico">📸</div><div><div class="ci-label">Instagram</div><div class="ci-val"><a href="https://www.instagram.com/nandha_biohive/" target="_blank">@nandha_biohive</a></div></div></div>
           <div class="ci-row"><div class="ci-ico">📍</div><div><div class="ci-label">Address</div><div class="ci-val">Koorapalayam Pirivu, Pitchandampalayam Post,<br>Erode – 638 052, Tamil Nadu, India</div></div></div>
           <div class="ci-row"><div class="ci-ico">🕐</div><div><div class="ci-label">Department Hours</div><div class="ci-val">Monday – Saturday · 9:00 AM – 6:00 PM<br>Labs open until 6:00 PM</div></div></div>
@@ -1100,7 +1257,7 @@ footer{background:var(--navy);}
         </div>
         <div class="contact-btns" style="margin-top:1rem;">
           <a href="tel:+917373724422" class="btn-cta btn-call">📞 Call Admissions Now</a>
-          <a href="mailto:info@nandhaarts.org" class="btn-cta btn-mail">✉️ Send an Email</a>
+          <a href="/cdn-cgi/l/email-protection#21484f474e614f404f454940405355520f4e5346" class="btn-cta btn-mail">✉️ Send an Email</a>
           <a href="https://www.instagram.com/nandha_biohive/" target="_blank" class="btn-cta btn-insta">📸 Follow @nandha_biohive</a>
         </div>
       </div>
@@ -1153,7 +1310,7 @@ footer{background:var(--navy);}
       <div class="footer-col">
         <a href="tel:+917373724422">📞 +91 73737 24422</a>
         <a href="tel:+919750222788">📞 +91 97502 22788</a>
-        <a href="mailto:info@nandhaarts.org">✉ info@nandhaarts.org</a>
+        <a href="/cdn-cgi/l/email-protection#41282f272e012f202f252920203335326f2e3326">✉ <span class="__cf_email__" data-cfemail="88e1e6eee7c8e6e9e6ece0e9e9fafcfba6e7faef">[email&#160;protected]</span></a>
         <a href="https://www.instagram.com/nandha_biohive/" target="_blank">📸 @nandha_biohive</a>
       </div>
     </div>
@@ -1177,23 +1334,586 @@ footer{background:var(--navy);}
   <a href="tel:+917373724422" class="scall">📞 Call Now</a>
 </div>
 
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<!-- ══ LOGIN OVERLAY ══ -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-header">
+      <h2>Academic Portal Login</h2>
+      <p>Nandha Arts &amp; Science College (Autonomous) — Biotechnology Dept.</p>
+      <button class="login-close-btn" onclick="closeLogin()">✕</button>
+    </div>
+    <div class="login-body">
+
+      <!-- STEP 1: Role Selection -->
+      <div class="login-step active" id="step1">
+        <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.1rem;">Please select your role to continue:</p>
+        <div class="role-btns">
+          <button class="role-btn" onclick="selectRole('student')">
+            <span class="role-ico">🎓</span>
+            <span class="role-lbl">Student</span>
+          </button>
+          <button class="role-btn" onclick="selectRole('faculty')">
+            <span class="role-ico">👨‍🏫</span>
+            <span class="role-lbl">Faculty</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Credentials -->
+      <div class="login-step" id="step2">
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1.1rem;" id="loginRoleLabel">Logging in as Student</p>
+        <div class="login-err" id="loginErr">Invalid email or password. Please try again.</div>
+        <div class="form-group">
+          <label class="form-label">College Mail Account</label>
+          <input type="email" class="form-input" id="loginEmail" placeholder="e.g. 24ubio008.deepak_m@gmail.com" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="loginPass" placeholder="Enter your password">
+        </div>
+        <button class="btn-login" onclick="doLogin()">Login →</button>
+        <div style="text-align:center;margin-top:0.8rem;">
+          <button class="login-back" onclick="goBack()">← Back to role selection</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ STUDENT PORTAL OVERLAY ══ -->
+<div id="portalOverlay">
+  <!-- Portal Top Bar -->
+  <div class="portal-topbar">
+    <div class="portal-topbar-brand">
+      <img src="https://www.nandhaarts.org/wp-content/uploads/2022/06/Logo_NASC.png" alt="Logo">
+      <span class="portal-topbar-name">Academic Portal</span>
+    </div>
+    <div class="portal-topbar-right">
+      <span class="portal-welcome" id="portalWelcome">Welcome, Student</span>
+      <button class="btn-logout" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- Portal Body -->
+  <div class="portal-body">
+
+    <!-- Profile Card -->
+    <div class="profile-card">
+      <div class="profile-avatar" id="profileAvatar">DM</div>
+      <div class="profile-info">
+        <div class="profile-name" id="profileName">Deepak M</div>
+        <div class="profile-meta">
+          <div class="profile-meta-item">
+            <div class="pmeta-label">Register Number</div>
+            <div class="pmeta-val" id="profileReg">24ubio008</div>
+          </div>
+          <div class="profile-meta-item">
+            <div class="pmeta-label">Department</div>
+            <div class="pmeta-val">B.Sc. Biotechnology</div>
+          </div>
+          <div class="profile-meta-item">
+            <div class="pmeta-label">Year of Study</div>
+            <div class="pmeta-val" id="profileYear">II Year</div>
+          </div>
+          <div class="profile-meta-item">
+            <div class="pmeta-label">Institution</div>
+            <div class="pmeta-val">Nandha Arts &amp; Science College (Autonomous)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timetable -->
+    <div class="portal-section">
+      <div class="portal-sec-header">
+        <span class="portal-sec-title">📅 Class Timetable</span>
+        <span class="portal-sec-badge" id="ttYearLabel">II Year — B.Sc. Biotechnology</span>
+      </div>
+      <div class="portal-sec-body" style="overflow-x:auto;">
+        <table class="tt-table">
+          <thead>
+            <tr>
+              <th>Day Order</th>
+              <th>Period 1</th>
+              <th>Period 2</th>
+              <th>Period 3</th>
+              <th>Period 4</th>
+              <th>Period 5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tt-dayorder">I</td>
+              <td><div class="tt-cell-subj">PABT</div><div class="tt-cell-staff">Mr. S.S. Naveen</div></td>
+              <td><div class="tt-cell-subj">English</div><div class="tt-cell-staff"></div></td>
+              <td><div class="tt-cell-subj">Tamil</div><div class="tt-cell-staff"></div></td>
+              <td><div class="tt-cell-subj">GA</div><div class="tt-cell-staff">Mr. K. Saravanan</div></td>
+              <td><div class="tt-cell-subj">PABT</div><div class="tt-cell-staff">Mr. S.S. Naveen</div></td>
+            </tr>
+            <tr>
+              <td class="tt-dayorder">II</td>
+              <td><div class="tt-cell-subj">PABT</div><div class="tt-cell-staff">Mr. S.S. Naveen</div></td>
+              <td><div class="tt-cell-subj">English</div><div class="tt-cell-staff"></div></td>
+              <td class="tt-practical" colspan="3"><div class="tt-cell-subj">Core Practical – IV</div><div class="tt-cell-staff">Dr. V. Senthil Kumar &amp; Dr. K. Karthik</div></td>
+            </tr>
+            <tr>
+              <td class="tt-dayorder">III</td>
+              <td><div class="tt-cell-subj">BSF</div><div class="tt-cell-staff">Dr. M. Poonkothai</div></td>
+              <td><div class="tt-cell-subj">PABT</div><div class="tt-cell-staff">Mr. S.S. Naveen</div></td>
+              <td><div class="tt-cell-subj">GA</div><div class="tt-cell-staff">Dr. M. Poonkothai</div></td>
+              <td><div class="tt-cell-subj">Tamil</div><div class="tt-cell-staff"></div></td>
+              <td><div class="tt-cell-subj">CA</div><div class="tt-cell-staff"></div></td>
+            </tr>
+            <tr>
+              <td class="tt-dayorder">IV</td>
+              <td><div class="tt-cell-subj">BSF</div><div class="tt-cell-staff">Dr. M. Poonkothai</div></td>
+              <td class="tt-practical" colspan="2"><div class="tt-cell-subj">Skill Based Practical – II</div><div class="tt-cell-staff">Dr. M. Poonkothai &amp; Ms. D. Sriya</div></td>
+              <td class="tt-practical" colspan="2"><div class="tt-cell-subj">Allied Practical – II</div><div class="tt-cell-staff">CA</div></td>
+            </tr>
+            <tr>
+              <td class="tt-dayorder">V</td>
+              <td><div class="tt-cell-subj">BSF</div><div class="tt-cell-staff">Dr. M. Poonkothai</div></td>
+              <td><div class="tt-cell-subj">English</div><div class="tt-cell-staff"></div></td>
+              <td><div class="tt-cell-subj">CA</div><div class="tt-cell-staff"></div></td>
+              <td><div class="tt-cell-subj">CA</div><div class="tt-cell-staff"></div></td>
+              <td><div class="tt-cell-subj">BSF</div><div class="tt-cell-staff">Dr. M. Poonkothai</div></td>
+            </tr>
+            <tr>
+              <td class="tt-dayorder">VI</td>
+              <td><div class="tt-cell-subj">English</div><div class="tt-cell-staff"></div></td>
+              <td><div class="tt-cell-subj">CA</div><div class="tt-cell-staff"></div></td>
+              <td><div class="tt-cell-subj">Tamil</div><div class="tt-cell-staff"></div></td>
+              <td><div class="tt-cell-subj">CA</div><div class="tt-cell-staff"></div></td>
+              <td><div class="tt-cell-subj">BSF</div><div class="tt-cell-staff">Dr. M. Poonkothai</div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="tt-legend">
+          <div class="tt-leg-item"><div class="tt-leg-dot" style="background:var(--navy);"></div> PABT — Plant &amp; Animal Biotechnology</div>
+          <div class="tt-leg-item"><div class="tt-leg-dot" style="background:var(--sky);"></div> BSF — Basics in Forensic Science</div>
+          <div class="tt-leg-item"><div class="tt-leg-dot" style="background:var(--gold);"></div> CA — Computer Application II</div>
+          <div class="tt-leg-item"><div class="tt-leg-dot" style="background:#666;"></div> GA — Allied Subject</div>
+          <div class="tt-leg-item"><div class="tt-leg-dot" style="background:rgba(201,136,42,0.3);"></div> Practical Sessions</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Syllabus -->
+    <div class="portal-section">
+      <div class="portal-sec-header">
+        <span class="portal-sec-title">📚 Syllabus</span>
+        <span class="portal-sec-badge">5 Theory Papers — II Year</span>
+      </div>
+      <div class="portal-sec-body">
+        <div class="syllabus-tabs">
+          <button class="syl-tab active" onclick="showSyl('tamil',this)">Tamil</button>
+          <button class="syl-tab" onclick="showSyl('english',this)">English</button>
+          <button class="syl-tab" onclick="showSyl('pabt',this)">Plant &amp; Animal Biotech</button>
+          <button class="syl-tab" onclick="showSyl('bfs',this)">Forensic Science</button>
+          <button class="syl-tab" onclick="showSyl('python',this)">Python Programming</button>
+        </div>
+
+        <!-- Tamil -->
+        <div class="syl-panel active" id="syl-tamil">
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">அலகு 1 — எட்டுத்தொகை (Ettuthokai)</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>நற்றிணை — 2 பாடல்கள் (183, 355)</li>
+                <li>குறுந்தொகை — 5 பாடல்கள் (2, 3, 40, 135, 210)</li>
+                <li>கலித்தொகை — 2 பாடல்கள் (25, 51)</li>
+                <li>புறநானூறு — 5 பாடல்கள் (18, 134, 189, 192, 312)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">அலகு 2 — முல்லைப்பாட்டு</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>முல்லைப்பாட்டு முழுவதும் (Full text)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">அலகு 3 — நாடகம் (Drama)</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>சபாபதி — பம்மல் சம்பந்தர் முதலியார்</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">அலகு 4 — இலக்கிய வரலாறு &amp; இலக்கணம்</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>சங்க இலக்கியம் — எட்டுத்தொகை, பத்துப்பாட்டு</li>
+                <li>நாடகத்தின் தோற்றமும் வளர்ச்சியும்</li>
+                <li>அக இலக்கணம் — முதல், கரு, உரிப்பொருள்</li>
+                <li>புற இலக்கணம் — புறத்திணைகள் 12 வகைகள்</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">அலகு 5 — படைப்பிலக்கியப் பயிற்சி</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>நாடக உருவாக்கம்</li>
+                <li>ஓரங்க நாடகம்</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- English -->
+        <div class="syl-panel" id="syl-english">
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 1 — Soft Skills for Employability</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Self Assessment</li><li>Goal Setting</li><li>Time Management</li>
+                <li>Team Building / Networking</li><li>Openers to Criticism</li>
+                <li>Stress Management</li><li>Work Life Balance</li>
+                <li>Critical Thinking</li><li>Problem Solving</li><li>Life Long Learning</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 2 — Professional Speaking (Job Interview)</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Characteristics of a Job Interview</li>
+                <li>Preparation Techniques</li>
+                <li>Interview Questions</li>
+                <li>Important Aspects for a Job Interview</li>
+                <li>Alternative Interview Formats</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 3 — Group Discussion</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Definition of Group Discussion</li>
+                <li>Importance of Group Discussion</li>
+                <li>Characteristics of a Successful Group Discussion</li>
+                <li>Group Discussion as a Tool for Selection</li>
+                <li>Cross Group Discussion Strategies</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 4 — Presentation Skills</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Definition of Presentation Skills</li>
+                <li>Oral Presentation</li>
+                <li>Importance of Presentation Skills</li>
+                <li>Stages of a Presentation</li>
+                <li>Planning &amp; Organising the Presentation</li>
+                <li>Rehearsing the Presentation</li>
+                <li>Improving the Delivery</li>
+                <li>Checklist for Making a Presentation</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 5 — Technical Writing</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Email Writing — Advantages &amp; Effective Writing</li>
+                <li>Characteristics of Effective Email</li>
+                <li>Email Structure &amp; Standard Practices</li>
+                <li>Email Writing Strategies</li>
+                <li>Preparing a Circular</li>
+                <li>Preparing an Agenda</li>
+                <li>Preparing Minutes</li>
+                <li>Preparing a Report</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plant & Animal Biotechnology -->
+        <div class="syl-panel" id="syl-pabt">
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 1 — Cell and Tissue Culture</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Introduction to Cell and Tissue Culture</li>
+                <li>Plant Tissue Culture Media — Composition, Types and Preparation</li>
+                <li>Plant Hormones and Growth Regulators in Tissue Culture</li>
+                <li>Preparation of Suitable Explant for Organogenesis</li>
+                <li>Micropropagation on a Large Scale</li>
+                <li>Somatic Embryogenesis</li>
+                <li>Protoplast Culture and Somatic Hybridization</li>
+                <li>Anther, Pollen and Ovary Culture for Production of Haploid Plants</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 2 — Cell Culture Methods</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Cell Culture Methods for Secondary Metabolites Production</li>
+                <li>Somaclonal Variation and its Significance</li>
+                <li>Cryopreservation</li>
+                <li>Plant Transformation Techniques</li>
+                <li>Agrobacterium Mediated Gene Transfer</li>
+                <li>Mechanism of DNA Transfer</li>
+                <li>General Features — Ti and Ri Plasmids and their Uses as Vectors</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 3 — Animal Cell Culture</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Animal Cell Culture — Culture Media (Composition and Preparation)</li>
+                <li>Balanced Salt Solution &amp; Role of CO₂</li>
+                <li>Culturing and Maintenance of Different Animal Cell Lines</li>
+                <li>Primary and Established Cell Lines</li>
+                <li>Characterization of Cultured Cells</li>
+                <li>Measurement of Viability — Cytotoxicity Assays and Cell Growth</li>
+                <li>Embryonic Stem Cells and their Applications</li>
+                <li>Cell Culture Based Vaccines</li>
+                <li>Induced Pluripotent Stem Cells</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 4 — Transgenic Animals</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Methods of Obtaining Transgenic Animals</li>
+                <li>Fertilized Eggs and Embryonic Blastocyst Cell Method</li>
+                <li>Increased Productivity of Domestic Animals</li>
+                <li>Improve Desired Characters of Domestic Animals</li>
+                <li>Production of Recombinant Gene Products and Proteins for Pharmaceutical Use</li>
+                <li>Animal Models for Tackling Human Diseases (Gene Knockout in Mice Models)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 5 — Animal Cloning</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Methods of Cloning in Animal System — Rat, Sheep and Pig</li>
+                <li>Importance of Cloning</li>
+                <li>Gene Therapy and Cell Mediated Therapy</li>
+                <li>Ethical Issues in Animal Biotechnology</li>
+                <li>Animal Welfare and its Importance</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Forensic Science -->
+        <div class="syl-panel" id="syl-bfs">
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 1 — Introduction to Forensic Science</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Forensic Science — Definition and Scope</li>
+                <li>History and Development of Forensic Science</li>
+                <li>Role of Forensic Science in Criminal Justice</li>
+                <li>Ethics in Forensic Science and Investigation</li>
+                <li>Biological Fluids — Identification and Analysis</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 2 — Forensic Biology and Serology</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>DNA Typing and its Forensic Applications</li>
+                <li>PCR and STR Analysis in Forensic DNA Profiling</li>
+                <li>Forensic Botany</li>
+                <li>Microbial Forensics — Role of Bacteria and Virus in Crime Investigation</li>
+                <li>Forensic Anthropology — Skeletal Analysis</li>
+                <li>Determining Age, Sex and Identity from Bones</li>
+                <li>Types of Insects and their Forensic Significance</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 3 — Instrumentation and Sampling</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Crime Scene Investigation</li>
+                <li>Biological Sample Collection — Blood, Saliva, Hair, Semen</li>
+                <li>Forensic Serology — Preservation, Handling and Evidence Collection</li>
+                <li>Identification and Morphological Examination of Toxic Plants</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 4 — Forensic Science Laboratory (FSL)</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>State and Central Forensic Science Laboratories</li>
+                <li>Research Institutes in India Handling Forensic Samples</li>
+                <li>COVID Emergencies</li>
+                <li>Prevention of Food Adulteration Act and Rules (PFA)</li>
+                <li>Orders under the Essential Commodities Act</li>
+                <li>Food Safety and Standards Act</li>
+              </ul>
+            </div>
+          </div>
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Unit 5 — Emerging Role of Forensic Science</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Digital and Cyber Forensics — Basics and Applications</li>
+                <li>Recent Advances in Forensic Biology and Biotechnology</li>
+                <li>Case Studies and Real Life Applications</li>
+                <li>Applications of Forensic Biology in Criminal Investigation</li>
+                <li>Case Studies Involving Toxicology</li>
+                <li>Famous Forensic Cases and their Impact</li>
+                <li>Emerging Trends in Forensic Science</li>
+              </ul>
+              <div style="margin-top:0.9rem;padding:0.7rem 0.9rem;background:var(--off2);border-radius:4px;font-size:0.78rem;color:var(--muted);">
+                <strong>Reference Books:</strong><br>
+                1. Pillay V. — Textbook of Forensic Medicine and Toxicology<br>
+                2. Dr. Agarwal — Textbook of Forensic Medicine and Toxicology<br>
+                3. Shrikant — Forensic Biology
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Python -->
+        <div class="syl-panel" id="syl-python">
+          <div class="syl-unit">
+            <div class="syl-unit-header" onclick="toggleUnit(this)">
+              <span class="syl-unit-title">Computer Application II — Python Programming (Practicals)</span>
+              <span class="syl-unit-arrow">▼</span>
+            </div>
+            <div class="syl-unit-body">
+              <ul class="syl-topics">
+                <li>Program to Display Data of Different Types using Variables and Literal Constants</li>
+                <li>Program to Exhibit Indentation Errors and Arithmetic Operations</li>
+                <li>Program to Demonstrate Looping</li>
+                <li>Program to Demonstrate Decision Making</li>
+                <li>Program to Demonstrate the Slice Operation — Accessing Elements of a List</li>
+                <li>Program for Demonstrating Add and Modify Items in Dictionary</li>
+                <li>Program to Demonstrate Concepts using Functions and Lambda</li>
+                <li>Program for Reverse Complement of a DNA Sequence</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /portal-body -->
+</div><!-- /portalOverlay -->
+
 <script>
-// Scroll reveal
+// ── SCROLL REVEAL ──
+const revealEls = document.querySelectorAll('.reveal');
 const ro = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); } });
+}, { threshold: 0.08 });
+revealEls.forEach(el => ro.observe(el));
 
-// Mobile nav
+// ── STICKY HEADER ──
+const hdr = document.getElementById('mainHeader');
+window.addEventListener('scroll', () => {
+  hdr && hdr.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ── HAMBURGER ──
 function toggleNav() {
-  document.getElementById('mobileMenu').style.display = 'flex';
-}
-function closeNav() {
-  document.getElementById('mobileMenu').style.display = 'none';
+  const nav = document.querySelector('.header-nav');
+  const ham = document.querySelector('.ham');
+  if (nav) nav.classList.toggle('open');
+  if (ham) ham.classList.toggle('open');
 }
 
-// Counters
-function counter(id, target, suffix, dur=1800) {
+// Close mobile nav when a nav link is tapped
+document.querySelectorAll('.header-nav a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.querySelector('.header-nav')?.classList.remove('open');
+    document.querySelector('.ham')?.classList.remove('open');
+  });
+});
+
+// ── SMOOTH SCROLL ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (!href || href === '#') return;
+    const t = document.querySelector(href);
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+// ── COUNTERS ──
+function counter(id, target, suffix, dur) {
+  dur = dur || 1800;
   const el = document.getElementById(id);
   if (!el) return;
   let start = null;
@@ -1215,10 +1935,10 @@ const so = new IntersectionObserver(entries => {
     }
   });
 }, { threshold: 0.5 });
-const stats = document.querySelector('.hero-stats');
-if (stats) so.observe(stats);
+const statsEl = document.querySelector('.hero-stats');
+if (statsEl) so.observe(statsEl);
 
-// Clipboard protection
+// ── COPY PROTECTION ──
 document.addEventListener('keydown', function(e) {
   const blocked = ['c','a','s','u','p','x'];
   if ((e.ctrlKey || e.metaKey) && blocked.includes(e.key.toLowerCase())) {
@@ -1238,14 +1958,179 @@ document.addEventListener('copy', function(e) {
 document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
 
 function showToast() {
-  const ex = document.getElementById('cpToast');
-  if (ex) { clearTimeout(ex._t); ex.remove(); }
-  const t = document.createElement('div');
-  t.id = 'cpToast';
-  t.textContent = '🔒 Content is protected and cannot be copied.';
-  t.style.cssText = 'position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:#0b2545;color:#fff;padding:0.72rem 1.5rem;border-radius:4px;font-size:0.82rem;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,0.3);z-index:9999;pointer-events:none;border:1px solid rgba(255,255,255,0.15);';
-  document.body.appendChild(t);
-  t._t = setTimeout(() => t.remove(), 2800);
+  let toast = document.getElementById('cpToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'cpToast';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0b2545;color:#fff;padding:0.65rem 1.4rem;border-radius:6px;font-size:0.82rem;z-index:99999;opacity:0;transition:opacity 0.3s;pointer-events:none;border-left:3px solid #c9882a;font-family:Source Sans 3,sans-serif;';
+    toast.textContent = '🔒 Content is protected and cannot be copied.';
+    document.body.appendChild(toast);
+  }
+  clearTimeout(toast._t);
+  toast.style.opacity = '1';
+  toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 2200);
+}
+
+// ══════════════════════════════════════
+// ── LOGIN SYSTEM ──
+// ══════════════════════════════════════
+
+// Credentials database (in a real system this would be server-side)
+const USERS = [
+  { email: '24ubio008.deepak_m@gmail.com', password: 'D@24U08', role: 'student' }
+];
+
+let selectedRole = '';
+
+function openLogin(e) {
+  e.preventDefault();
+  document.getElementById('loginOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  // Reset to step 1
+  showStep('step1');
+  document.getElementById('loginErr').classList.remove('show');
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+function closeLogin() {
+  document.getElementById('loginOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function selectRole(role) {
+  selectedRole = role;
+  document.getElementById('loginRoleLabel').textContent =
+    role === 'student' ? 'Logging in as Student' : 'Logging in as Faculty';
+  showStep('step2');
+}
+
+function goBack() {
+  showStep('step1');
+  document.getElementById('loginErr').classList.remove('show');
+}
+
+function showStep(stepId) {
+  document.querySelectorAll('.login-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(stepId).classList.add('active');
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginErr');
+
+  // Find user
+  const user = USERS.find(u =>
+    u.email.toLowerCase() === email &&
+    u.password === pass &&
+    u.role === selectedRole
+  );
+
+  if (!user) {
+    errEl.classList.add('show');
+    document.getElementById('loginEmail').classList.add('error');
+    document.getElementById('loginPass').classList.add('error');
+    setTimeout(() => {
+      document.getElementById('loginEmail').classList.remove('error');
+      document.getElementById('loginPass').classList.remove('error');
+    }, 1500);
+    return;
+  }
+
+  // Parse user info from email
+  const userInfo = parseEmailToProfile(user.email);
+  closeLogin();
+  openPortal(userInfo);
+}
+
+function parseEmailToProfile(email) {
+  // Format: 24ubio008.deepak_m@gmail.com
+  const localPart = email.split('@')[0]; // 24ubio008.deepak_m
+  const parts = localPart.split('.');     // ['24ubio008', 'deepak_m']
+
+  const regPart = parts[0];   // 24ubio008
+  const namePart = parts[1];  // deepak_m
+
+  // Register Number
+  const regNum = regPart.toUpperCase(); // 24UBIO008
+
+  // Name: deepak_m → Deepak M
+  const name = namePart.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+  // Initials for avatar
+  const initials = namePart.split('_').map(w => w.charAt(0).toUpperCase()).join('');
+
+  // Year of study: extract prefix number from regPart
+  // 22ubio = joined 2022 → 3rd year (2025-2026), 23ubio = 2nd year (if applicable)
+  // 24ubio = joined 2024 → 2nd year (in 2025-2026), 25ubio = 1st year
+  const yearCode = parseInt(regPart.match(/^(\d+)/)[1]);
+  // Current academic year assumed 2025-2026
+  // Year of study = currentYear - joinYear + 1
+  const currentYear = 2026;
+  const joinYear = yearCode + 2000;
+  const yearOfStudy = currentYear - joinYear;
+
+  const yearLabels = { 1: 'I Year', 2: 'II Year', 3: 'III Year' };
+  const yearLabel = yearLabels[yearOfStudy] || (yearOfStudy + ' Year');
+
+  return { name, initials, regNum, yearLabel, yearOfStudy };
+}
+
+function openPortal(info) {
+  // Populate profile
+  document.getElementById('profileName').textContent = info.name;
+  document.getElementById('profileAvatar').textContent = info.initials;
+  document.getElementById('profileReg').textContent = info.regNum;
+  document.getElementById('profileYear').textContent = info.yearLabel;
+  document.getElementById('portalWelcome').textContent = 'Welcome, ' + info.name;
+  document.getElementById('ttYearLabel').textContent = info.yearLabel + ' — B.Sc. Biotechnology';
+
+  document.getElementById('portalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  window.scrollTo(0, 0);
+}
+
+function doLogout() {
+  document.getElementById('portalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close login on overlay click
+document.getElementById('loginOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeLogin();
+});
+
+// Allow Enter key to submit login
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.getElementById('loginOverlay').classList.contains('active')) {
+    const step2 = document.getElementById('step2');
+    if (step2.classList.contains('active')) doLogin();
+  }
+});
+
+// ── SYLLABUS TABS ──
+function showSyl(id, btn) {
+  document.querySelectorAll('.syl-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.syl-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('syl-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── SYLLABUS ACCORDION ──
+function toggleUnit(header) {
+  const body = header.nextElementSibling;
+  const isOpen = header.classList.contains('open');
+  // Close all in same panel
+  const panel = header.closest('.syl-panel');
+  panel.querySelectorAll('.syl-unit-header').forEach(h => {
+    h.classList.remove('open');
+    h.nextElementSibling.classList.remove('open');
+  });
+  if (!isOpen) {
+    header.classList.add('open');
+    body.classList.add('open');
+  }
 }
 </script>
 </body>
