@@ -7,6 +7,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Department of Biotechnology | Nandha Arts & Science College (Autonomous)</title>
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0b2545">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NandhaBiotech">
+<link rel="apple-touch-icon" href="https://www.nandhaarts.org/wp-content/uploads/2022/06/Logo_NASC.png">
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ── TOKENS ── */
@@ -630,6 +639,92 @@ footer{background:var(--navy);}
   .profile-card{flex-direction:column;align-items:flex-start;gap:1rem;}
   .tt-table{font-size:0.68rem;}
   .tt-table th,.tt-table td{padding:0.4rem 0.4rem;}
+}
+
+/* ══ FLASH NEWS ══ */
+.flash-bar{background:var(--gold);padding:0.5rem 0;overflow:hidden;position:relative;border-radius:6px;margin-bottom:1.2rem;}
+.flash-label{background:var(--navy);color:#fff;font-size:0.72rem;font-weight:700;padding:0.3rem 0.9rem;position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;z-index:2;letter-spacing:0.06em;white-space:nowrap;}
+.flash-track{display:flex;align-items:center;padding-left:110px;animation:flashScroll 28s linear infinite;}
+.flash-track:hover{animation-play-state:paused;}
+.flash-item{white-space:nowrap;font-size:0.8rem;font-weight:600;color:#fff;padding:0 2.5rem;cursor:default;}
+.flash-item::before{content:'📢 ';}
+@keyframes flashScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ══ NOTIFICATIONS ══ */
+.notif-list{display:flex;flex-direction:column;gap:0.7rem;}
+.notif-item{background:var(--off);border:1px solid var(--border);border-left:3px solid var(--sky);border-radius:5px;padding:0.8rem 1rem;display:flex;gap:0.8rem;align-items:flex-start;}
+.notif-item.urgent{border-left-color:#e53e3e;background:#fff5f5;}
+.notif-item.info{border-left-color:var(--gold);}
+.notif-ico{font-size:1.1rem;flex-shrink:0;margin-top:0.1rem;}
+.notif-body{}
+.notif-title{font-size:0.84rem;font-weight:700;color:var(--navy);}
+.notif-desc{font-size:0.78rem;color:var(--muted);margin-top:0.2rem;}
+.notif-date{font-size:0.7rem;color:var(--light);margin-top:0.3rem;}
+.notif-empty{text-align:center;color:var(--muted);font-size:0.85rem;padding:1.5rem;background:var(--off);border-radius:6px;}
+
+/* ══ FACULTY PORTAL ══ */
+#facPortalOverlay{display:none;position:fixed;inset:0;z-index:8500;background:#f0f4f8;overflow-y:auto;}
+#facPortalOverlay.active{display:block;}
+.fac-portal-topbar{background:var(--navy);padding:0 1.8rem;height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--gold);position:sticky;top:0;z-index:10;}
+.fac-portal-topbar-brand{display:flex;align-items:center;gap:0.75rem;}
+.fac-portal-topbar-name{font-family:'Merriweather',serif;font-size:0.82rem;color:#fff;font-weight:700;}
+.fac-dev-badge{background:var(--gold);color:#fff;font-size:0.65rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:3px;margin-left:0.5rem;letter-spacing:0.05em;}
+.fac-portal-body{max-width:1100px;margin:0 auto;padding:1.8rem 1.5rem 3rem;}
+
+/* Admin tabs */
+.admin-tabs{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1.5rem;background:#fff;border:1px solid var(--border);border-radius:7px;padding:0.5rem;}
+.admin-tab{padding:0.5rem 1.1rem;border-radius:5px;font-size:0.8rem;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.2s;font-family:'Source Sans 3',sans-serif;}
+.admin-tab.active{background:var(--navy);color:#fff;}
+.admin-tab:hover:not(.active){background:var(--off);color:var(--navy);}
+.admin-panel{display:none;}
+.admin-panel.active{display:block;}
+
+/* Admin cards */
+.admin-card{background:#fff;border:1px solid var(--border);border-radius:7px;margin-bottom:1.2rem;overflow:hidden;}
+.admin-card-header{background:var(--navy2);padding:0.8rem 1.2rem;display:flex;align-items:center;justify-content:space-between;}
+.admin-card-title{font-family:'Merriweather',serif;font-size:0.9rem;color:#fff;font-weight:700;}
+.admin-card-body{padding:1.2rem;}
+.btn-add{background:var(--gold);color:#fff;border:none;padding:0.4rem 1rem;border-radius:4px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif;transition:background 0.2s;}
+.btn-add:hover{background:var(--gold-lt);}
+.btn-del{background:#e53e3e;color:#fff;border:none;padding:0.28rem 0.7rem;border-radius:3px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif;}
+.btn-del:hover{background:#c53030;}
+.btn-edit{background:var(--sky);color:#fff;border:none;padding:0.28rem 0.7rem;border-radius:3px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif;}
+.btn-edit:hover{background:var(--blue);}
+.btn-save{background:var(--sky);color:#fff;border:none;padding:0.45rem 1.2rem;border-radius:4px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif;}
+.btn-save:hover{background:var(--navy);}
+.btn-cancel{background:#eee;color:var(--text);border:none;padding:0.45rem 1rem;border-radius:4px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif;}
+
+/* Admin form */
+.admin-form-row{display:flex;gap:0.7rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:0.8rem;}
+.admin-form-group{flex:1;min-width:160px;}
+.admin-form-label{display:block;font-size:0.75rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem;letter-spacing:0.03em;}
+.admin-input{width:100%;padding:0.55rem 0.8rem;border:1.5px solid var(--border);border-radius:5px;font-size:0.83rem;font-family:'Source Sans 3',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;}
+.admin-input:focus{border-color:var(--sky);}
+.admin-select{width:100%;padding:0.55rem 0.8rem;border:1.5px solid var(--border);border-radius:5px;font-size:0.83rem;font-family:'Source Sans 3',sans-serif;color:var(--text);background:#fff;outline:none;}
+
+/* List rows */
+.admin-list{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.8rem;}
+.admin-list-row{display:flex;align-items:center;justify-content:space-between;gap:0.8rem;background:var(--off);border:1px solid var(--border);border-radius:5px;padding:0.6rem 0.9rem;}
+.admin-list-text{font-size:0.82rem;color:var(--text);flex:1;}
+.admin-list-actions{display:flex;gap:0.4rem;flex-shrink:0;}
+
+/* Select year bar */
+.year-select-bar{display:flex;gap:0.5rem;margin-bottom:1.2rem;flex-wrap:wrap;}
+.year-btn{padding:0.42rem 1.1rem;border-radius:4px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif;transition:all 0.2s;}
+.year-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* Timetable editor */
+.tt-edit-cell{width:100%;border:1px solid var(--border);border-radius:3px;padding:0.3rem;font-size:0.75rem;font-family:'Source Sans 3',sans-serif;text-align:center;background:#fff;}
+.tt-edit-cell:focus{outline:2px solid var(--sky);}
+
+/* Toast */
+.admin-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a6fab;color:#fff;padding:0.65rem 1.4rem;border-radius:6px;font-size:0.82rem;z-index:99999;opacity:0;transition:opacity 0.3s;pointer-events:none;font-family:'Source Sans 3',sans-serif;border-left:3px solid var(--gold);}
+.admin-toast.show{opacity:1;}
+
+@media(max-width:700px){
+  .admin-tabs{gap:0.3rem;}
+  .admin-tab{padding:0.4rem 0.7rem;font-size:0.73rem;}
+  .admin-form-row{flex-direction:column;}
 }
 </style>
 </head>
@@ -1335,6 +1430,263 @@ footer{background:var(--navy);}
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+
+<!-- ══ FACULTY / DEVELOPER PORTAL ══ -->
+<div id="facPortalOverlay">
+
+  <!-- Topbar -->
+  <div class="fac-portal-topbar">
+    <div class="fac-portal-topbar-brand">
+      <img src="https://www.nandhaarts.org/wp-content/uploads/2022/06/Logo_NASC.png" alt="Logo" style="height:30px;filter:brightness(0) invert(1);opacity:0.85;">
+      <span class="fac-portal-topbar-name">Faculty Portal <span class="fac-dev-badge">DEVELOPER</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.8rem;">
+      <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);" id="facWelcome">Welcome, Faculty</span>
+      <button class="btn-logout" onclick="doFacLogout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="fac-portal-body">
+
+    <!-- Profile -->
+    <div class="profile-card">
+      <div class="profile-avatar" id="facAvatar">DM</div>
+      <div class="profile-info">
+        <div class="profile-name" id="facName">Deepak M</div>
+        <div class="profile-meta">
+          <div class="profile-meta-item"><div class="pmeta-label">Role</div><div class="pmeta-val">Faculty · Developer</div></div>
+          <div class="profile-meta-item"><div class="pmeta-label">Department</div><div class="pmeta-val">Biotechnology</div></div>
+          <div class="profile-meta-item"><div class="pmeta-label">Institution</div><div class="pmeta-val">Nandha Arts &amp; Science College (Autonomous)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flash News in faculty portal -->
+    <div class="flash-bar" id="facFlashBar" style="margin-bottom:1.5rem;">
+      <div class="flash-label">📣 FLASH NEWS</div>
+      <div class="flash-track" id="facFlashTrack">
+        <span class="flash-item">Welcome to the Faculty Portal</span>
+        <span class="flash-item">Use the tabs below to manage content</span>
+        <span class="flash-item">Welcome to the Faculty Portal</span>
+        <span class="flash-item">Use the tabs below to manage content</span>
+      </div>
+    </div>
+
+    <!-- Admin Tabs -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="showAdminTab('flashnews',this)">📣 Flash News</button>
+      <button class="admin-tab" onclick="showAdminTab('notifications',this)">🔔 Notifications</button>
+      <button class="admin-tab" onclick="showAdminTab('syllabus',this)">📚 Syllabus</button>
+      <button class="admin-tab" onclick="showAdminTab('timetable',this)">📅 Timetable</button>
+      <button class="admin-tab" onclick="showAdminTab('faculty',this)">👥 Faculty</button>
+      <button class="admin-tab" onclick="showAdminTab('marks',this)">📊 Int. Marks</button>
+      <button class="admin-tab" onclick="showAdminTab('attendance',this)">✅ Attendance</button>
+      <button class="admin-tab" onclick="showAdminTab('users',this)">👤 Users</button>
+    </div>
+
+    <!-- ── FLASH NEWS PANEL ── -->
+    <div class="admin-panel active" id="ap-flashnews">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title">Manage Flash News</span>
+        </div>
+        <div class="admin-card-body">
+          <div class="admin-form-row">
+            <div class="admin-form-group" style="flex:3;">
+              <label class="admin-form-label">Flash News Text</label>
+              <input class="admin-input" id="fnInput" placeholder="Enter flash news message...">
+            </div>
+            <div class="admin-form-group" style="flex:1;">
+              <label class="admin-form-label">Type</label>
+              <select class="admin-select" id="fnType">
+                <option value="general">General</option>
+                <option value="urgent">Urgent</option>
+                <option value="event">Event</option>
+              </select>
+            </div>
+            <button class="btn-add" onclick="addFlashNews()" style="flex-shrink:0;margin-bottom:0.1rem;">+ Add</button>
+          </div>
+          <div class="admin-list" id="fnList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── NOTIFICATIONS PANEL ── -->
+    <div class="admin-panel" id="ap-notifications">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title">Manage Notifications</span>
+        </div>
+        <div class="admin-card-body">
+          <div class="admin-form-row">
+            <div class="admin-form-group" style="flex:2;">
+              <label class="admin-form-label">Title</label>
+              <input class="admin-input" id="nfTitle" placeholder="Notification title...">
+            </div>
+            <div class="admin-form-group" style="flex:1;">
+              <label class="admin-form-label">Type</label>
+              <select class="admin-select" id="nfType">
+                <option value="info">ℹ️ Info</option>
+                <option value="urgent">🚨 Urgent</option>
+                <option value="event">🎉 Event</option>
+              </select>
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-group" style="flex:3;">
+              <label class="admin-form-label">Description</label>
+              <input class="admin-input" id="nfDesc" placeholder="Notification details...">
+            </div>
+            <button class="btn-add" onclick="addNotification()" style="flex-shrink:0;margin-bottom:0.1rem;">+ Add</button>
+          </div>
+          <div class="admin-list" id="nfList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SYLLABUS PANEL ── -->
+    <div class="admin-panel" id="ap-syllabus">
+      <div class="year-select-bar">
+        <button class="year-btn active" onclick="selectSylYear(1,this)">I Year</button>
+        <button class="year-btn" onclick="selectSylYear(2,this)">II Year</button>
+        <button class="year-btn" onclick="selectSylYear(3,this)">III Year</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title" id="sylAdminTitle">I Year — Subjects</span>
+          <button class="btn-add" onclick="addSubject()">+ Add Subject</button>
+        </div>
+        <div class="admin-card-body" id="sylAdminBody">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TIMETABLE PANEL ── -->
+    <div class="admin-panel" id="ap-timetable">
+      <div class="year-select-bar">
+        <button class="year-btn active" onclick="selectTTYear(1,this)">I Year</button>
+        <button class="year-btn" onclick="selectTTYear(2,this)">II Year</button>
+        <button class="year-btn" onclick="selectTTYear(3,this)">III Year</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title" id="ttAdminTitle">I Year — Timetable</span>
+          <button class="btn-save" onclick="saveTimetable()">💾 Save</button>
+        </div>
+        <div class="admin-card-body" style="overflow-x:auto;" id="ttAdminBody">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FACULTY PANEL ── -->
+    <div class="admin-panel" id="ap-faculty">
+      <div class="year-select-bar">
+        <button class="year-btn active" onclick="selectFacYear(1,this)">I Year</button>
+        <button class="year-btn" onclick="selectFacYear(2,this)">II Year</button>
+        <button class="year-btn" onclick="selectFacYear(3,this)">III Year</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title" id="facAdminTitle">I Year — Subject Faculty</span>
+        </div>
+        <div class="admin-card-body" id="facAdminBody">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── INTERNAL MARKS PANEL ── -->
+    <div class="admin-panel" id="ap-marks">
+      <div class="year-select-bar">
+        <button class="year-btn active" onclick="selectMarksYear(1,this)">I Year</button>
+        <button class="year-btn" onclick="selectMarksYear(2,this)">II Year</button>
+        <button class="year-btn" onclick="selectMarksYear(3,this)">III Year</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title" id="marksAdminTitle">I Year — Internal Marks</span>
+        </div>
+        <div class="admin-card-body" id="marksAdminBody">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ATTENDANCE PANEL ── -->
+    <div class="admin-panel" id="ap-attendance">
+      <div class="year-select-bar">
+        <button class="year-btn active" onclick="selectAttYear(1,this)">I Year</button>
+        <button class="year-btn" onclick="selectAttYear(2,this)">II Year</button>
+        <button class="year-btn" onclick="selectAttYear(3,this)">III Year</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title" id="attAdminTitle">I Year — Attendance</span>
+        </div>
+        <div class="admin-card-body" id="attAdminBody">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ── USER MANAGEMENT PANEL ── -->
+    <div class="admin-panel" id="ap-users">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title">Add New User (Student / Faculty)</span>
+        </div>
+        <div class="admin-card-body">
+          <div class="admin-form-row">
+            <div class="admin-form-group" style="flex:2;">
+              <label class="admin-form-label">College Mail</label>
+              <input class="admin-input" id="nuEmail" placeholder="e.g. 25ubio001.student_name@nandhaarts.org">
+            </div>
+            <div class="admin-form-group" style="flex:1;">
+              <label class="admin-form-label">Password</label>
+              <input class="admin-input" id="nuPass" placeholder="Password" type="text">
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-group" style="flex:1;">
+              <label class="admin-form-label">Role</label>
+              <select class="admin-select" id="nuRole">
+                <option value="student">🎓 Student</option>
+                <option value="faculty">👨‍🏫 Faculty</option>
+              </select>
+            </div>
+            <div class="admin-form-group" style="flex:2;">
+              <label class="admin-form-label">Full Name (optional override)</label>
+              <input class="admin-input" id="nuName" placeholder="Leave blank to auto-parse from email">
+            </div>
+            <button class="btn-add" onclick="addNewUser()" style="flex-shrink:0;margin-bottom:0.1rem;">+ Add User</button>
+          </div>
+          <p style="font-size:0.74rem;color:var(--muted);margin-top:0.5rem;line-height:1.6;">
+            💡 <strong>Email format for students:</strong> <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1841416d7a7177565656367e716a6b6c7679757d477176716c717974587679767c7079796a6c6b36776a7f">[email&#160;protected]</a></code><br>
+            Example: <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e5d7d090878c8ad5d5d4cb9784938cba8ea58b848b818d8484979196cb8a9782">[email&#160;protected]</a></code> → Ravi K, I Year (joined 2025)<br>
+            ⚠️ Users added here are active for this session. To make them permanent, re-deploy the updated HTML file.
+          </p>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title">Registered Users</span>
+          <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);" id="userCountLabel">0 users</span>
+        </div>
+        <div class="admin-card-body" id="userListBody">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /fac-portal-body -->
+</div><!-- /facPortalOverlay -->
+
+<div class="admin-toast" id="adminToast"></div>
+
 <!-- ══ LOGIN OVERLAY ══ -->
 <div id="loginOverlay">
   <div class="login-box">
@@ -1425,8 +1777,35 @@ footer{background:var(--navy);}
       </div>
     </div>
 
-    <!-- Timetable -->
+
+    <!-- Flash News -->
+    <div class="flash-bar" id="studentFlashBar">
+      <div class="flash-label">📣 FLASH NEWS</div>
+      <div class="flash-track" id="studentFlashTrack">
+        <span class="flash-item">Welcome to the Department of Biotechnology Portal</span>
+        <span class="flash-item">Stay updated with department announcements</span>
+        <span class="flash-item">Check notifications for important updates</span>
+        <span class="flash-item">Welcome to the Department of Biotechnology Portal</span>
+        <span class="flash-item">Stay updated with department announcements</span>
+        <span class="flash-item">Check notifications for important updates</span>
+      </div>
+    </div>
+
+    <!-- Notifications -->
     <div class="portal-section">
+      <div class="portal-sec-header">
+        <span class="portal-sec-title">🔔 Notifications from Department</span>
+        <span class="portal-sec-badge" id="notifCountBadge">0 New</span>
+      </div>
+      <div class="portal-sec-body">
+        <div class="notif-list" id="studentNotifList">
+          <div class="notif-empty">No notifications yet. Check back later.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timetable -->
+    <div id="stdTTSection" class="portal-section">
       <div class="portal-sec-header">
         <span class="portal-sec-title">📅 Class Timetable</span>
         <span class="portal-sec-badge" id="ttYearLabel">II Year — B.Sc. Biotechnology</span>
@@ -1500,8 +1879,22 @@ footer{background:var(--navy);}
       </div>
     </div>
 
+
+    <!-- Timetable Coming Soon (I & III Year) -->
+    <div id="stdTTSoon" class="portal-section" style="display:none;">
+      <div class="portal-sec-header">
+        <span class="portal-sec-title">📅 Class Timetable</span>
+        <span class="portal-sec-badge" id="ttSoonLabel">I Year — B.Sc. Biotechnology</span>
+      </div>
+      <div class="portal-sec-body" style="text-align:center;padding:2.5rem 1rem;">
+        <div style="font-size:2.5rem;margin-bottom:0.8rem;">🕐</div>
+        <div style="font-family:'Merriweather',serif;font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;">Timetable Will Be Updated Soon</div>
+        <div style="font-size:0.85rem;color:var(--muted);">The timetable for your year is being prepared by the department. Please check back later.</div>
+      </div>
+    </div>
+
     <!-- Syllabus -->
-    <div class="portal-section">
+    <div id="stdSylSection" class="portal-section">
       <div class="portal-sec-header">
         <span class="portal-sec-title">📚 Syllabus</span>
         <span class="portal-sec-badge">5 Theory Papers — II Year</span>
@@ -1868,10 +2261,49 @@ footer{background:var(--navy);}
       </div>
     </div>
 
+
+    <!-- Syllabus Coming Soon (I & III Year) -->
+    <div id="stdSylSoon" class="portal-section" style="display:none;">
+      <div class="portal-sec-header">
+        <span class="portal-sec-title">📚 Syllabus</span>
+        <span class="portal-sec-badge" id="sylSoonLabel">I Year</span>
+      </div>
+      <div class="portal-sec-body" style="text-align:center;padding:2.5rem 1rem;">
+        <div style="font-size:2.5rem;margin-bottom:0.8rem;">📖</div>
+        <div style="font-family:'Merriweather',serif;font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;">Syllabus Will Be Updated Soon</div>
+        <div style="font-size:0.85rem;color:var(--muted);">The syllabus for your year is being compiled. The department will update it shortly.</div>
+      </div>
+    </div>
+
+    <!-- Internal Marks -->
+    <div class="portal-section" id="stdMarksSection">
+      <div class="portal-sec-header">
+        <span class="portal-sec-title">📊 Internal Marks</span>
+      </div>
+      <div class="portal-sec-body" id="stdMarksBody">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Attendance -->
+    <div class="portal-section" id="stdAttSection">
+      <div class="portal-sec-header">
+        <span class="portal-sec-title">✅ Attendance</span>
+      </div>
+      <div class="portal-sec-body" id="stdAttBody">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+
   </div><!-- /portal-body -->
 </div><!-- /portalOverlay -->
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── SERVICE WORKER ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(()=>{}); });
+}
+
 // ── SCROLL REVEAL ──
 const revealEls = document.querySelectorAll('.reveal');
 const ro = new IntersectionObserver(entries => {
@@ -1881,19 +2313,13 @@ revealEls.forEach(el => ro.observe(el));
 
 // ── STICKY HEADER ──
 const hdr = document.getElementById('mainHeader');
-window.addEventListener('scroll', () => {
-  hdr && hdr.classList.toggle('scrolled', window.scrollY > 60);
-});
+window.addEventListener('scroll', () => { hdr && hdr.classList.toggle('scrolled', window.scrollY > 60); });
 
 // ── HAMBURGER ──
 function toggleNav() {
-  const nav = document.querySelector('.header-nav');
-  const ham = document.querySelector('.ham');
-  if (nav) nav.classList.toggle('open');
-  if (ham) ham.classList.toggle('open');
+  document.querySelector('.header-nav')?.classList.toggle('open');
+  document.querySelector('.ham')?.classList.toggle('open');
 }
-
-// Close mobile nav when a nav link is tapped
 document.querySelectorAll('.header-nav a').forEach(a => {
   a.addEventListener('click', () => {
     document.querySelector('.header-nav')?.classList.remove('open');
@@ -1913,235 +2339,510 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
 // ── COUNTERS ──
 function counter(id, target, suffix, dur) {
-  dur = dur || 1800;
-  const el = document.getElementById(id);
-  if (!el) return;
+  dur = dur || 1800; const el = document.getElementById(id); if (!el) return;
   let start = null;
-  const step = ts => {
-    if (!start) start = ts;
-    const p = Math.min((ts - start) / dur, 1);
-    el.textContent = Math.floor(p * target) + suffix;
-    if (p < 1) requestAnimationFrame(step);
-  };
+  const step = ts => { if (!start) start = ts; const p = Math.min((ts-start)/dur,1); el.textContent=Math.floor(p*target)+suffix; if(p<1) requestAnimationFrame(step); };
   requestAnimationFrame(step);
 }
 const so = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      counter('ctr1', 20, '+');
-      counter('ctr2', 29, '+');
-      counter('ctr3', 9, '+');
-      so.disconnect();
-    }
-  });
-}, { threshold: 0.5 });
+  entries.forEach(e => { if(e.isIntersecting){counter('ctr1',20,'+');counter('ctr2',29,'+');counter('ctr3',9,'+');so.disconnect();} });
+},{threshold:0.5});
 const statsEl = document.querySelector('.hero-stats');
-if (statsEl) so.observe(statsEl);
+if(statsEl) so.observe(statsEl);
 
 // ── COPY PROTECTION ──
-document.addEventListener('keydown', function(e) {
-  const blocked = ['c','a','s','u','p','x'];
-  if ((e.ctrlKey || e.metaKey) && blocked.includes(e.key.toLowerCase())) {
-    e.preventDefault();
-    if (['c','a'].includes(e.key.toLowerCase())) showToast();
-    return false;
-  }
-  if (e.key === 'F12') { e.preventDefault(); return false; }
-  if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase())) {
-    e.preventDefault(); return false;
-  }
+document.addEventListener('keydown',function(e){
+  const bl=['c','a','s','u','p','x'];
+  if((e.ctrlKey||e.metaKey)&&bl.includes(e.key.toLowerCase())){e.preventDefault();if(['c','a'].includes(e.key.toLowerCase()))showToast();return false;}
+  if(e.key==='F12'){e.preventDefault();return false;}
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['i','j','c'].includes(e.key.toLowerCase())){e.preventDefault();return false;}
 });
-document.addEventListener('copy', function(e) {
-  e.clipboardData.setData('text/plain', '');
-  e.preventDefault(); showToast(); return false;
-});
-document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
-
-function showToast() {
-  let toast = document.getElementById('cpToast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'cpToast';
-    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0b2545;color:#fff;padding:0.65rem 1.4rem;border-radius:6px;font-size:0.82rem;z-index:99999;opacity:0;transition:opacity 0.3s;pointer-events:none;border-left:3px solid #c9882a;font-family:Source Sans 3,sans-serif;';
-    toast.textContent = '🔒 Content is protected and cannot be copied.';
-    document.body.appendChild(toast);
-  }
-  clearTimeout(toast._t);
-  toast.style.opacity = '1';
-  toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 2200);
+document.addEventListener('copy',function(e){e.clipboardData.setData('text/plain','');e.preventDefault();showToast();return false;});
+document.addEventListener('cut',function(e){e.preventDefault();return false;});
+function showToast(){
+  let t=document.getElementById('cpToast');
+  if(!t){t=document.createElement('div');t.id='cpToast';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0b2545;color:#fff;padding:0.65rem 1.4rem;border-radius:6px;font-size:0.82rem;z-index:99999;opacity:0;transition:opacity 0.3s;pointer-events:none;border-left:3px solid #c9882a;font-family:Source Sans 3,sans-serif;';t.textContent='🔒 Content is protected and cannot be copied.';document.body.appendChild(t);}
+  clearTimeout(t._t);t.style.opacity='1';t._t=setTimeout(()=>{t.style.opacity='0';},2200);
 }
 
-// ══════════════════════════════════════
-// ── LOGIN SYSTEM ──
-// ══════════════════════════════════════
+// ═══════════════════════════════════════
+// IN-MEMORY DATA STORE (no localStorage)
+// ═══════════════════════════════════════
 
-// Credentials database (in a real system this would be server-side)
-const USERS = [
-  { email: '24ubio008.deepak_m@nandhaarts.org', password: 'D@24U08', role: 'student' }
+let flashNewsData = [
+  {id:1, text:'Welcome to the Department of Biotechnology Portal', type:'general'},
+  {id:2, text:'II Year Core Practical IV examination scheduled next week', type:'urgent'},
+  {id:3, text:'Department Annual Day celebrations coming soon!', type:'event'}
+];
+let notificationsData = [
+  {id:1, title:'Internal Assessment I Results', desc:'IA-I results have been uploaded. Contact your class teacher for details.', type:'info', date:'March 2026'},
+  {id:2, title:'Lab Record Submission', desc:'Submit completed lab records for Core Practical IV before 15th March.', type:'urgent', date:'March 2026'}
 ];
 
-let selectedRole = '';
+// marksData[email] = { 'Subject Name': {ia1:'', ia2:'', ia3:''}, ... }
+let marksData = {};
+// attendanceData[email] = { 'Subject Name': {present:0, total:0}, ... }
+let attendanceData = {};
 
-function openLogin(e) {
+const DEFAULT_SYL={1:[{id:'s1y1',name:'Tamil',units:['Sangam Literature Introduction','Grammar and Composition','Classical Texts','Poetry Analysis','Creative Writing']},{id:'s2y1',name:'English',units:['Reading Comprehension','Grammar Usage','Writing Skills','Communication Basics','Literature Appreciation']},{id:'s3y1',name:'Biochemistry and Biology of Cells',units:['Cell Structure and Function','Biomolecules','Metabolism \u2014 Carbohydrates and Lipids','Protein Structure and Enzymology','DNA and RNA Structure']},{id:'s4y1',name:'Microbiology',units:['Introduction to Microbiology','Bacteria Structure and Classification','Viruses and Bacteriophages','Fungi and Protozoa','Sterilization and Disinfection']},{id:'s5y1',name:'Computer Application I',units:['Introduction to Computers','MS Word','MS Excel','MS PowerPoint','Internet Basics']}],2:[{id:'s1y2',name:'Tamil',units:['Ettuthokai \u2014 Natrinai, Kuruntokai, Kalittokai, Purananuru poems','Mullaippattu (full text)','Drama \u2014 Sabapathi by Pammal Sambanda Mudaliar','Literary History and Grammar','Creative Writing Practice']},{id:'s2y2',name:'English',units:['Soft Skills for Employability','Professional Speaking \u2014 Job Interview','Group Discussion','Presentation Skills','Technical Writing']},{id:'s3y2',name:'Plant and Animal Biotechnology',units:['Cell and Tissue Culture','Cell Culture Methods','Animal Cell Culture','Transgenic Animals','Animal Cloning']},{id:'s4y2',name:'Basics in Forensic Science',units:['Introduction to Forensic Science','Forensic Biology and Serology','Instrumentation and Sampling','Forensic Science Laboratory','Emerging Role of Forensic Science']},{id:'s5y2',name:'Computer Application II \u2014 Python',units:['Variables, Literals and Data Types','Indentation and Arithmetic Operations','Looping','Decision Making','List Slice, Dictionary, Functions, Lambda, DNA Sequence Programs']}],3:[{id:'s1y3',name:'Bioinformatics',units:['Introduction to Bioinformatics','Biological Databases','Sequence Alignment \u2014 BLAST, FASTA','Phylogenetics and Molecular Evolution','Structural Bioinformatics']},{id:'s2y3',name:'Molecular Biology and Genetic Engineering',units:['DNA Replication and Repair','Transcription and Translation','Recombinant DNA Technology','Gene Cloning Vectors','PCR and Applications']},{id:'s3y3',name:'Immunology',units:['Introduction to Immune System','Innate Immunity','Adaptive Immunity','Antibody Structure and Function','Vaccines and Immunotherapy']},{id:'s4y3',name:'Environmental Biotechnology',units:['Bioremediation','Waste Water Treatment','Solid Waste Management','Biofuels','Environmental Impact Assessment']},{id:'s5y3',name:'Industrial Biotechnology',units:['Fermentation Technology','Enzyme Technology','Downstream Processing','Bioprocess Scale-Up','Good Manufacturing Practice']}]};
+const DEFAULT_TT={1:[{day:'I',p:['Tamil','English','CA-I','BBOC','BBOC']},{day:'II',p:['Tamil','English','','Allied Practical','']},{day:'III',p:['BBOC','Tamil','English','CA-I','Tamil']},{day:'IV',p:['BBOC','CA-I','','Core Practical I','']},{day:'V',p:['English','BBOC','CA-I','Tamil','BBOC']},{day:'VI',p:['English','CA-I','Tamil','BBOC','English']}],2:[{day:'I',p:['PABT','English','Tamil','GA','PABT']},{day:'II',p:['PABT','English','','Core Practical IV','']},{day:'III',p:['BSF','PABT','GA','Tamil','CA']},{day:'IV',p:['BSF','','Skill Based Practical II','','Allied Practical II']},{day:'V',p:['BSF','English','CA','CA','BSF']},{day:'VI',p:['English','CA','Tamil','CA','BSF']}],3:[{day:'I',p:['Bioinformatics','English','MPEM','Bioinformatics','MPEM']},{day:'II',p:['MPEM','English','','Core Practical VI','']},{day:'III',p:['Bioinformatics','MPEM','English','Bioinformatics','MPEM']},{day:'IV',p:['MPEM','','Project','','Elective']},{day:'V',p:['Bioinformatics','MPEM','Elective','MPEM','Bioinformatics']},{day:'VI',p:['English','Bioinformatics','MPEM','Bioinformatics','Elective']}]};
+const DEFAULT_FAC={1:[{subject:'Tamil',faculty:'Tamil Department Staff'},{subject:'English',faculty:'English Department Staff'},{subject:'Biochemistry and Biology of Cells',faculty:'Dr. K. Abdhul'},{subject:'Microbiology',faculty:'Dr. M. Poonkothai'},{subject:'Computer Application I',faculty:'Ms. S. Sarumathi'}],2:[{subject:'Tamil',faculty:'Tamil Department Staff'},{subject:'English',faculty:'English Department Staff'},{subject:'Plant and Animal Biotechnology',faculty:'Mr. S. S. Naveen'},{subject:'Basics in Forensic Science',faculty:'Dr. M. Poonkothai'},{subject:'Computer Application II Python',faculty:'Ms. D. Sriya'}],3:[{subject:'Bioinformatics',faculty:'Dr. V. Senthil Kumar'},{subject:'Molecular Biology and Genetic Engineering',faculty:'Dr. K. Karthik'},{subject:'Immunology',faculty:'Dr. S. Karthik'},{subject:'Environmental Biotechnology',faculty:'Mr. K. Saravanan'},{subject:'Industrial Biotechnology',faculty:'Ms. S. Sarumathi'}]};
+
+let sylData = JSON.parse(JSON.stringify(DEFAULT_SYL));
+let ttData  = JSON.parse(JSON.stringify(DEFAULT_TT));
+let facData = JSON.parse(JSON.stringify(DEFAULT_FAC));
+
+// Helper: get students (role=student) for a given year from all users
+function getStudentsByYear(yr){
+  return getAllUsers().filter(u=>{
+    if(u.role!=='student') return false;
+    const m=u.email.split('@')[0].split('.')[0].match(/^(\d+)/);
+    if(!m) return false;
+    return (2026-(parseInt(m[1])+2000))===yr;
+  });
+}
+// Helper: get subject list for a year
+function getSubjectsForYear(yr){ return sylData[yr]||[]; }
+
+// ═══════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════
+const BASE_USERS=[
+  {email:'24ubio008.deepak_m@nandhaarts.org',password:'30112005',role:'student'},
+  {email:'24ubio008.deepak_m@nandhaarts.org',password:'30112005',role:'faculty',isDev:true}
+];
+let extraUsers=[];
+let selectedRole='';
+let currentUserInfo=null;
+
+function getAllUsers(){return[...BASE_USERS,...extraUsers];}
+
+function openLogin(e){
   e.preventDefault();
   document.getElementById('loginOverlay').classList.add('active');
-  document.body.style.overflow = 'hidden';
-  // Reset to step 1
+  document.body.style.overflow='hidden';
   showStep('step1');
   document.getElementById('loginErr').classList.remove('show');
-  document.getElementById('loginEmail').value = '';
-  document.getElementById('loginPass').value = '';
+  document.getElementById('loginEmail').value='';
+  document.getElementById('loginPass').value='';
+}
+function closeLogin(){document.getElementById('loginOverlay').classList.remove('active');document.body.style.overflow='';}
+function selectRole(role){selectedRole=role;document.getElementById('loginRoleLabel').textContent=role==='student'?'Logging in as Student':'Logging in as Faculty';showStep('step2');}
+function goBack(){showStep('step1');document.getElementById('loginErr').classList.remove('show');}
+function showStep(id){document.querySelectorAll('.login-step').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPass').value.trim();
+  const errEl=document.getElementById('loginErr');
+  const user=getAllUsers().find(u=>u.email.toLowerCase()===email&&u.password===pass&&u.role===selectedRole);
+  if(!user){errEl.textContent='Invalid email or password. Please try again.';errEl.classList.add('show');['loginEmail','loginPass'].forEach(id=>{const el=document.getElementById(id);el.classList.add('error');setTimeout(()=>el.classList.remove('error'),1500);});return;}
+  const info=parseProfile(user.email,user.displayName);
+  info.email=user.email.toLowerCase();
+  currentUserInfo=info;
+  closeLogin();
+  if(user.role==='faculty') openFacPortal(info,user); else openPortal(info);
 }
 
-function closeLogin() {
-  document.getElementById('loginOverlay').classList.remove('active');
-  document.body.style.overflow = '';
+function parseProfile(email,displayName){
+  const local=email.split('@')[0],parts=local.split('.');
+  const reg=parts[0],nm=parts[1]||'user';
+  const name=displayName||(nm.split('_').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '));
+  const init=nm.split('_').map(w=>w.charAt(0).toUpperCase()).join('');
+  const m=reg.match(/^(\d+)/);const yc=m?parseInt(m[1]):24;
+  const yr=2026-(yc+2000);
+  const yl={1:'I Year',2:'II Year',3:'III Year'};
+  return{name,init,reg:reg.toUpperCase(),yearLabel:yl[yr]||(yr+' Year'),yearOfStudy:yr};
 }
 
-function selectRole(role) {
-  selectedRole = role;
-  document.getElementById('loginRoleLabel').textContent =
-    role === 'student' ? 'Logging in as Student' : 'Logging in as Faculty';
-  showStep('step2');
+// ═══════════════════════════════════════
+// STUDENT PORTAL
+// ═══════════════════════════════════════
+function openPortal(info){
+  document.getElementById('profileName').textContent=info.name;
+  document.getElementById('profileAvatar').textContent=info.init;
+  document.getElementById('profileReg').textContent=info.reg;
+  document.getElementById('profileYear').textContent=info.yearLabel;
+  document.getElementById('portalWelcome').textContent='Welcome, '+info.name;
+  document.getElementById('ttYearLabel').textContent=info.yearLabel+' \u2014 B.Sc. Biotechnology';
+
+  const isY2=info.yearOfStudy===2;
+  document.getElementById('stdTTSection').style.display=isY2?'':'none';
+  document.getElementById('stdTTSoon').style.display=isY2?'none':'';
+  document.getElementById('stdSylSection').style.display=isY2?'':'none';
+  document.getElementById('stdSylSoon').style.display=isY2?'none':'';
+  if(!isY2){
+    const tl=document.getElementById('ttSoonLabel');  if(tl)tl.textContent=info.yearLabel+' \u2014 B.Sc. Biotechnology';
+    const sl=document.getElementById('sylSoonLabel'); if(sl)sl.textContent=info.yearLabel;
+  }
+
+  renderStudentMarks(info);
+  renderStudentAttendance(info);
+  renderStudentFlash(); renderStudentNotifs();
+  document.getElementById('portalOverlay').classList.add('active');
+  document.body.style.overflow='hidden'; window.scrollTo(0,0);
 }
+function doLogout(){document.getElementById('portalOverlay').classList.remove('active');document.body.style.overflow='';}
 
-function goBack() {
-  showStep('step1');
-  document.getElementById('loginErr').classList.remove('show');
-}
-
-function showStep(stepId) {
-  document.querySelectorAll('.login-step').forEach(s => s.classList.remove('active'));
-  document.getElementById(stepId).classList.add('active');
-}
-
-function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('loginPass').value.trim();
-  const errEl = document.getElementById('loginErr');
-
-  // Find user — match email and password only
-  const user = USERS.find(u =>
-    u.email.toLowerCase() === email &&
-    u.password === pass
-  );
-
-  if (!user) {
-    errEl.textContent = 'Invalid email or password. Please try again.';
-    errEl.classList.add('show');
-    document.getElementById('loginEmail').classList.add('error');
-    document.getElementById('loginPass').classList.add('error');
-    setTimeout(() => {
-      document.getElementById('loginEmail').classList.remove('error');
-      document.getElementById('loginPass').classList.remove('error');
-    }, 1500);
+// ── Student Marks display ──
+function renderStudentMarks(info){
+  const el=document.getElementById('stdMarksBody'); if(!el)return;
+  const subjs=getSubjectsForYear(info.yearOfStudy);
+  const myMarks=marksData[info.email]||{};
+  const hasAny=subjs.some(s=>myMarks[s.name]&&(myMarks[s.name].ia1||myMarks[s.name].ia2||myMarks[s.name].ia3));
+  if(!subjs.length||!hasAny){
+    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;"><div style="font-size:2.2rem;margin-bottom:0.6rem;">📝</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">Will Be Updated Soon</div><div style="font-size:0.82rem;color:var(--muted);">Internal marks will be updated by the faculty. Please check back later.</div></div>';
     return;
   }
-
-  // Parse user info from email
-  const userInfo = parseEmailToProfile(user.email);
-  closeLogin();
-  openPortal(userInfo);
+  const rows=subjs.map(s=>{
+    const m=myMarks[s.name]||{ia1:'-',ia2:'-',ia3:'-'};
+    const total=[m.ia1,m.ia2,m.ia3].filter(v=>v&&v!=='-').map(Number).reduce((a,b)=>a+b,0);
+    return `<tr><td style="font-size:0.82rem;font-weight:600;color:var(--navy);padding:0.6rem 0.8rem;">${s.name}</td>
+      <td style="text-align:center;font-size:0.82rem;padding:0.6rem;">${m.ia1||'-'}</td>
+      <td style="text-align:center;font-size:0.82rem;padding:0.6rem;">${m.ia2||'-'}</td>
+      <td style="text-align:center;font-size:0.82rem;padding:0.6rem;">${m.ia3||'-'}</td>
+      <td style="text-align:center;font-size:0.82rem;font-weight:700;color:var(--sky);padding:0.6rem;">${(m.ia1&&m.ia1!=='-')?total:'-'}</td></tr>`;
+  }).join('');
+  el.innerHTML=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--navy);color:#fff;"><th style="padding:0.6rem 0.8rem;text-align:left;font-size:0.75rem;">Subject</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">IA 1</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">IA 2</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">IA 3</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">Total</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
-function parseEmailToProfile(email) {
-  // Format: 24ubio008.deepak_m@nandhaarts.org
-  const localPart = email.split('@')[0]; // 24ubio008.deepak_m
-  const parts = localPart.split('.');     // ['24ubio008', 'deepak_m']
-
-  const regPart = parts[0];   // 24ubio008
-  const namePart = parts[1];  // deepak_m
-
-  // Register Number
-  const regNum = regPart.toUpperCase(); // 24UBIO008
-
-  // Name: deepak_m → Deepak M
-  const name = namePart.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-
-  // Initials for avatar
-  const initials = namePart.split('_').map(w => w.charAt(0).toUpperCase()).join('');
-
-  // Year of study: extract prefix number from regPart
-  // 22ubio = joined 2022 → 3rd year (2025-2026), 23ubio = 2nd year (if applicable)
-  // 24ubio = joined 2024 → 2nd year (in 2025-2026), 25ubio = 1st year
-  const yearCode = parseInt(regPart.match(/^(\d+)/)[1]);
-  // Current academic year assumed 2025-2026
-  // Year of study = currentYear - joinYear + 1
-  const currentYear = 2026;
-  const joinYear = yearCode + 2000;
-  const yearOfStudy = currentYear - joinYear;
-
-  const yearLabels = { 1: 'I Year', 2: 'II Year', 3: 'III Year' };
-  const yearLabel = yearLabels[yearOfStudy] || (yearOfStudy + ' Year');
-
-  return { name, initials, regNum, yearLabel, yearOfStudy };
-}
-
-function openPortal(info) {
-  // Populate profile
-  document.getElementById('profileName').textContent = info.name;
-  document.getElementById('profileAvatar').textContent = info.initials;
-  document.getElementById('profileReg').textContent = info.regNum;
-  document.getElementById('profileYear').textContent = info.yearLabel;
-  document.getElementById('portalWelcome').textContent = 'Welcome, ' + info.name;
-  document.getElementById('ttYearLabel').textContent = info.yearLabel + ' — B.Sc. Biotechnology';
-
-  document.getElementById('portalOverlay').classList.add('active');
-  document.body.style.overflow = 'hidden';
-  window.scrollTo(0, 0);
-}
-
-function doLogout() {
-  document.getElementById('portalOverlay').classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-// Close login on overlay click
-document.getElementById('loginOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeLogin();
-});
-
-// Allow Enter key to submit login
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && document.getElementById('loginOverlay').classList.contains('active')) {
-    const step2 = document.getElementById('step2');
-    if (step2.classList.contains('active')) doLogin();
+// ── Student Attendance display ──
+function renderStudentAttendance(info){
+  const el=document.getElementById('stdAttBody'); if(!el)return;
+  const subjs=getSubjectsForYear(info.yearOfStudy);
+  const myAtt=attendanceData[info.email]||{};
+  const hasAny=subjs.some(s=>myAtt[s.name]&&myAtt[s.name].total>0);
+  if(!subjs.length||!hasAny){
+    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;"><div style="font-size:2.2rem;margin-bottom:0.6rem;">📅</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">Will Be Updated Soon</div><div style="font-size:0.82rem;color:var(--muted);">Daily attendance will be updated by your class teacher.</div></div>';
+    return;
   }
-});
-
-// ── SYLLABUS TABS ──
-function showSyl(id, btn) {
-  document.querySelectorAll('.syl-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.syl-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('syl-' + id).classList.add('active');
-  btn.classList.add('active');
+  const rows=subjs.map(s=>{
+    const a=myAtt[s.name]||{present:0,total:0};
+    const pct=a.total>0?Math.round((a.present/a.total)*100):0;
+    const color=pct>=75?'#2d7d46':pct>=60?'#c9882a':'#e53e3e';
+    return `<tr><td style="font-size:0.82rem;font-weight:600;color:var(--navy);padding:0.6rem 0.8rem;">${s.name}</td>
+      <td style="text-align:center;font-size:0.82rem;padding:0.6rem;">${a.present}</td>
+      <td style="text-align:center;font-size:0.82rem;padding:0.6rem;">${a.total}</td>
+      <td style="text-align:center;font-size:0.82rem;font-weight:700;color:${color};padding:0.6rem;">${a.total>0?pct+'%':'-'}</td></tr>`;
+  }).join('');
+  el.innerHTML=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--navy);color:#fff;"><th style="padding:0.6rem 0.8rem;text-align:left;font-size:0.75rem;">Subject</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">Present</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">Total</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">%</th></tr></thead><tbody>${rows}</tbody></table></div><p style="font-size:0.72rem;color:var(--muted);margin-top:0.6rem;">🟢 ≥75% &nbsp; 🟡 60–74% &nbsp; 🔴 &lt;60%</p>`;
 }
 
-// ── SYLLABUS ACCORDION ──
-function toggleUnit(header) {
-  const body = header.nextElementSibling;
-  const isOpen = header.classList.contains('open');
-  const panel = header.closest('.syl-panel');
-  panel.querySelectorAll('.syl-unit-header').forEach(h => {
-    h.classList.remove('open');
-    if (h.nextElementSibling) h.nextElementSibling.classList.remove('open');
+// ═══════════════════════════════════════
+// FACULTY PORTAL
+// ═══════════════════════════════════════
+let facSylYear=1,facTTYear=1,facFacYear=1,facMarksYear=1,facAttYear=1;
+
+function openFacPortal(info,user){
+  document.getElementById('facName').textContent=info.name;
+  document.getElementById('facAvatar').textContent=info.init;
+  document.getElementById('facWelcome').textContent='Welcome, '+info.name;
+  renderFacFlash(); renderFacFlashList(); renderFacNotifList();
+  selectSylYear(1,document.querySelector('#ap-syllabus .year-btn'));
+  selectTTYear(1,document.querySelector('#ap-timetable .year-btn'));
+  selectFacYear(1,document.querySelector('#ap-faculty .year-btn'));
+  selectMarksYear(1,document.querySelector('#ap-marks .year-btn'));
+  selectAttYear(1,document.querySelector('#ap-attendance .year-btn'));
+  renderUserList();
+  document.getElementById('facPortalOverlay').classList.add('active');
+  document.body.style.overflow='hidden'; window.scrollTo(0,0);
+}
+function doFacLogout(){document.getElementById('facPortalOverlay').classList.remove('active');document.body.style.overflow='';}
+
+function showAdminTab(id,btn){
+  document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('ap-'+id).classList.add('active'); btn.classList.add('active');
+}
+
+// ── FLASH NEWS ──
+function buildFlashHTML(items){const d=[...items,...items];return d.map(i=>`<span class="flash-item">${i.text}</span>`).join('');}
+function renderStudentFlash(){const t=document.getElementById('studentFlashTrack');if(t)t.innerHTML=buildFlashHTML(flashNewsData);}
+function renderFacFlash(){const t=document.getElementById('facFlashTrack');if(t)t.innerHTML=buildFlashHTML(flashNewsData);}
+function renderFacFlashList(){
+  const list=document.getElementById('fnList');if(!list)return;
+  list.innerHTML=flashNewsData.length?flashNewsData.map((item,i)=>`<div class="admin-list-row"><span class="admin-list-text"><strong>[${item.type.toUpperCase()}]</strong> ${item.text}</span><div class="admin-list-actions"><button class="btn-del" onclick="deleteFlash(${i})">Delete</button></div></div>`).join(''):'<div class="notif-empty">No flash news yet.</div>';
+}
+function addFlashNews(){
+  const txt=document.getElementById('fnInput').value.trim(),type=document.getElementById('fnType').value;
+  if(!txt){adminToast('Enter flash news text.');return;}
+  flashNewsData.push({id:Date.now(),text:txt,type});
+  document.getElementById('fnInput').value='';
+  renderFacFlashList();renderFacFlash();renderStudentFlash();adminToast('Flash news added! \u2705');
+}
+function deleteFlash(i){flashNewsData.splice(i,1);renderFacFlashList();renderFacFlash();renderStudentFlash();adminToast('Deleted.');}
+
+// ── NOTIFICATIONS ──
+const NOTIF_ICONS={info:'\u2139\ufe0f',urgent:'\ud83d\udea8',event:'\ud83c\udf89'};
+function renderStudentNotifs(){
+  const list=document.getElementById('studentNotifList'),badge=document.getElementById('notifCountBadge');
+  if(badge)badge.textContent=notificationsData.length+' Item'+(notificationsData.length!==1?'s':'');
+  if(!list)return;
+  list.innerHTML=notificationsData.length?notificationsData.map(n=>`<div class="notif-item ${n.type}"><div class="notif-ico">${NOTIF_ICONS[n.type]||'\ud83d\udccc'}</div><div class="notif-body"><div class="notif-title">${n.title}</div><div class="notif-desc">${n.desc}</div>${n.date?`<div class="notif-date">${n.date}</div>`:''}</div></div>`).join(''):'<div class="notif-empty">No notifications yet.</div>';
+}
+function renderFacNotifList(){
+  const list=document.getElementById('nfList');if(!list)return;
+  list.innerHTML=notificationsData.length?notificationsData.map((n,i)=>`<div class="admin-list-row"><span class="admin-list-text"><strong>${n.title}</strong> \u2014 ${n.desc}</span><div class="admin-list-actions"><button class="btn-del" onclick="deleteNotif(${i})">Delete</button></div></div>`).join(''):'<div class="notif-empty">No notifications yet.</div>';
+}
+function addNotification(){
+  const title=document.getElementById('nfTitle').value.trim(),desc=document.getElementById('nfDesc').value.trim(),type=document.getElementById('nfType').value;
+  if(!title){adminToast('Enter notification title.');return;}
+  const now=new Date(),mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  notificationsData.unshift({id:Date.now(),title,desc,type,date:mo[now.getMonth()]+' '+now.getFullYear()});
+  document.getElementById('nfTitle').value='';document.getElementById('nfDesc').value='';
+  renderFacNotifList();renderStudentNotifs();adminToast('Notification added! \u2705');
+}
+function deleteNotif(i){notificationsData.splice(i,1);renderFacNotifList();renderStudentNotifs();adminToast('Deleted.');}
+
+// ── SYLLABUS ADMIN ──
+function selectSylYear(yr,btn){facSylYear=yr;document.querySelectorAll('#ap-syllabus .year-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderSylAdmin();}
+function renderSylAdmin(){
+  const yr=facSylYear,syl=sylData[yr],yname=['I','II','III'][yr-1];
+  document.getElementById('sylAdminTitle').textContent=yname+' Year \u2014 Subjects & Syllabus';
+  document.getElementById('sylAdminBody').innerHTML=syl.map((s,si)=>`
+    <div style="border:1px solid var(--border);border-radius:6px;margin-bottom:0.9rem;overflow:hidden;">
+      <div style="padding:0.7rem 1rem;background:var(--off);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">
+        <strong style="font-size:0.88rem;color:var(--navy);">${s.name}</strong>
+        <div style="display:flex;gap:0.4rem;"><button class="btn-edit" onclick="editSubjName(${si})">&#9998; Rename</button><button class="btn-del" onclick="deleteSubject(${si})">Delete</button></div>
+      </div>
+      <div style="padding:0.8rem 1rem;">${s.units.map((u,ui)=>`<div class="admin-list-row" style="margin-bottom:0.4rem;"><span class="admin-list-text">${u}</span><div class="admin-list-actions"><button class="btn-edit" onclick="editUnit(${si},${ui})">&#9998;</button><button class="btn-del" onclick="deleteUnit(${si},${ui})">&#10005;</button></div></div>`).join('')}
+        <div style="display:flex;gap:0.5rem;margin-top:0.6rem;"><input class="admin-input" id="nu_${si}" placeholder="Add new unit/topic..."><button class="btn-add" onclick="addUnit(${si})">+ Add</button></div>
+      </div>
+    </div>`).join('');
+}
+function addSubject(){const n=prompt('New subject name:');if(!n||!n.trim())return;sylData[facSylYear].push({id:'s'+Date.now(),name:n.trim(),units:[]});renderSylAdmin();adminToast('Subject added! \u2705');}
+function deleteSubject(si){if(!confirm('Delete subject and all units?'))return;sylData[facSylYear].splice(si,1);renderSylAdmin();adminToast('Deleted.');}
+function editSubjName(si){const n=prompt('Rename subject:',sylData[facSylYear][si].name);if(!n)return;sylData[facSylYear][si].name=n.trim();renderSylAdmin();adminToast('Renamed! \u2705');}
+function addUnit(si){const inp=document.getElementById('nu_'+si),txt=inp?inp.value.trim():'';if(!txt){adminToast('Enter unit name.');return;}sylData[facSylYear][si].units.push(txt);renderSylAdmin();adminToast('Unit added! \u2705');}
+function editUnit(si,ui){const v=prompt('Edit unit:',sylData[facSylYear][si].units[ui]);if(v===null)return;sylData[facSylYear][si].units[ui]=v.trim();renderSylAdmin();adminToast('Updated! \u2705');}
+function deleteUnit(si,ui){sylData[facSylYear][si].units.splice(ui,1);renderSylAdmin();adminToast('Deleted.');}
+
+// ── TIMETABLE ADMIN ──
+function selectTTYear(yr,btn){facTTYear=yr;document.querySelectorAll('#ap-timetable .year-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderTTAdmin();}
+function renderTTAdmin(){
+  const yr=facTTYear,tt=ttData[yr],yname=['I','II','III'][yr-1];
+  document.getElementById('ttAdminTitle').textContent=yname+' Year \u2014 Timetable Editor';
+  document.getElementById('ttAdminBody').innerHTML=`<table class="tt-table" style="min-width:580px;"><thead><tr><th>Day</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th></tr></thead><tbody>${tt.map((row,ri)=>`<tr><td class="tt-dayorder">${row.day}</td>${row.p.map((cell,ci)=>`<td><input class="tt-edit-cell" id="tt_${ri}_${ci}" value="${cell}" placeholder="\u2014"></td>`).join('')}</tr>`).join('')}</tbody></table><p style="font-size:0.74rem;color:var(--muted);margin-top:0.7rem;">\u270f\ufe0f Click any cell to edit. Press Save when done.</p>`;
+}
+function saveTimetable(){ttData[facTTYear].forEach((row,ri)=>{row.p=row.p.map((_,ci)=>{const el=document.getElementById('tt_'+ri+'_'+ci);return el?el.value.trim():'';});});adminToast('Timetable saved! \u2705');}
+
+// ── FACULTY ADMIN ──
+function selectFacYear(yr,btn){facFacYear=yr;document.querySelectorAll('#ap-faculty .year-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderFacAdmin();}
+function renderFacAdmin(){
+  const yr=facFacYear,data=facData[yr],yname=['I','II','III'][yr-1];
+  document.getElementById('facAdminTitle').textContent=yname+' Year \u2014 Subject Faculty';
+  document.getElementById('facAdminBody').innerHTML=data.map((row,i)=>`<div class="admin-list-row" style="margin-bottom:0.5rem;"><div style="flex:1;"><div style="font-size:0.82rem;font-weight:700;color:var(--navy);">${row.subject}</div><div style="font-size:0.76rem;color:var(--muted);">${row.faculty}</div></div><div class="admin-list-actions"><button class="btn-edit" onclick="editFac(${i})">&#9998; Edit</button><button class="btn-del" onclick="deleteFac(${i})">Delete</button></div></div>`).join('')
+    +`<div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1rem;padding-top:0.8rem;border-top:1px solid var(--border);"><input class="admin-input" id="nfs" placeholder="Subject name" style="flex:1;min-width:140px;"><input class="admin-input" id="nff" placeholder="Faculty name" style="flex:1;min-width:140px;"><button class="btn-add" onclick="addFac()">+ Add</button></div>`;
+}
+function editFac(i){const s=prompt('Subject:',facData[facFacYear][i].subject);if(s===null)return;const f=prompt('Faculty:',facData[facFacYear][i].faculty);if(f===null)return;facData[facFacYear][i].subject=s.trim();facData[facFacYear][i].faculty=f.trim();renderFacAdmin();adminToast('Updated! \u2705');}
+function deleteFac(i){if(!confirm('Delete?'))return;facData[facFacYear].splice(i,1);renderFacAdmin();adminToast('Deleted.');}
+function addFac(){const s=document.getElementById('nfs')?.value.trim(),f=document.getElementById('nff')?.value.trim();if(!s||!f){adminToast('Enter subject and faculty name.');return;}facData[facFacYear].push({subject:s,faculty:f});document.getElementById('nfs').value='';document.getElementById('nff').value='';renderFacAdmin();adminToast('Added! \u2705');}
+
+// ═══════════════════════════════════════
+// INTERNAL MARKS — FACULTY PANEL
+// ═══════════════════════════════════════
+function selectMarksYear(yr,btn){
+  facMarksYear=yr;
+  document.querySelectorAll('#ap-marks .year-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('marksAdminTitle').textContent=['I','II','III'][yr-1]+' Year \u2014 Internal Marks';
+  renderMarksAdmin();
+}
+function renderMarksAdmin(){
+  const yr=facMarksYear;
+  const students=getStudentsByYear(yr);
+  const subjs=getSubjectsForYear(yr);
+  const el=document.getElementById('marksAdminBody'); if(!el)return;
+  if(!students.length){
+    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;background:#fffbf0;border:2px dashed var(--gold);border-radius:8px;"><div style="font-size:2rem;margin-bottom:0.6rem;">\uD83D\uDCDD</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">No Students in Database</div><div style="font-size:0.8rem;color:var(--muted);">Add students via the <strong>Users</strong> tab. Once added, their marks can be entered here.</div></div>';
+    return;
+  }
+  el.innerHTML=students.map(u=>{
+    const info=parseProfile(u.email,u.displayName);
+    const myM=marksData[u.email.toLowerCase()]||{};
+    const subjRows=subjs.map((s,si)=>{
+      const m=myM[s.name]||{ia1:'',ia2:'',ia3:''};
+      const eid=`mk_${u.email.replace(/[@.]/g,'_')}_${si}`;
+      return `<tr>
+        <td style="font-size:0.78rem;padding:0.45rem 0.6rem;color:var(--navy);">${s.name}</td>
+        <td style="padding:0.35rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_1" value="${m.ia1}" placeholder="-" style="width:50px;text-align:center;"></td>
+        <td style="padding:0.35rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_2" value="${m.ia2}" placeholder="-" style="width:50px;text-align:center;"></td>
+        <td style="padding:0.35rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_3" value="${m.ia3}" placeholder="-" style="width:50px;text-align:center;"></td>
+      </tr>`;
+    }).join('');
+    const saveId=`saveMarks_${u.email.replace(/[@.]/g,'_')}`;
+    return `<div style="border:1px solid var(--border);border-radius:6px;margin-bottom:1.1rem;overflow:hidden;">
+      <div style="background:var(--navy2);padding:0.65rem 1rem;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'Merriweather',serif;font-size:0.86rem;color:#fff;font-weight:700;">\uD83C\uDF93 ${info.name}</span>
+        <span style="font-size:0.72rem;color:rgba(255,255,255,0.6);">${info.reg}</span>
+      </div>
+      <div style="padding:0.9rem;overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:380px;">
+          <thead><tr style="background:var(--off);"><th style="font-size:0.72rem;padding:0.4rem 0.6rem;text-align:left;border-bottom:1px solid var(--border);">Subject</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">IA 1</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">IA 2</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">IA 3</th></tr></thead>
+          <tbody>${subjRows}</tbody>
+        </table>
+        <button class="btn-save" style="margin-top:0.7rem;" onclick="saveStudentMarks('${u.email.toLowerCase()}')">💾 Save Marks</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function saveStudentMarks(email){
+  const yr=facMarksYear;
+  const subjs=getSubjectsForYear(yr);
+  const safeE=email.replace(/[@.]/g,'_');
+  if(!marksData[email])marksData[email]={};
+  subjs.forEach((s,si)=>{
+    const eid=`mk_${safeE}_${si}`;
+    marksData[email][s.name]={
+      ia1:document.getElementById(eid+'_1')?.value.trim()||'',
+      ia2:document.getElementById(eid+'_2')?.value.trim()||'',
+      ia3:document.getElementById(eid+'_3')?.value.trim()||''
+    };
   });
-  if (!isOpen) {
-    header.classList.add('open');
-    body.classList.add('open');
-  }
+  adminToast('Marks saved for student! \u2705');
+  // If this student is currently logged in, refresh their view
+  if(currentUserInfo&&currentUserInfo.email===email) renderStudentMarks(currentUserInfo);
 }
 
-// ── EXPOSE ALL FUNCTIONS TO WINDOW (fixes onclick not defined errors) ──
-window.toggleNav    = toggleNav;
-window.openLogin    = openLogin;
-window.closeLogin   = closeLogin;
-window.selectRole   = selectRole;
-window.goBack       = goBack;
-window.doLogin      = doLogin;
-window.doLogout     = doLogout;
-window.showSyl      = showSyl;
-window.toggleUnit   = toggleUnit;
+// ═══════════════════════════════════════
+// ATTENDANCE — FACULTY PANEL
+// ═══════════════════════════════════════
+function selectAttYear(yr,btn){
+  facAttYear=yr;
+  document.querySelectorAll('#ap-attendance .year-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('attAdminTitle').textContent=['I','II','III'][yr-1]+' Year \u2014 Attendance';
+  renderAttAdmin();
+}
+function renderAttAdmin(){
+  const yr=facAttYear;
+  const students=getStudentsByYear(yr);
+  const subjs=getSubjectsForYear(yr);
+  const el=document.getElementById('attAdminBody'); if(!el)return;
+  if(!students.length){
+    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;background:#f0fff4;border:2px dashed #38a169;border-radius:8px;"><div style="font-size:2rem;margin-bottom:0.6rem;">\uD83D\uDCC5</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">No Students in Database</div><div style="font-size:0.8rem;color:var(--muted);">Add students via the <strong>Users</strong> tab. Attendance can be entered here once students are added.</div></div>';
+    return;
+  }
+  el.innerHTML=students.map(u=>{
+    const info=parseProfile(u.email,u.displayName);
+    const myA=attendanceData[u.email.toLowerCase()]||{};
+    const subjRows=subjs.map((s,si)=>{
+      const a=myA[s.name]||{present:0,total:0};
+      const eid=`at_${u.email.replace(/[@.]/g,'_')}_${si}`;
+      return `<tr>
+        <td style="font-size:0.78rem;padding:0.45rem 0.6rem;color:var(--navy);">${s.name}</td>
+        <td style="padding:0.35rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_p" value="${a.present}" placeholder="0" style="width:55px;text-align:center;" type="number" min="0"></td>
+        <td style="padding:0.35rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_t" value="${a.total}" placeholder="0" style="width:55px;text-align:center;" type="number" min="0"></td>
+        <td style="padding:0.45rem 0.6rem;font-weight:700;font-size:0.78rem;color:${a.total>0?(Math.round(a.present/a.total*100)>=75?'#2d7d46':Math.round(a.present/a.total*100)>=60?'#c9882a':'#e53e3e'):'var(--muted)'};">${a.total>0?Math.round(a.present/a.total*100)+'%':'-'}</td>
+      </tr>`;
+    }).join('');
+    return `<div style="border:1px solid var(--border);border-radius:6px;margin-bottom:1.1rem;overflow:hidden;">
+      <div style="background:var(--navy2);padding:0.65rem 1rem;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'Merriweather',serif;font-size:0.86rem;color:#fff;font-weight:700;">\uD83C\uDF93 ${info.name}</span>
+        <span style="font-size:0.72rem;color:rgba(255,255,255,0.6);">${info.reg}</span>
+      </div>
+      <div style="padding:0.9rem;overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:380px;">
+          <thead><tr style="background:var(--off);"><th style="font-size:0.72rem;padding:0.4rem 0.6rem;text-align:left;border-bottom:1px solid var(--border);">Subject</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">Present</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">Total</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">%</th></tr></thead>
+          <tbody>${subjRows}</tbody>
+        </table>
+        <button class="btn-save" style="margin-top:0.7rem;" onclick="saveStudentAtt('${u.email.toLowerCase()}')">💾 Save Attendance</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function saveStudentAtt(email){
+  const yr=facAttYear;
+  const subjs=getSubjectsForYear(yr);
+  const safeE=email.replace(/[@.]/g,'_');
+  if(!attendanceData[email])attendanceData[email]={};
+  subjs.forEach((s,si)=>{
+    const eid=`at_${safeE}_${si}`;
+    const p=parseInt(document.getElementById(eid+'_p')?.value)||0;
+    const t=parseInt(document.getElementById(eid+'_t')?.value)||0;
+    attendanceData[email][s.name]={present:p,total:t};
+  });
+  renderAttAdmin(); // re-render to refresh % colours
+  adminToast('Attendance saved! \u2705');
+  if(currentUserInfo&&currentUserInfo.email===email) renderStudentAttendance(currentUserInfo);
+}
+
+// ═══════════════════════════════════════
+// USER MANAGEMENT
+// ═══════════════════════════════════════
+function addNewUser(){
+  const email=document.getElementById('nuEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('nuPass').value.trim();
+  const role=document.getElementById('nuRole').value;
+  const dname=document.getElementById('nuName').value.trim()||null;
+  if(!email||!pass){adminToast('Enter email and password.');return;}
+  if(getAllUsers().find(u=>u.email===email&&u.role===role)){adminToast('User with this email & role already exists.');return;}
+  extraUsers.push({email,password:pass,role,displayName:dname||undefined});
+  document.getElementById('nuEmail').value='';document.getElementById('nuPass').value='';document.getElementById('nuName').value='';
+  renderUserList();
+  // Refresh marks/attendance panels so new student shows up
+  if(role==='student'){renderMarksAdmin();renderAttAdmin();}
+  adminToast('User added! \u2705');
+}
+function deleteUser(i){
+  extraUsers.splice(i,1);
+  renderUserList();renderMarksAdmin();renderAttAdmin();adminToast('User removed.');
+}
+function renderUserList(){
+  const all=getAllUsers();
+  const el=document.getElementById('userListBody');if(!el)return;
+  const lbl=document.getElementById('userCountLabel');if(lbl)lbl.textContent=all.length+' user'+(all.length!==1?'s':'');
+  el.innerHTML=all.map((u,i)=>`
+    <div class="admin-list-row">
+      <span class="admin-list-text">
+        <strong>${u.role==='faculty'?'\uD83D\uDC68\u200D\uD83C\uDFEB':'🎓'} ${u.email}</strong>
+        ${u.displayName?'<em> ('+u.displayName+')</em>':''} \u2014 <code>${u.role}</code>
+        ${i<BASE_USERS.length?'<span style="font-size:0.68rem;color:var(--muted);"> (built-in)</span>':''}
+      </span>
+      ${i>=BASE_USERS.length?`<div class="admin-list-actions"><button class="btn-del" onclick="deleteUser(${i-BASE_USERS.length})">Remove</button></div>`:''}
+    </div>`).join('');
+}
+
+// ── ADMIN TOAST ──
+function adminToast(msg){const t=document.getElementById('adminToast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500);}
+
+// ── LOGIN EVENTS ──
+document.getElementById('loginOverlay').addEventListener('click',function(e){if(e.target===this)closeLogin();});
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('loginOverlay').classList.contains('active')){if(document.getElementById('step2').classList.contains('active'))doLogin();}});
+
+// ── STUDENT SYLLABUS TABS ──
+function showSyl(id,btn){
+  document.querySelectorAll('.syl-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.syl-tab').forEach(t=>t.classList.remove('active'));
+  const panel=document.getElementById('syl-'+id);if(panel)panel.classList.add('active');
+  if(btn)btn.classList.add('active');
+}
+
+// ── STUDENT SYLLABUS ACCORDION ──
+function toggleUnit(header){
+  const body=header.nextElementSibling,isOpen=header.classList.contains('open');
+  const panel=header.closest('.syl-panel');
+  if(panel){panel.querySelectorAll('.syl-unit-header').forEach(h=>{h.classList.remove('open');if(h.nextElementSibling)h.nextElementSibling.classList.remove('open');});}
+  if(!isOpen){header.classList.add('open');if(body)body.classList.add('open');}
+}
+
+// ── EXPOSE TO WINDOW ──
+window.toggleNav=toggleNav;window.openLogin=openLogin;window.closeLogin=closeLogin;
+window.selectRole=selectRole;window.goBack=goBack;window.doLogin=doLogin;
+window.doLogout=doLogout;window.doFacLogout=doFacLogout;
+window.showSyl=showSyl;window.toggleUnit=toggleUnit;
+window.showAdminTab=showAdminTab;
+window.addFlashNews=addFlashNews;window.deleteFlash=deleteFlash;
+window.addNotification=addNotification;window.deleteNotif=deleteNotif;
+window.selectSylYear=selectSylYear;window.addSubject=addSubject;window.deleteSubject=deleteSubject;
+window.editSubjName=editSubjName;window.addUnit=addUnit;window.editUnit=editUnit;window.deleteUnit=deleteUnit;
+window.selectTTYear=selectTTYear;window.saveTimetable=saveTimetable;
+window.selectFacYear=selectFacYear;window.editFac=editFac;window.deleteFac=deleteFac;window.addFac=addFac;
+window.selectMarksYear=selectMarksYear;window.saveStudentMarks=saveStudentMarks;
+window.selectAttYear=selectAttYear;window.saveStudentAtt=saveStudentAtt;
+window.addNewUser=addNewUser;window.deleteUser=deleteUser;
 </script>
 </body>
 </html>
