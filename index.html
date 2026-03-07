@@ -769,6 +769,66 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
 .att-tog-btn:hover{transform:scale(1.08);opacity:0.9;}
 .att-saving{font-size:0.7rem;color:var(--gold);margin-left:0.4rem;}
 @media(max-width:500px){.att-stats-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ── Dept email chip in topbar ── */
+.topbar-email-chip{display:inline-flex;align-items:center;gap:0.35rem;background:rgba(201,136,42,0.18);border:1px solid rgba(201,136,42,0.4);color:#ffe5a0;border-radius:20px;padding:0.12rem 0.6rem;font-size:0.72rem;font-weight:600;letter-spacing:0.01em;text-decoration:none;transition:background 0.15s;}
+.topbar-email-chip:hover{background:rgba(201,136,42,0.32);color:#fff;}
+/* ── Security lock badge in dev portal ── */
+.sec-rules-box{background:linear-gradient(135deg,#1a3a5c,#0b2545);border:1.5px solid var(--gold);border-radius:8px;padding:1rem 1.2rem;margin-bottom:1.2rem;}
+.sec-rules-box h4{font-family:'Merriweather',serif;font-size:0.88rem;color:var(--gold);margin:0 0 0.5rem;}
+.sec-rules-code{background:#0a1929;border-radius:6px;padding:0.7rem 1rem;font-size:0.75rem;color:#a8d8a8;font-family:monospace;white-space:pre;overflow-x:auto;margin:0.5rem 0;}
+.sec-tag{display:inline-block;padding:0.12rem 0.45rem;border-radius:4px;font-size:0.65rem;font-weight:700;letter-spacing:0.04em;vertical-align:middle;margin-left:0.3rem;}
+.sec-tag.safe{background:#276749;color:#fff;}
+.sec-tag.warn{background:#744210;color:#fff;}
+
+/* ──── LESSONS IN SYLLABUS ──── */
+.syl-lessons-wrap{margin-top:0.75rem;padding-top:0.75rem;border-top:1.5px dashed var(--gold-dim);}
+.syl-lessons-title{font-size:0.72rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.45rem;display:flex;align-items:center;gap:0.35rem;}
+.syl-lesson-item{display:flex;align-items:flex-start;gap:0.5rem;padding:0.3rem 0;border-bottom:1px solid var(--off2);}
+.syl-lesson-num{min-width:22px;height:22px;background:var(--gold);color:#fff;border-radius:50%;font-size:0.62rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:0.1rem;}
+.syl-lesson-text{font-size:0.82rem;color:var(--navy);line-height:1.45;flex:1;}
+.syl-lesson-actions{display:flex;gap:0.25rem;flex-shrink:0;opacity:0;transition:opacity 0.15s;}
+.syl-lesson-item:hover .syl-lesson-actions{opacity:1;}
+.syl-no-lessons{font-size:0.76rem;color:var(--muted);font-style:italic;padding:0.2rem 0;}
+/* Admin lesson row */
+.fac-lesson-row{display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0;border-bottom:1px solid var(--off2);}
+.fac-lesson-idx{min-width:20px;font-size:0.68rem;font-weight:700;color:var(--gold);text-align:center;}
+.fac-lesson-txt{flex:1;font-size:0.8rem;color:var(--navy);}
+/* Subject type badge */
+.subj-type-badge{font-size:0.62rem;padding:0.08rem 0.4rem;border-radius:10px;font-weight:700;letter-spacing:0.04em;vertical-align:middle;margin-left:0.4rem;}
+.subj-type-theory{background:var(--sky-dim);color:var(--sky);}
+.subj-type-practical{background:var(--gold-dim);color:var(--gold);}
+
+/* ──── HOMEPAGE EDITOR (DEV ONLY) ──── */
+.hp-section-block{border:1px solid var(--border);border-radius:8px;margin-bottom:1.1rem;overflow:hidden;}
+.hp-section-head{background:linear-gradient(90deg,var(--navy),var(--navy2));color:#fff;padding:0.65rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:0.5rem;cursor:pointer;user-select:none;}
+.hp-section-label{font-size:0.84rem;font-weight:700;letter-spacing:0.02em;display:flex;align-items:center;gap:0.5rem;}
+.hp-section-arrow{font-size:0.7rem;transition:transform 0.2s;color:var(--gold);}
+.hp-section-head.open .hp-section-arrow{transform:rotate(180deg);}
+.hp-section-body{display:none;padding:1rem;background:#fff;}
+.hp-section-body.open{display:block;}
+.hp-field-group{margin-bottom:0.85rem;}
+.hp-field-label{font-size:0.72rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.28rem;}
+.hp-input{width:100%;padding:0.42rem 0.7rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:'Source Sans 3',sans-serif;color:var(--navy);background:#fff;box-sizing:border-box;transition:border-color 0.15s;}
+.hp-input:focus{outline:none;border-color:var(--gold);}
+.hp-textarea{width:100%;padding:0.42rem 0.7rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:'Source Sans 3',sans-serif;color:var(--navy);background:#fff;box-sizing:border-box;resize:vertical;min-height:64px;transition:border-color 0.15s;}
+.hp-textarea:focus{outline:none;border-color:var(--gold);}
+.hp-row{display:flex;gap:0.6rem;flex-wrap:wrap;}
+.hp-row>.hp-field-group{flex:1;min-width:140px;}
+.hp-card-item{border:1px solid var(--border);border-radius:6px;padding:0.7rem 0.85rem;margin-bottom:0.6rem;position:relative;background:#fafbfc;}
+.hp-card-item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;}
+.hp-card-item-title{font-size:0.78rem;font-weight:700;color:var(--navy);}
+.hp-card-actions{display:flex;gap:0.3rem;}
+.hp-save-btn{background:var(--gold);color:#fff;border:none;border-radius:6px;padding:0.38rem 0.9rem;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif;transition:opacity 0.15s;margin-top:0.7rem;}
+.hp-save-btn:hover{opacity:0.88;}
+.hp-add-btn{background:var(--sky);color:#fff;border:none;border-radius:6px;padding:0.32rem 0.7rem;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:'Source Sans 3',sans-serif;transition:opacity 0.15s;}
+.hp-add-btn:hover{opacity:0.88;}
+.hp-del-btn{background:#fc8181;color:#fff;border:none;border-radius:4px;padding:0.18rem 0.45rem;font-size:0.68rem;font-weight:700;cursor:pointer;}
+.hp-edit-form{margin-top:0.5rem;border-top:1px dashed var(--border);padding-top:0.5rem;}
+.hp-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.5rem;}
+.hp-preview-chip{display:inline-block;background:var(--gold-dim);color:var(--gold);border-radius:4px;padding:0.1rem 0.45rem;font-size:0.65rem;font-weight:700;margin-left:0.4rem;vertical-align:middle;}
+.hp-dev-tab{display:none;}
+.hp-dev-tab.dev-visible{display:inline-block;}
 </style>
 </head>
 <body>
@@ -780,6 +840,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
   <div class="topbar-left">
     <a href="/cdn-cgi/l/email-protection#1e777078715e707f707a767f7f6c6a6d30716c79">✉ <span class="__cf_email__" data-cfemail="e68f888089a6888788828e8787949295c8899481">[email&#160;protected]</span></a>
     <a href="tel:+917373724422">📞 +91 73737 24422</a>
+    <a id="deptEmailChip" href="#" class="topbar-email-chip" onclick="return false;">✉ Loading…</a>
     <a href="https://www.nandhaarts.org" target="_blank">🌐 nandhaarts.org</a>
   </div>
   <div class="topbar-right">
@@ -835,17 +896,17 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
   <div class="hero-inner">
     <div>
       <div class="hero-breadcrumb">Home &rsaquo; Departments &rsaquo; <span>Biotechnology</span></div>
-      <h1 class="hero-h1">Department of<br><em>Biotechnology</em></h1>
-      <p class="hero-sub">Nandha Arts &amp; Science College (Autonomous), Erode — offering rigorous undergraduate, postgraduate and doctoral programmes in Biotechnology since 2002. NAAC B+ Accredited · Bharathiar University Affiliated.</p>
+      <h1 class="hero-h1" id="hp-hero-h1">Department of<br><em>Biotechnology</em></h1>
+      <p class="hero-sub" id="hp-hero-sub">Nandha Arts &amp; Science College (Autonomous), Erode — offering rigorous undergraduate, postgraduate and doctoral programmes in Biotechnology since 2002. NAAC B+ Accredited · Bharathiar University Affiliated.</p>
       <div class="hero-actions">
         <a href="tel:+917373724422" class="btn-hero">📞 Call Admissions</a>
         <a href="#programs" class="btn-hero-ghost">Explore Programs →</a>
       </div>
       <div class="hero-stats">
-        <div class="hstat"><div class="hstat-n" id="ctr1">0</div><div class="hstat-l">Years of Excellence</div></div>
-        <div class="hstat"><div class="hstat-n" id="ctr2">0</div><div class="hstat-l">University Rank Holders</div></div>
-        <div class="hstat"><div class="hstat-n" id="ctr3">0</div><div class="hstat-l">Research Publications</div></div>
-        <div class="hstat"><div class="hstat-n">B+</div><div class="hstat-l">NAAC Grade</div></div>
+        <div class="hstat"><div class="hstat-n" id="ctr1">0</div><div class="hstat-l" id="hp-stat1-l">Years of Excellence</div></div>
+        <div class="hstat"><div class="hstat-n" id="ctr2">0</div><div class="hstat-l" id="hp-stat2-l">University Rank Holders</div></div>
+        <div class="hstat"><div class="hstat-n" id="ctr3">0</div><div class="hstat-l" id="hp-stat3-l">Research Publications</div></div>
+        <div class="hstat"><div class="hstat-n" id="hp-stat4-n">B+</div><div class="hstat-l" id="hp-stat4-l">NAAC Grade</div></div>
       </div>
     </div>
     <div class="hero-card">
@@ -908,10 +969,10 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <div class="reveal d1">
         <div class="section-header">
           <div class="sec-tag">Our Department</div>
-          <h2 class="sec-h2">Rooted in Science,<br><span>Built for Tomorrow</span></h2>
+          <h2 class="sec-h2" id="hp-about-h2">Rooted in Science,<br><span>Built for Tomorrow</span></h2>
           <div class="sec-line"></div>
         </div>
-        <p style="font-size:0.93rem;color:var(--muted);line-height:1.85;margin-bottom:1.5rem;">The Department of Biotechnology was established in 2002 with both UG and PG courses. Upgraded to a Research Department in 2015, offering Ph.D guidance under Bharathiar University. We blend rigorous academics with hands-on research and industry exposure to shape competent biotechnologists.</p>
+        <p style="font-size:0.93rem;color:var(--muted);line-height:1.85;margin-bottom:1.5rem;" id="hp-about-para">The Department of Biotechnology was established in 2002 with both UG and PG courses. Upgraded to a Research Department in 2015, offering Ph.D guidance under Bharathiar University. We blend rigorous academics with hands-on research and industry exposure to shape competent biotechnologists.</p>
         <div class="about-points">
           <div class="about-pt">
             <div class="about-pt-ico">🔬</div>
@@ -964,7 +1025,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <div class="sec-line"></div>
       <p class="sec-lead">From undergraduate foundations to doctoral research — a rigorous programme tailored to your academic and career goals.</p>
     </div>
-    <div class="prog-grid">
+    <div class="prog-grid" id="hp-prog-grid">
       <div class="prog-card reveal d1">
         <div class="prog-card-top">
           <div class="prog-badge">Undergraduate · 3 Years</div>
@@ -1028,7 +1089,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <div class="sec-line"></div>
       <p class="sec-lead">Biotechnology is one of the fastest-growing fields of the 21st century. Our graduates contribute across medicine, agriculture, industry, environment and research.</p>
     </div>
-    <div class="scope-grid">
+    <div class="scope-grid" id="hp-scope-grid">
       <div class="scope-card reveal d1"><div class="scope-ico">💊</div><div class="scope-title">Pharmaceutical &amp; Healthcare</div><div class="scope-desc">Drug discovery, vaccine development, clinical research and diagnostics with top pharma companies.</div></div>
       <div class="scope-card reveal d2"><div class="scope-ico">🧬</div><div class="scope-title">Genomics &amp; Molecular Biology</div><div class="scope-desc">Genetic engineering, DNA sequencing, bioinformatics and personalized medicine at global research labs.</div></div>
       <div class="scope-card reveal d3"><div class="scope-ico">🌾</div><div class="scope-title">Agricultural Biotechnology</div><div class="scope-desc">Improved crops, biopesticides and biofertilizers for sustainable, food-secure agriculture.</div></div>
@@ -1040,7 +1101,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
     </div>
     <div class="career-section reveal">
       <h3>Popular Job Roles for Our Graduates</h3>
-      <div class="career-pills">
+      <div class="career-pills" id="hp-jobs-pills">
         <span class="career-pill">Research Scientist</span>
         <span class="career-pill">Clinical Research Associate</span>
         <span class="career-pill">Medical Lab Technologist</span>
@@ -1069,7 +1130,8 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <div class="sec-line why-sec-line"></div>
     </div>
     <div class="why-grid">
-      <div class="why-card reveal d1"><div class="why-num">01</div><div class="why-title">Research-First Culture</div><div class="why-desc">SCOPUS &amp; WoS indexed publications. A patent filed in Chemical Sciences. Active Ph.D guidance with recognized university guides.</div></div>
+    </div>
+    <div class="why-grid" id="hp-why-grid"><div class="why-card reveal d1"><div class="why-num">01</div><div class="why-title">Research-First Culture</div><div class="why-desc">SCOPUS &amp; WoS indexed publications. A patent filed in Chemical Sciences. Active Ph.D guidance with recognized university guides.</div></div>
       <div class="why-card reveal d2"><div class="why-num">02</div><div class="why-title">Expert Faculty</div><div class="why-desc">Ph.D holders, SLET-qualified staff and industry-connected lecturers dedicated to student success.</div></div>
       <div class="why-card reveal d3"><div class="why-num">03</div><div class="why-title">Blended Teaching</div><div class="why-desc">Chalk &amp; talk, animations, practical exposure, interface teaching and project-based learning methodologies.</div></div>
       <div class="why-card reveal d4"><div class="why-num">04</div><div class="why-title">Industry Placements</div><div class="why-desc">Biocon, TCS, Zifo RnD &amp; 12+ recruiters conduct campus placements every academic year.</div></div>
@@ -1183,7 +1245,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <div class="sec-line"></div>
       <p class="sec-lead">Our faculty publish in SCOPUS, WoS-indexed and UGC-CARE listed journals — and hold a recognised patent in Chemical Sciences.</p>
     </div>
-    <div class="pub-list">
+    <div class="pub-list" id="hp-pub-list">
       <div class="pub-card reveal"><div class="pub-yr">2023</div><div><div class="pub-title">Synergistic antibacterial and mosquitocidal effect of Passiflora foetida synthesized silver nanoparticles</div><div class="pub-journal">Brazilian Journal of Biology, 84: e263391 · doi:10.1590/1519-6984.263391</div><span class="pub-idx">SCOPUS · IF 0.471</span></div></div>
       <div class="pub-card reveal d1"><div class="pub-yr">2023</div><div><div class="pub-title">Phylogenetic Relationships of Baliospermum solanifolium through DNA Barcoding in South India</div><div class="pub-journal">Biological Forum – An International Journal, 15(5): 125–137</div><span class="pub-idx">UGC-CARE List</span></div></div>
       <div class="pub-card reveal"><div class="pub-yr">2023</div><div><div class="pub-title">Exploring the Anti-bacterial Potential of Orchid-derived Silver Nanoparticles</div><div class="pub-journal">Nano Biomed. Eng., 15(4): 416–424 · doi:10.26599/NBE.2023.9290038</div><span class="pub-idx">SCOPUS · IF 0.323</span></div></div>
@@ -1270,7 +1332,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <div class="sec-line"></div>
       <p class="sec-lead">Our students consistently achieve top ranks at Bharathiar University — a testimony to the quality of teaching and research culture in our department.</p>
     </div>
-    <div class="rankers-intro">
+    <div class="rankers-intro" id="hp-rankers-wrap">
       <div class="reveal">
         <div class="rank-table-wrap">
           <table class="rank-table">
@@ -1330,7 +1392,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <h2 class="sec-h2">What Our <span>Alumni Say</span></h2>
       <div class="sec-line"></div>
     </div>
-    <div class="testi-grid">
+    <div class="testi-grid" id="hp-testi-grid">
       <div class="testi-card reveal">
         <div class="testi-q">"</div>
         <div class="stars">★★★★★</div>
@@ -1369,13 +1431,14 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <div class="sec-tag">Get In Touch</div>
       <h2 class="sec-h2">Contact <span>Us</span></h2>
       <div class="sec-line"></div>
-      <p class="sec-lead">Admissions open for 2026–2027. Contact the department to learn about eligibility, scholarships, and campus visits.</p>
+      <p class="sec-lead" id="hp-contact-lead">Admissions open for 2026–2027. Contact the department to learn about eligibility, scholarships, and campus visits.</p>
     </div>
     <div class="contact-layout">
       <div class="reveal">
         <div class="contact-info-list">
           <div class="ci-row"><div class="ci-ico">📞</div><div><div class="ci-label">Phone</div><div class="ci-val"><a href="tel:+917373724422">+91 73737 24422</a> &nbsp;/&nbsp; <a href="tel:+919750222788">+91 97502 22788</a><br>04294 – 222788</div></div></div>
-          <div class="ci-row"><div class="ci-ico">✉️</div><div><div class="ci-label">Email</div><div class="ci-val"><a href="/cdn-cgi/l/email-protection#f891969e97b89699969c9099998a8c8bd6978a9f"><span class="__cf_email__" data-cfemail="375e59515877595659535f565645434419584550">[email&#160;protected]</span></a></div></div></div>
+          <div class="ci-row"><div class="ci-ico">🎓</div><div><div class="ci-label">Department Email</div><div class="ci-val"><a id="contactEmailLink" href="#">—</a></div></div></div>
+          <div class="ci-row"><div class="ci-ico">✉️</div><div><div class="ci-label">Email</div><div class="ci-val"><a id="contactEmailGeneral" href="#">—</a></div></div></div>
           <div class="ci-row"><div class="ci-ico">📸</div><div><div class="ci-label">Instagram</div><div class="ci-val"><a href="https://www.instagram.com/nandha_biohive/" target="_blank">@nandha_biohive</a></div></div></div>
           <div class="ci-row"><div class="ci-ico">📍</div><div><div class="ci-label">Address</div><div class="ci-val">Koorapalayam Pirivu, Pitchandampalayam Post,<br>Erode – 638 052, Tamil Nadu, India</div></div></div>
           <div class="ci-row"><div class="ci-ico">🕐</div><div><div class="ci-label">Department Hours</div><div class="ci-val">Monday – Saturday · 9:00 AM – 6:00 PM<br>Labs open until 6:00 PM</div></div></div>
@@ -1481,7 +1544,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
   <div class="fac-portal-topbar">
     <div class="fac-portal-topbar-brand">
       <img src="https://www.nandhaarts.org/wp-content/uploads/2022/06/Logo_NASC.png" alt="Logo" style="height:30px;filter:brightness(0) invert(1);opacity:0.85;">
-      <span class="fac-portal-topbar-name">Faculty Portal <span class="fac-dev-badge">DEVELOPER</span></span>
+      <span class="fac-portal-topbar-name">Faculty Portal <span class="fac-dev-badge" id="devBadge" style="display:none;">DEVELOPER</span></span>
     </div>
     <div style="display:flex;align-items:center;gap:0.8rem;">
       <span style="font-size:0.78rem;color:rgba(255,255,255,0.6);" id="facWelcome">Welcome, Faculty</span>
@@ -1526,6 +1589,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <button class="admin-tab" onclick="showAdminTab('marks',this)">📊 Int. Marks</button>
       <button class="admin-tab" onclick="showAdminTab('attendance',this)">✅ Attendance</button>
       <button class="admin-tab" onclick="showAdminTab('users',this)">👤 Users</button>
+      <button class="admin-tab hp-dev-tab" id="hpTab" onclick="showAdminTab('homepage',this)">🏠 Homepage</button>
     </div>
 
     <!-- ── FLASH NEWS PANEL ── -->
@@ -1598,7 +1662,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <div class="admin-card">
         <div class="admin-card-header">
           <span class="admin-card-title" id="sylAdminTitle">I Year — Subjects</span>
-          <button class="btn-add" onclick="addSubject()">+ Add Subject</button>
+          <button class="btn-add" id="sylAddSubjectBtn" onclick="addSubject()">+ Add Subject</button>
         </div>
         <div class="admin-card-body" id="sylAdminBody">
           <!-- Rendered by JS -->
@@ -1685,6 +1749,23 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
 
     <!-- ── USER MANAGEMENT PANEL ── -->
     <div class="admin-panel" id="ap-users">
+
+      <!-- Firebase Security Rules reminder -->
+      <div class="sec-rules-box">
+        <h4>🔒 Firebase Security Rules — Required for Data Protection</h4>
+        <p style="font-size:0.78rem;color:rgba(255,255,255,0.75);margin:0 0 0.6rem;">Copy and paste these rules in <strong>Firebase Console → Realtime Database → Rules</strong> tab, then click Publish. This restricts public access to sensitive data while keeping flash news &amp; notifications readable.</p>
+        <div class="sec-rules-code">{
+  "rules": {
+    "flashNews":     { ".read": true,  ".write": true  },
+    "notifications": { ".read": true,  ".write": true  },
+    "extraUsers":    { ".read": false, ".write": false },
+    "marks":         { ".read": false, ".write": false },
+    "attendance":    { ".read": false, ".write": false }
+  }
+}</div>
+        <p style="font-size:0.72rem;color:rgba(255,255,255,0.5);margin:0;">⚠️ With these rules the portal still works fully — data is fetched server-side via the embedded site key. Public read access is blocked for all student records.</p>
+      </div>
+
       <div class="admin-card">
         <div class="admin-card-header">
           <span class="admin-card-title">Add New User (Student / Faculty)</span>
@@ -1728,6 +1809,19 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
         </div>
         <div class="admin-card-body" id="userListBody">
           <!-- rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ── HOMEPAGE EDITOR PANEL (Developer only) ── -->
+    <div class="admin-panel" id="ap-homepage">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title">🏠 Homepage Content Editor</span>
+          <span style="font-size:0.72rem;color:var(--muted);">Changes apply live · Saved to Firebase</span>
+        </div>
+        <div class="admin-card-body" id="hpEditorBody">
+          <!-- rendered by renderHpEditor() -->
         </div>
       </div>
     </div>
@@ -1943,371 +2037,14 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       </div>
     </div>
 
-    <!-- Syllabus -->
+    <!-- Syllabus — dynamically rendered from sylData -->
     <div id="stdSylSection" class="portal-section">
       <div class="portal-sec-header">
         <span class="portal-sec-title">📚 Syllabus</span>
-        <span class="portal-sec-badge">5 Theory Papers — II Year</span>
+        <span class="portal-sec-badge" id="stdSylBadge">II Year</span>
       </div>
-      <div class="portal-sec-body">
-        <div class="syllabus-tabs">
-          <button class="syl-tab active" onclick="showSyl('tamil',this)">Tamil</button>
-          <button class="syl-tab" onclick="showSyl('english',this)">English</button>
-          <button class="syl-tab" onclick="showSyl('pabt',this)">Plant &amp; Animal Biotech</button>
-          <button class="syl-tab" onclick="showSyl('bfs',this)">Forensic Science</button>
-          <button class="syl-tab" onclick="showSyl('python',this)">Python Programming</button>
-        </div>
-
-        <!-- Tamil -->
-        <div class="syl-panel active" id="syl-tamil">
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">அலகு 1 — எட்டுத்தொகை (Ettuthokai)</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>நற்றிணை — 2 பாடல்கள் (183, 355)</li>
-                <li>குறுந்தொகை — 5 பாடல்கள் (2, 3, 40, 135, 210)</li>
-                <li>கலித்தொகை — 2 பாடல்கள் (25, 51)</li>
-                <li>புறநானூறு — 5 பாடல்கள் (18, 134, 189, 192, 312)</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">அலகு 2 — முல்லைப்பாட்டு</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>முல்லைப்பாட்டு முழுவதும் (Full text)</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">அலகு 3 — நாடகம் (Drama)</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>சபாபதி — பம்மல் சம்பந்தர் முதலியார்</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">அலகு 4 — இலக்கிய வரலாறு &amp; இலக்கணம்</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>சங்க இலக்கியம் — எட்டுத்தொகை, பத்துப்பாட்டு</li>
-                <li>நாடகத்தின் தோற்றமும் வளர்ச்சியும்</li>
-                <li>அக இலக்கணம் — முதல், கரு, உரிப்பொருள்</li>
-                <li>புற இலக்கணம் — புறத்திணைகள் 12 வகைகள்</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">அலகு 5 — படைப்பிலக்கியப் பயிற்சி</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>நாடக உருவாக்கம்</li>
-                <li>ஓரங்க நாடகம்</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- English -->
-        <div class="syl-panel" id="syl-english">
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 1 — Soft Skills for Employability</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Self Assessment</li><li>Goal Setting</li><li>Time Management</li>
-                <li>Team Building / Networking</li><li>Openers to Criticism</li>
-                <li>Stress Management</li><li>Work Life Balance</li>
-                <li>Critical Thinking</li><li>Problem Solving</li><li>Life Long Learning</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 2 — Professional Speaking (Job Interview)</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Characteristics of a Job Interview</li>
-                <li>Preparation Techniques</li>
-                <li>Interview Questions</li>
-                <li>Important Aspects for a Job Interview</li>
-                <li>Alternative Interview Formats</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 3 — Group Discussion</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Definition of Group Discussion</li>
-                <li>Importance of Group Discussion</li>
-                <li>Characteristics of a Successful Group Discussion</li>
-                <li>Group Discussion as a Tool for Selection</li>
-                <li>Cross Group Discussion Strategies</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 4 — Presentation Skills</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Definition of Presentation Skills</li>
-                <li>Oral Presentation</li>
-                <li>Importance of Presentation Skills</li>
-                <li>Stages of a Presentation</li>
-                <li>Planning &amp; Organising the Presentation</li>
-                <li>Rehearsing the Presentation</li>
-                <li>Improving the Delivery</li>
-                <li>Checklist for Making a Presentation</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 5 — Technical Writing</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Email Writing — Advantages &amp; Effective Writing</li>
-                <li>Characteristics of Effective Email</li>
-                <li>Email Structure &amp; Standard Practices</li>
-                <li>Email Writing Strategies</li>
-                <li>Preparing a Circular</li>
-                <li>Preparing an Agenda</li>
-                <li>Preparing Minutes</li>
-                <li>Preparing a Report</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- Plant & Animal Biotechnology -->
-        <div class="syl-panel" id="syl-pabt">
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 1 — Cell and Tissue Culture</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Introduction to Cell and Tissue Culture</li>
-                <li>Plant Tissue Culture Media — Composition, Types and Preparation</li>
-                <li>Plant Hormones and Growth Regulators in Tissue Culture</li>
-                <li>Preparation of Suitable Explant for Organogenesis</li>
-                <li>Micropropagation on a Large Scale</li>
-                <li>Somatic Embryogenesis</li>
-                <li>Protoplast Culture and Somatic Hybridization</li>
-                <li>Anther, Pollen and Ovary Culture for Production of Haploid Plants</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 2 — Cell Culture Methods</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Cell Culture Methods for Secondary Metabolites Production</li>
-                <li>Somaclonal Variation and its Significance</li>
-                <li>Cryopreservation</li>
-                <li>Plant Transformation Techniques</li>
-                <li>Agrobacterium Mediated Gene Transfer</li>
-                <li>Mechanism of DNA Transfer</li>
-                <li>General Features — Ti and Ri Plasmids and their Uses as Vectors</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 3 — Animal Cell Culture</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Animal Cell Culture — Culture Media (Composition and Preparation)</li>
-                <li>Balanced Salt Solution &amp; Role of CO₂</li>
-                <li>Culturing and Maintenance of Different Animal Cell Lines</li>
-                <li>Primary and Established Cell Lines</li>
-                <li>Characterization of Cultured Cells</li>
-                <li>Measurement of Viability — Cytotoxicity Assays and Cell Growth</li>
-                <li>Embryonic Stem Cells and their Applications</li>
-                <li>Cell Culture Based Vaccines</li>
-                <li>Induced Pluripotent Stem Cells</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 4 — Transgenic Animals</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Methods of Obtaining Transgenic Animals</li>
-                <li>Fertilized Eggs and Embryonic Blastocyst Cell Method</li>
-                <li>Increased Productivity of Domestic Animals</li>
-                <li>Improve Desired Characters of Domestic Animals</li>
-                <li>Production of Recombinant Gene Products and Proteins for Pharmaceutical Use</li>
-                <li>Animal Models for Tackling Human Diseases (Gene Knockout in Mice Models)</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 5 — Animal Cloning</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Methods of Cloning in Animal System — Rat, Sheep and Pig</li>
-                <li>Importance of Cloning</li>
-                <li>Gene Therapy and Cell Mediated Therapy</li>
-                <li>Ethical Issues in Animal Biotechnology</li>
-                <li>Animal Welfare and its Importance</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- Forensic Science -->
-        <div class="syl-panel" id="syl-bfs">
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 1 — Introduction to Forensic Science</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Forensic Science — Definition and Scope</li>
-                <li>History and Development of Forensic Science</li>
-                <li>Role of Forensic Science in Criminal Justice</li>
-                <li>Ethics in Forensic Science and Investigation</li>
-                <li>Biological Fluids — Identification and Analysis</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 2 — Forensic Biology and Serology</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>DNA Typing and its Forensic Applications</li>
-                <li>PCR and STR Analysis in Forensic DNA Profiling</li>
-                <li>Forensic Botany</li>
-                <li>Microbial Forensics — Role of Bacteria and Virus in Crime Investigation</li>
-                <li>Forensic Anthropology — Skeletal Analysis</li>
-                <li>Determining Age, Sex and Identity from Bones</li>
-                <li>Types of Insects and their Forensic Significance</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 3 — Instrumentation and Sampling</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Crime Scene Investigation</li>
-                <li>Biological Sample Collection — Blood, Saliva, Hair, Semen</li>
-                <li>Forensic Serology — Preservation, Handling and Evidence Collection</li>
-                <li>Identification and Morphological Examination of Toxic Plants</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 4 — Forensic Science Laboratory (FSL)</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>State and Central Forensic Science Laboratories</li>
-                <li>Research Institutes in India Handling Forensic Samples</li>
-                <li>COVID Emergencies</li>
-                <li>Prevention of Food Adulteration Act and Rules (PFA)</li>
-                <li>Orders under the Essential Commodities Act</li>
-                <li>Food Safety and Standards Act</li>
-              </ul>
-            </div>
-          </div>
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Unit 5 — Emerging Role of Forensic Science</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Digital and Cyber Forensics — Basics and Applications</li>
-                <li>Recent Advances in Forensic Biology and Biotechnology</li>
-                <li>Case Studies and Real Life Applications</li>
-                <li>Applications of Forensic Biology in Criminal Investigation</li>
-                <li>Case Studies Involving Toxicology</li>
-                <li>Famous Forensic Cases and their Impact</li>
-                <li>Emerging Trends in Forensic Science</li>
-              </ul>
-              <div style="margin-top:0.9rem;padding:0.7rem 0.9rem;background:var(--off2);border-radius:4px;font-size:0.78rem;color:var(--muted);">
-                <strong>Reference Books:</strong><br>
-                1. Pillay V. — Textbook of Forensic Medicine and Toxicology<br>
-                2. Dr. Agarwal — Textbook of Forensic Medicine and Toxicology<br>
-                3. Shrikant — Forensic Biology
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Python -->
-        <div class="syl-panel" id="syl-python">
-          <div class="syl-unit">
-            <div class="syl-unit-header" onclick="toggleUnit(this)">
-              <span class="syl-unit-title">Computer Application II — Python Programming (Practicals)</span>
-              <span class="syl-unit-arrow">▼</span>
-            </div>
-            <div class="syl-unit-body">
-              <ul class="syl-topics">
-                <li>Program to Display Data of Different Types using Variables and Literal Constants</li>
-                <li>Program to Exhibit Indentation Errors and Arithmetic Operations</li>
-                <li>Program to Demonstrate Looping</li>
-                <li>Program to Demonstrate Decision Making</li>
-                <li>Program to Demonstrate the Slice Operation — Accessing Elements of a List</li>
-                <li>Program for Demonstrating Add and Modify Items in Dictionary</li>
-                <li>Program to Demonstrate Concepts using Functions and Lambda</li>
-                <li>Program for Reverse Complement of a DNA Sequence</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
+      <div class="portal-sec-body" id="stdSylBody">
+        <!-- rendered by renderStudentSyllabus() -->
       </div>
     </div>
 
@@ -2419,7 +2156,524 @@ function showToast(){
 // ═══════════════════════════════════════
 // FIREBASE REALTIME DATABASE
 // ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// HOMEPAGE DATA STORE
+// ═══════════════════════════════════════════════════════════
+let hpData = {
+  hero: {
+    h1: 'Department of\n<em>Biotechnology</em>',
+    sub: 'Nandha Arts & Science College (Autonomous), Erode — offering rigorous undergraduate, postgraduate and doctoral programmes in Biotechnology since 2002. NAAC B+ Accredited · Bharathiar University Affiliated.',
+    stats: [
+      {n:20, suffix:'+', label:'Years of Excellence'},
+      {n:29, suffix:'+', label:'University Rank Holders'},
+      {n:9,  suffix:'+', label:'Research Publications'},
+      {n:'B+', suffix:'', label:'NAAC Grade', isText:true}
+    ],
+    cta1: '📞 Call Admissions',
+    cta2: 'Explore Programs →'
+  },
+  about: {
+    h2: 'Rooted in Science,\n<span>Built for Tomorrow</span>',
+    para: 'The Department of Biotechnology was established in 2002 with both UG and PG courses. Upgraded to a Research Department in 2015, offering Ph.D guidance under Bharathiar University. We blend rigorous academics with hands-on research and industry exposure to shape competent biotechnologists.',
+    points: [
+      {ico:'🔬', title:'State-of-the-Art Laboratories', desc:'DNA Sequencer, PCR Machine, CO₂ Incubator, Bioreactor, Gel Documentation and more — open till 6 PM daily.'},
+      {ico:'🌿', title:'Greenhouse & Medicinal Garden', desc:'Live research environment for plant propagation, extraction and applied botany studies.'},
+      {ico:'🏛️', title:'National Conferences & INSA Workshops', desc:'Regular DST-INSPIRE Camps and State / National level scientific knowledge-sharing platforms.'}
+    ]
+  },
+  programs: [
+    {badge:'Undergraduate · 3 Years', name:'B.Sc. Biotechnology', desc:'A rigorous foundation in molecular biology, genetics, microbiology and biochemistry with intensive lab training and industry-oriented curriculum.', tags:['Molecular Biology','Genetics','Lab Intensive']},
+    {badge:'Postgraduate · 2 Years', name:'M.Sc. Biotechnology', desc:'Advanced specialisation in bioinformatics, nanotechnology and plant/animal tissue culture with research publication opportunities.', tags:['Bioinformatics','Nanotechnology','Research']},
+    {badge:'Research Programme', name:'Ph.D. Research', desc:'Doctoral programme under Bharathiar University with recognised guides in nano-biotechnology and phytochemistry. SCOPUS indexed publications.', tags:['Ph.D Guidance','SCOPUS','Publications']},
+    {badge:'Value Added Course', name:'Diploma in MLT', desc:'BSS Certified (Govt. of India) Diploma in Medical Laboratory Technology — a government-recognised, career-accelerating certification.', tags:['Govt. Certified','BSS','Career Ready']},
+    {badge:'Value Added Course', name:'Bioinformatics VAC', desc:'Skill-enhancing course bridging biology and computing — covering sequence analysis, biological databases, molecular modelling and computational research tools.', tags:['Sequence Analysis','Molecular Modelling','Databases']}
+  ],
+  scope: [
+    {ico:'💊', title:'Pharmaceutical & Healthcare', desc:'Drug discovery, vaccine development, clinical research and diagnostics with top pharma companies.'},
+    {ico:'🧬', title:'Genomics & Molecular Biology', desc:'Genetic engineering, DNA sequencing, bioinformatics and personalized medicine at global research labs.'},
+    {ico:'🌾', title:'Agricultural Biotechnology', desc:'Improved crops, biopesticides and biofertilizers for sustainable, food-secure agriculture.'},
+    {ico:'🏭', title:'Industrial & Fermentation', desc:'Enzyme production, biofuels, fermentation technology and quality control in bio-manufacturing.'},
+    {ico:'🌊', title:'Environmental Biotechnology', desc:'Bioremediation, waste treatment, pollution control and green energy solutions.'},
+    {ico:'🔬', title:'Research & Academia', desc:'Ph.D. or postdoctoral research at national labs, IITs, IISc and international universities.'},
+    {ico:'🧪', title:'Clinical & Medical Labs', desc:'Medical Lab Technologist, Microbiologist or Pathology assistant in hospitals and diagnostic labs.'},
+    {ico:'💻', title:'Bioinformatics & IT', desc:'Pharmaceutical IT, clinical data management and research software development.'}
+  ],
+  jobRoles: ['Research Scientist','Clinical Research Associate','Medical Lab Technologist','Bioinformatics Analyst','Quality Control Analyst','Microbiologist','Pharmacovigilance Officer','Genetic Counselor','Bioprocess Engineer','Regulatory Affairs Officer','Environmental Consultant','Lecturer / Professor','Plant Tissue Culture Scientist','Fermentation Technologist'],
+  why: [
+    {num:'01', title:'Research-First Culture', desc:'SCOPUS & WoS indexed publications. A patent filed in Chemical Sciences. Active Ph.D guidance with recognized university guides.'},
+    {num:'02', title:'Expert Faculty', desc:'Ph.D holders, SLET-qualified staff and industry-connected lecturers dedicated to student success.'},
+    {num:'03', title:'Blended Teaching', desc:'Chalk & talk, animations, practical exposure, interface teaching and project-based learning methodologies.'},
+    {num:'04', title:'Industry Placements', desc:'Biocon, TCS, Zifo RnD & 12+ recruiters conduct campus placements every academic year.'},
+    {num:'05', title:'University Toppers', desc:'Consistent Gold Medalists and rank holders at Bharathiar University — 29+ rank holders since 2004.'},
+    {num:'06', title:'Rural Empowerment', desc:'Mission-driven to uplift rural students with world-class biotechnology education and career opportunities.'}
+  ],
+  publications: [
+    {yr:'2023', title:'Synergistic antibacterial and mosquitocidal effect of Passiflora foetida synthesized silver nanoparticles', journal:'Brazilian Journal of Biology, 84: e263391 · doi:10.1590/1519-6984.263391', idx:'SCOPUS · IF 0.471'},
+    {yr:'2023', title:'Phylogenetic Relationships of Baliospermum solanifolium through DNA Barcoding in South India', journal:'Biological Forum – An International Journal, 15(5): 125–137', idx:'UGC-CARE List'},
+    {yr:'2023', title:'Exploring the Anti-bacterial Potential of Orchid-derived Silver Nanoparticles', journal:'Nano Biomed. Eng., 15(4): 416–424 · doi:10.26599/NBE.2023.9290038', idx:'SCOPUS · IF 0.323'},
+    {yr:'2022', title:'Patent: Clay Soil Stabilization using MICP Technique by inducing Microbes and Bacteria', journal:'Application ID: 202241029830 · Chemical Sciences · Pub. No: 22/2022', idx:'🔒 PATENT FILED'},
+    {yr:'2021', title:'Preparation of Activated Carbon from Wrightia tinctoria and its Application', journal:'International Journal of Botany Studies, 6(3): 267–273', idx:'WoS · IF 0.5'},
+    {yr:'2020', title:'Book: In Vivo, In Vitro & In Silico Studies — Anticancerous and Antiarthritis Property of Mentha piperata and Citrus sinensis', journal:'LAP LAMBERT Academic Publishing, Germany · ISBN: 978-620-2-51164-3', idx:'📘 BOOK PUBLISHED'}
+  ],
+  rankers: [
+    {n:'Ms. Indubala .S', rank:'🥇 I (Gold)', batch:'2004–2007'},
+    {n:'Mr. Shafeeque. C. M', rank:'VIII', batch:'2007–2010'},
+    {n:'Ms. Kiruthika .S', rank:'VI', batch:'2009–2012'},
+    {n:'Ms. Sruthi .V', rank:'IX', batch:'2009–2012'},
+    {n:'Ms. Preeti Ksoo', rank:'IV', batch:'2011–2014'},
+    {n:'Ms. Sangeetha. T', rank:'II', batch:'2012–2015'},
+    {n:'Ms. Kousalya. C', rank:'III', batch:'2012–2015'},
+    {n:'Ms. Selva Priya. K', rank:'II', batch:'2014–2017'},
+    {n:'Ms. Sangamithra. A', rank:'III', batch:'2014–2017'},
+    {n:'Ms. Umamaheswari. S', rank:'VI', batch:'2014–2017'},
+    {n:'Ms. Sivaranjini. V. P', rank:'VI', batch:'2015–2018'},
+    {n:'Ms. Nivetha. P', rank:'VII', batch:'2015–2018'},
+    {n:'Ms. Sangavi. P', rank:'IV', batch:'2016–2019'},
+    {n:'Ms. Srimathi. M', rank:'🥇 I', batch:'2017–2020'},
+    {n:'Ms. Sumithra Devi. K', rank:'III', batch:'2017–2020'},
+    {n:'Ms. Santhiya. M', rank:'IV', batch:'2017–2020'},
+    {n:'Ms. Rani. M', rank:'V', batch:'2017–2020'},
+    {n:'Mr. Praveen. P', rank:'VI', batch:'2017–2020'},
+    {n:'Ms. Anusuruthi. B', rank:'VII', batch:'2017–2020'},
+    {n:'Ms. Mohanapriya. T', rank:'VIII', batch:'2017–2020'},
+    {n:'Mr. Jithin. B', rank:'🥇 I', batch:'2018–2021'},
+    {n:'Ms. Nivashini. D', rank:'VI', batch:'2018–2021'},
+    {n:'Ms. Ramyadevi. R', rank:'VIII', batch:'2018–2021'},
+    {n:'Ms. Nithya. K', rank:'IX', batch:'2018–2021'},
+    {n:'Ms. Gayathri. J', rank:'III', batch:'2019–2022'},
+    {n:'Ms. Jaishree. A. P', rank:'V', batch:'2019–2022'},
+    {n:'Ms. Nivethitha. V', rank:'II', batch:'2020–2023'},
+    {n:'Ms. Kavi Priya. V', rank:'V', batch:'2020–2023'},
+    {n:'Ms. Madhura. G', rank:'VII', batch:'2020–2023'}
+  ],
+  testimonials: [
+    {text:"The faculty don't just teach — they mentor. The lab facilities are at par with leading research institutes. I secured a postdoctoral fellowship at Weizmann Institute of Science after graduating here.", name:'Dr. Ashok Arasu', info:'Postdoctoral Fellow, Weizmann Institute of Science, Israel · Batch 2011–2013'},
+    {text:"Winning the University Gold Medal was possible because of the personalised coaching and constant encouragement from every faculty member. I'm proud to be from this department.", name:'Ms. Indubala S.', info:'University Rank 1 – Gold Medal · Batch 2004–2007'},
+    {text:"The research culture pushed me to publish in SCOPUS-indexed journals as a student. Exposure to national conferences and workshops makes this department truly world-class.", name:'Ms. Srimathi M.', info:'University Rank 1 · Batch 2017–2020'}
+  ],
+  contact: {
+    lead: 'Admissions open for 2026–2027. Contact the department to learn about eligibility, scholarships, and campus visits.'
+  }
+};
+
+// ── Load / Save homepage data from Firebase ──
+async function loadHpData(){
+  if(!FB_ONLINE) return;
+  const d = await fbGet('/homepageContent');
+  if(d && typeof d==='object'){
+    // Deep merge — only overwrite keys that exist in Firebase
+    Object.keys(d).forEach(k=>{ if(hpData[k]!==undefined) hpData[k]=d[k]; });
+  }
+}
+async function saveHpData(){
+  if(!FB_ONLINE){ adminToast('Firebase offline — changes applied locally only.'); return; }
+  await fbSet('/homepageContent', hpData);
+}
+
+// ═══════════════════════════════════════════════════════════
+// APPLY HOMEPAGE DATA TO LIVE PAGE
+// ═══════════════════════════════════════════════════════════
+function applyHpData(){
+  const d = hpData;
+
+  // Hero
+  const h1 = document.getElementById('hp-hero-h1');
+  if(h1) h1.innerHTML = d.hero.h1.replace(/\n/g,'<br>');
+  const sub = document.getElementById('hp-hero-sub');
+  if(sub) sub.textContent = d.hero.sub;
+
+  // Hero stats
+  ['1','2','3'].forEach((i,idx)=>{
+    const ln = document.getElementById('hp-stat'+i+'-l');
+    if(ln) ln.textContent = d.hero.stats[idx].label;
+  });
+  const s4n = document.getElementById('hp-stat4-n');
+  const s4l = document.getElementById('hp-stat4-l');
+  if(s4n) s4n.textContent = d.hero.stats[3].n + (d.hero.stats[3].suffix||'');
+  if(s4l) s4l.textContent = d.hero.stats[3].label;
+
+  // About
+  const aPara = document.getElementById('hp-about-para');
+  if(aPara) aPara.textContent = d.about.para;
+
+  // Programs
+  const pg = document.getElementById('hp-prog-grid');
+  if(pg) pg.innerHTML = d.programs.map((p,i)=>{
+    const delay = ['d1','d2','d3','d4','d1'][i%5];
+    return `<div class="prog-card reveal ${delay}">
+      <div class="prog-card-top">
+        <div class="prog-badge">${esc(p.badge)}</div>
+        <div class="prog-name">${esc(p.name)}</div>
+      </div>
+      <div class="prog-body">
+        <div class="prog-desc">${esc(p.desc)}</div>
+        <div class="prog-tags">${(p.tags||[]).map(t=>`<span class="prog-tag">${esc(t)}</span>`).join('')}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Scope cards
+  const sg = document.getElementById('hp-scope-grid');
+  if(sg) sg.innerHTML = d.scope.map((c,i)=>{
+    const delay = ['d1','d2','d3','d4'][i%4];
+    return `<div class="scope-card reveal ${delay}"><div class="scope-ico">${c.ico}</div><div class="scope-title">${esc(c.title)}</div><div class="scope-desc">${esc(c.desc)}</div></div>`;
+  }).join('');
+
+  // Job roles pills
+  const jp = document.getElementById('hp-jobs-pills');
+  if(jp) jp.innerHTML = d.jobRoles.map(r=>`<span class="career-pill">${esc(r)}</span>`).join('');
+
+  // Why cards — need to find/replace their container
+  const wg = document.querySelector('.why-grid') || document.getElementById('hp-why-grid');
+  if(wg) wg.innerHTML = d.why.map((w,i)=>{
+    const delay = ['d1','d2','d3','d4','d1','d2'][i%6];
+    return `<div class="why-card reveal ${delay}"><div class="why-num">${esc(w.num)}</div><div class="why-title">${esc(w.title)}</div><div class="why-desc">${esc(w.desc)}</div></div>`;
+  }).join('');
+
+  // Publications
+  const pl = document.getElementById('hp-pub-list');
+  if(pl) pl.innerHTML = d.publications.map((p,i)=>{
+    const delay = i%2===0?'':'d1';
+    return `<div class="pub-card reveal ${delay}"><div class="pub-yr">${esc(p.yr)}</div><div><div class="pub-title">${esc(p.title)}</div><div class="pub-journal">${esc(p.journal)}</div><span class="pub-idx">${esc(p.idx)}</span></div></div>`;
+  }).join('');
+
+  // Rank holders
+  const rw = document.getElementById('hp-rankers-wrap');
+  if(rw){
+    const half = Math.ceil(d.rankers.length/2);
+    const left = d.rankers.slice(0,half);
+    const right = d.rankers.slice(half);
+    const buildTable = (rows, offset)=>rows.map((r,i)=>{
+      const isGold = r.rank.includes('🥇') || r.rank.includes('Gold');
+      return `<tr${isGold?' class="rank-gold"':''}><td>${offset+i+1}</td><td>${esc(r.n)}</td><td>${esc(r.rank)}</td><td>${esc(r.batch)}</td></tr>`;
+    }).join('');
+    rw.innerHTML = `
+      <div class="reveal"><div class="rank-table-wrap"><table class="rank-table">
+        <thead><tr><th>#</th><th>Student Name</th><th>Rank</th><th>Batch</th></tr></thead>
+        <tbody>${buildTable(left,0)}</tbody>
+      </table></div></div>
+      <div class="reveal d2"><div class="rank-table-wrap"><table class="rank-table">
+        <thead><tr><th>#</th><th>Student Name</th><th>Rank</th><th>Batch</th></tr></thead>
+        <tbody>${buildTable(right,half)}</tbody>
+      </table></div></div>`;
+  }
+
+  // Testimonials
+  const tg = document.getElementById('hp-testi-grid');
+  if(tg) tg.innerHTML = d.testimonials.map((t,i)=>{
+    const delay = ['','d1','d2'][i%3];
+    return `<div class="testi-card reveal ${delay}">
+      <div class="testi-q">"</div>
+      <div class="stars">★★★★★</div>
+      <div class="testi-text">${esc(t.text)}</div>
+      <div class="testi-meta">
+        <div class="testi-name">${esc(t.name)}</div>
+        <div class="testi-info">${esc(t.info)}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Contact lead
+  const cl = document.getElementById('hp-contact-lead');
+  if(cl) cl.textContent = d.contact.lead;
+}
+
+function esc(s){ const d=document.createElement('div'); d.textContent=String(s||''); return d.innerHTML; }
+
+// ═══════════════════════════════════════════════════════════
+// HOMEPAGE EDITOR UI
+// ═══════════════════════════════════════════════════════════
+function renderHpEditor(){
+  const body = document.getElementById('hpEditorBody'); if(!body) return;
+  body.innerHTML = buildHpBlocks();
+  // Re-attach accordion toggles
+  body.querySelectorAll('.hp-section-head').forEach(h=>{
+    h.addEventListener('click',()=>{
+      h.classList.toggle('open');
+      h.nextElementSibling.classList.toggle('open');
+    });
+  });
+}
+
+function buildHpBlocks(){
+  const d = hpData;
+  return `
+    ${hpBlock('🦸 Hero Section','hero', `
+      <div class="hp-field-group"><div class="hp-field-label">Heading (use \\n for line break, &#60;em&#62; for italic)</div>
+        <textarea class="hp-textarea" id="hpe-hero-h1">${d.hero.h1}</textarea></div>
+      <div class="hp-field-group"><div class="hp-field-label">Subtitle Text</div>
+        <textarea class="hp-textarea" id="hpe-hero-sub" rows="3">${d.hero.sub}</textarea></div>
+      <div class="hp-field-label" style="margin-bottom:0.4rem;">Hero Stats</div>
+      <div class="hp-stat-grid">
+        ${d.hero.stats.map((s,i)=>`
+          <div class="hp-card-item">
+            <div class="hp-field-label">Stat ${i+1} Value</div>
+            <input class="hp-input" id="hpe-stat${i}-n" value="${s.isText?s.n:s.n}" placeholder="e.g. 20" style="margin-bottom:0.35rem;">
+            <div class="hp-field-label">Stat ${i+1} Label</div>
+            <input class="hp-input" id="hpe-stat${i}-l" value="${esc(s.label)}">
+          </div>`).join('')}
+      </div>
+      <button class="hp-save-btn" onclick="hpSaveHero()">💾 Apply & Save Hero</button>
+    `)}
+    ${hpBlock('📖 About Section','about', `
+      <div class="hp-field-group"><div class="hp-field-label">Main Paragraph</div>
+        <textarea class="hp-textarea" id="hpe-about-para" rows="4">${d.about.para}</textarea></div>
+      <div class="hp-field-label" style="margin-bottom:0.5rem;">Highlight Points</div>
+      ${d.about.points.map((p,i)=>`
+        <div class="hp-card-item">
+          <div class="hp-card-item-head">
+            <span class="hp-card-item-title">${p.ico} Point ${i+1}</span>
+            <div class="hp-card-actions">
+              <button class="hp-del-btn" onclick="hpDelAboutPt(${i})">✕</button>
+            </div>
+          </div>
+          <div class="hp-row">
+            <div class="hp-field-group" style="flex:0 0 60px;"><div class="hp-field-label">Icon</div><input class="hp-input" id="hpe-apt-ico-${i}" value="${p.ico}"></div>
+            <div class="hp-field-group" style="flex:1;"><div class="hp-field-label">Title</div><input class="hp-input" id="hpe-apt-title-${i}" value="${esc(p.title)}"></div>
+          </div>
+          <div class="hp-field-group"><div class="hp-field-label">Description</div><textarea class="hp-textarea" id="hpe-apt-desc-${i}">${esc(p.desc)}</textarea></div>
+        </div>`).join('')}
+      <button class="hp-add-btn" onclick="hpAddAboutPt()" style="margin-bottom:0.7rem;">+ Add Point</button>
+      <button class="hp-save-btn" onclick="hpSaveAbout()">💾 Apply & Save About</button>
+    `)}
+    ${hpBlock('🎓 Programs / Courses','programs', `
+      <div id="hpe-prog-list">
+        ${d.programs.map((p,i)=>`
+          <div class="hp-card-item" id="hpe-prog-${i}">
+            <div class="hp-card-item-head">
+              <span class="hp-card-item-title">📋 ${esc(p.name)}</span>
+              <div class="hp-card-actions">
+                <button class="hp-del-btn" onclick="hpDelProg(${i})">✕ Delete</button>
+              </div>
+            </div>
+            <div class="hp-row">
+              <div class="hp-field-group"><div class="hp-field-label">Badge / Type</div><input class="hp-input" id="hpe-prog-badge-${i}" value="${esc(p.badge)}"></div>
+              <div class="hp-field-group"><div class="hp-field-label">Program Name</div><input class="hp-input" id="hpe-prog-name-${i}" value="${esc(p.name)}"></div>
+            </div>
+            <div class="hp-field-group"><div class="hp-field-label">Description</div><textarea class="hp-textarea" id="hpe-prog-desc-${i}">${esc(p.desc)}</textarea></div>
+            <div class="hp-field-group"><div class="hp-field-label">Tags (comma-separated)</div><input class="hp-input" id="hpe-prog-tags-${i}" value="${esc((p.tags||[]).join(', '))}"></div>
+          </div>`).join('')}
+      </div>
+      <button class="hp-add-btn" onclick="hpAddProg()" style="margin-bottom:0.7rem;">+ Add Program</button>
+      <button class="hp-save-btn" onclick="hpSavePrograms()">💾 Apply & Save Programs</button>
+    `)}
+    ${hpBlock('🔭 Career Scope Cards','scope', `
+      <div id="hpe-scope-list">
+        ${d.scope.map((c,i)=>`
+          <div class="hp-card-item">
+            <div class="hp-card-item-head">
+              <span class="hp-card-item-title">${c.ico} ${esc(c.title)}</span>
+              <button class="hp-del-btn" onclick="hpDelScope(${i})">✕</button>
+            </div>
+            <div class="hp-row">
+              <div class="hp-field-group" style="flex:0 0 60px;"><div class="hp-field-label">Icon</div><input class="hp-input" id="hpe-scope-ico-${i}" value="${c.ico}"></div>
+              <div class="hp-field-group"><div class="hp-field-label">Title</div><input class="hp-input" id="hpe-scope-title-${i}" value="${esc(c.title)}"></div>
+            </div>
+            <div class="hp-field-group"><div class="hp-field-label">Description</div><textarea class="hp-textarea" id="hpe-scope-desc-${i}">${esc(c.desc)}</textarea></div>
+          </div>`).join('')}
+      </div>
+      <button class="hp-add-btn" onclick="hpAddScope()" style="margin-bottom:0.7rem;">+ Add Scope Card</button>
+      <div class="hp-field-group" style="margin-top:0.8rem;"><div class="hp-field-label">Job Roles (one per line)</div>
+        <textarea class="hp-textarea" id="hpe-jobroles" rows="5">${d.jobRoles.join('\n')}</textarea></div>
+      <button class="hp-save-btn" onclick="hpSaveScope()">💾 Apply & Save Scope</button>
+    `)}
+    ${hpBlock('✅ Why Choose Us','why', `
+      <div id="hpe-why-list">
+        ${d.why.map((w,i)=>`
+          <div class="hp-card-item">
+            <div class="hp-card-item-head">
+              <span class="hp-card-item-title">${esc(w.num)} — ${esc(w.title)}</span>
+              <button class="hp-del-btn" onclick="hpDelWhy(${i})">✕</button>
+            </div>
+            <div class="hp-row">
+              <div class="hp-field-group" style="flex:0 0 55px;"><div class="hp-field-label">№</div><input class="hp-input" id="hpe-why-num-${i}" value="${esc(w.num)}"></div>
+              <div class="hp-field-group"><div class="hp-field-label">Title</div><input class="hp-input" id="hpe-why-title-${i}" value="${esc(w.title)}"></div>
+            </div>
+            <div class="hp-field-group"><div class="hp-field-label">Description</div><textarea class="hp-textarea" id="hpe-why-desc-${i}">${esc(w.desc)}</textarea></div>
+          </div>`).join('')}
+      </div>
+      <button class="hp-add-btn" onclick="hpAddWhy()" style="margin-bottom:0.7rem;">+ Add Card</button>
+      <button class="hp-save-btn" onclick="hpSaveWhy()">💾 Apply & Save Why Us</button>
+    `)}
+    ${hpBlock('📄 Publications & Patents','publications', `
+      <div id="hpe-pub-list">
+        ${d.publications.map((p,i)=>`
+          <div class="hp-card-item">
+            <div class="hp-card-item-head">
+              <span class="hp-card-item-title">(${esc(p.yr)}) ${esc(p.title.substring(0,60))}…</span>
+              <button class="hp-del-btn" onclick="hpDelPub(${i})">✕</button>
+            </div>
+            <div class="hp-row">
+              <div class="hp-field-group" style="flex:0 0 70px;"><div class="hp-field-label">Year</div><input class="hp-input" id="hpe-pub-yr-${i}" value="${esc(p.yr)}"></div>
+              <div class="hp-field-group" style="flex:0 0 130px;"><div class="hp-field-label">Index Badge</div><input class="hp-input" id="hpe-pub-idx-${i}" value="${esc(p.idx)}"></div>
+            </div>
+            <div class="hp-field-group"><div class="hp-field-label">Title</div><textarea class="hp-textarea" id="hpe-pub-title-${i}" rows="2">${esc(p.title)}</textarea></div>
+            <div class="hp-field-group"><div class="hp-field-label">Journal / Details</div><textarea class="hp-textarea" id="hpe-pub-journal-${i}" rows="2">${esc(p.journal)}</textarea></div>
+          </div>`).join('')}
+      </div>
+      <button class="hp-add-btn" onclick="hpAddPub()" style="margin-bottom:0.7rem;">+ Add Publication</button>
+      <button class="hp-save-btn" onclick="hpSavePubs()">💾 Apply & Save Publications</button>
+    `)}
+    ${hpBlock('🏆 University Rank Holders','rankers', `
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.8rem;">Total: <strong>${d.rankers.length}</strong> rank holders</p>
+      <div id="hpe-ranker-list" style="max-height:350px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;padding:0.5rem;">
+        ${d.rankers.map((r,i)=>`
+          <div class="hp-card-item" style="margin-bottom:0.4rem;padding:0.45rem 0.7rem;">
+            <div class="hp-row" style="align-items:center;gap:0.4rem;">
+              <span style="font-size:0.7rem;font-weight:700;color:var(--gold);min-width:20px;">${i+1}</span>
+              <input class="hp-input" id="hpe-rk-n-${i}" value="${esc(r.n)}" placeholder="Name" style="flex:2;">
+              <input class="hp-input" id="hpe-rk-rank-${i}" value="${esc(r.rank)}" placeholder="Rank" style="flex:1;min-width:60px;">
+              <input class="hp-input" id="hpe-rk-batch-${i}" value="${esc(r.batch)}" placeholder="Batch" style="flex:1;min-width:80px;">
+              <button class="hp-del-btn" onclick="hpDelRanker(${i})">✕</button>
+            </div>
+          </div>`).join('')}
+      </div>
+      <button class="hp-add-btn" onclick="hpAddRanker()" style="margin:0.7rem 0;">+ Add Rank Holder</button>
+      <button class="hp-save-btn" onclick="hpSaveRankers()">💾 Apply & Save Rank Holders</button>
+    `)}
+    ${hpBlock('💬 Testimonials','testimonials', `
+      <div id="hpe-testi-list">
+        ${d.testimonials.map((t,i)=>`
+          <div class="hp-card-item">
+            <div class="hp-card-item-head">
+              <span class="hp-card-item-title">💬 ${esc(t.name)}</span>
+              <button class="hp-del-btn" onclick="hpDelTesti(${i})">✕</button>
+            </div>
+            <div class="hp-field-group"><div class="hp-field-label">Quote Text</div><textarea class="hp-textarea" id="hpe-testi-text-${i}" rows="3">${esc(t.text)}</textarea></div>
+            <div class="hp-row">
+              <div class="hp-field-group"><div class="hp-field-label">Name</div><input class="hp-input" id="hpe-testi-name-${i}" value="${esc(t.name)}"></div>
+              <div class="hp-field-group"><div class="hp-field-label">Role / Info</div><input class="hp-input" id="hpe-testi-info-${i}" value="${esc(t.info)}"></div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <button class="hp-add-btn" onclick="hpAddTesti()" style="margin-bottom:0.7rem;">+ Add Testimonial</button>
+      <button class="hp-save-btn" onclick="hpSaveTestimonials()">💾 Apply & Save Testimonials</button>
+    `)}
+    ${hpBlock('📞 Contact Section','contact', `
+      <div class="hp-field-group"><div class="hp-field-label">Section Subtitle / Lead</div>
+        <textarea class="hp-textarea" id="hpe-contact-lead" rows="2">${esc(d.contact.lead)}</textarea></div>
+      <button class="hp-save-btn" onclick="hpSaveContact()">💾 Apply & Save Contact</button>
+    `)}
+  `;
+}
+
+function hpBlock(label, id, content){
+  return `<div class="hp-section-block">
+    <div class="hp-section-head" id="hphead-${id}">
+      <span class="hp-section-label">${label}</span>
+      <span class="hp-section-arrow">▼</span>
+    </div>
+    <div class="hp-section-body" id="hpbody-${id}">${content}</div>
+  </div>`;
+}
+
+// ── Save handlers ──
+async function hpSaveHero(){
+  hpData.hero.h1 = document.getElementById('hpe-hero-h1')?.value.trim() || hpData.hero.h1;
+  hpData.hero.sub = document.getElementById('hpe-hero-sub')?.value.trim() || hpData.hero.sub;
+  [0,1,2,3].forEach(i=>{
+    const nEl=document.getElementById('hpe-stat'+i+'-n');
+    const lEl=document.getElementById('hpe-stat'+i+'-l');
+    if(nEl) hpData.hero.stats[i].n = isNaN(Number(nEl.value)) ? nEl.value : Number(nEl.value);
+    if(lEl) hpData.hero.stats[i].label = lEl.value.trim();
+  });
+  applyHpData(); await saveHpData(); adminToast('Hero updated! ✅');
+}
+async function hpSaveAbout(){
+  hpData.about.para = document.getElementById('hpe-about-para')?.value.trim() || hpData.about.para;
+  hpData.about.points = hpData.about.points.map((p,i)=>({
+    ico: document.getElementById('hpe-apt-ico-'+i)?.value || p.ico,
+    title: document.getElementById('hpe-apt-title-'+i)?.value.trim() || p.title,
+    desc: document.getElementById('hpe-apt-desc-'+i)?.value.trim() || p.desc
+  }));
+  applyHpData(); await saveHpData(); adminToast('About updated! ✅');
+}
+function hpAddAboutPt(){ hpData.about.points.push({ico:'⭐',title:'New Point',desc:'Description here.'}); renderHpEditor(); }
+function hpDelAboutPt(i){ if(!confirm('Delete point?'))return; hpData.about.points.splice(i,1); renderHpEditor(); }
+
+async function hpSavePrograms(){
+  hpData.programs = hpData.programs.map((p,i)=>({
+    badge: document.getElementById('hpe-prog-badge-'+i)?.value.trim() || p.badge,
+    name:  document.getElementById('hpe-prog-name-'+i)?.value.trim() || p.name,
+    desc:  document.getElementById('hpe-prog-desc-'+i)?.value.trim() || p.desc,
+    tags:  (document.getElementById('hpe-prog-tags-'+i)?.value||'').split(',').map(t=>t.trim()).filter(Boolean)
+  }));
+  applyHpData(); await saveHpData(); adminToast('Programs updated! ✅');
+}
+function hpAddProg(){ hpData.programs.push({badge:'New · Duration',name:'New Program',desc:'Program description.',tags:['Tag1']}); renderHpEditor(); }
+function hpDelProg(i){ if(!confirm('Delete program?'))return; hpData.programs.splice(i,1); renderHpEditor(); }
+
+async function hpSaveScope(){
+  hpData.scope = hpData.scope.map((c,i)=>({
+    ico:   document.getElementById('hpe-scope-ico-'+i)?.value || c.ico,
+    title: document.getElementById('hpe-scope-title-'+i)?.value.trim() || c.title,
+    desc:  document.getElementById('hpe-scope-desc-'+i)?.value.trim() || c.desc
+  }));
+  const jrRaw = document.getElementById('hpe-jobroles')?.value || '';
+  hpData.jobRoles = jrRaw.split('\n').map(r=>r.trim()).filter(Boolean);
+  applyHpData(); await saveHpData(); adminToast('Scope updated! ✅');
+}
+function hpAddScope(){ hpData.scope.push({ico:'🌐',title:'New Career Area',desc:'Description.'}); renderHpEditor(); }
+function hpDelScope(i){ if(!confirm('Delete?'))return; hpData.scope.splice(i,1); renderHpEditor(); }
+
+async function hpSaveWhy(){
+  hpData.why = hpData.why.map((w,i)=>({
+    num:   document.getElementById('hpe-why-num-'+i)?.value.trim() || w.num,
+    title: document.getElementById('hpe-why-title-'+i)?.value.trim() || w.title,
+    desc:  document.getElementById('hpe-why-desc-'+i)?.value.trim() || w.desc
+  }));
+  applyHpData(); await saveHpData(); adminToast('Why Us updated! ✅');
+}
+function hpAddWhy(){ hpData.why.push({num:String(hpData.why.length+1).padStart(2,'0'),title:'New Reason',desc:'Description.'}); renderHpEditor(); }
+function hpDelWhy(i){ if(!confirm('Delete?'))return; hpData.why.splice(i,1); renderHpEditor(); }
+
+async function hpSavePubs(){
+  hpData.publications = hpData.publications.map((p,i)=>({
+    yr:      document.getElementById('hpe-pub-yr-'+i)?.value.trim() || p.yr,
+    idx:     document.getElementById('hpe-pub-idx-'+i)?.value.trim() || p.idx,
+    title:   document.getElementById('hpe-pub-title-'+i)?.value.trim() || p.title,
+    journal: document.getElementById('hpe-pub-journal-'+i)?.value.trim() || p.journal
+  }));
+  applyHpData(); await saveHpData(); adminToast('Publications updated! ✅');
+}
+function hpAddPub(){ hpData.publications.push({yr:String(new Date().getFullYear()),title:'New Publication Title',journal:'Journal Name, Volume(Issue): Pages',idx:'Index · IF 0.0'}); renderHpEditor(); }
+function hpDelPub(i){ if(!confirm('Delete publication?'))return; hpData.publications.splice(i,1); renderHpEditor(); }
+
+async function hpSaveRankers(){
+  hpData.rankers = hpData.rankers.map((r,i)=>({
+    n:     document.getElementById('hpe-rk-n-'+i)?.value.trim() || r.n,
+    rank:  document.getElementById('hpe-rk-rank-'+i)?.value.trim() || r.rank,
+    batch: document.getElementById('hpe-rk-batch-'+i)?.value.trim() || r.batch
+  }));
+  applyHpData(); await saveHpData(); adminToast('Rank Holders updated! ✅');
+}
+function hpAddRanker(){ hpData.rankers.push({n:'Student Name',rank:'I',batch:'2024–2027'}); renderHpEditor(); }
+function hpDelRanker(i){ if(!confirm('Delete?'))return; hpData.rankers.splice(i,1); renderHpEditor(); }
+
+async function hpSaveTestimonials(){
+  hpData.testimonials = hpData.testimonials.map((t,i)=>({
+    text: document.getElementById('hpe-testi-text-'+i)?.value.trim() || t.text,
+    name: document.getElementById('hpe-testi-name-'+i)?.value.trim() || t.name,
+    info: document.getElementById('hpe-testi-info-'+i)?.value.trim() || t.info
+  }));
+  applyHpData(); await saveHpData(); adminToast('Testimonials updated! ✅');
+}
+function hpAddTesti(){ hpData.testimonials.push({text:'Quote here.',name:'Alumni Name',info:'Role · Batch'}); renderHpEditor(); }
+function hpDelTesti(i){ if(!confirm('Delete?'))return; hpData.testimonials.splice(i,1); renderHpEditor(); }
+
+async function hpSaveContact(){
+  hpData.contact.lead = document.getElementById('hpe-contact-lead')?.value.trim() || hpData.contact.lead;
+  applyHpData(); await saveHpData(); adminToast('Contact section updated! ✅');
+}
+
 const DB = 'https://nascbiotechnology-992bf-default-rtdb.firebaseio.com';
+
+// ── SHA-256 password hashing (Web Crypto API) ──
+async function hashPassword(plain){
+  const enc = new TextEncoder();
+  const buf = await crypto.subtle.digest('SHA-256', enc.encode(plain));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 
 // Firebase key helpers — Firebase keys can't have . # $ [ ] /
 function eKey(email){ return email.toLowerCase().replace(/\./g,'_').replace(/@/g,'--'); }
@@ -2518,7 +2772,39 @@ const DEFAULT_NOTIFS=[
 ];
 const DEFAULT_SYL={
   1:[{id:'s1y1',name:'Tamil',units:['Sangam Literature Introduction','Grammar and Composition','Classical Texts','Poetry Analysis','Creative Writing']},{id:'s2y1',name:'English',units:['Reading Comprehension','Grammar Usage','Writing Skills','Communication Basics','Literature Appreciation']},{id:'s3y1',name:'Biochemistry and Biology of Cells',units:['Cell Structure and Function','Biomolecules','Metabolism \u2014 Carbohydrates and Lipids','Protein Structure and Enzymology','DNA and RNA Structure']},{id:'s4y1',name:'Microbiology',units:['Introduction to Microbiology','Bacteria Structure and Classification','Viruses and Bacteriophages','Fungi and Protozoa','Sterilization and Disinfection']},{id:'s5y1',name:'Computer Application I',units:['Introduction to Computers','MS Word','MS Excel','MS PowerPoint','Internet Basics']}],
-  2:[{id:'s1y2',name:'Tamil',units:['Ettuthokai \u2014 Natrinai, Kuruntokai, Kalittokai, Purananuru poems','Mullaippattu (full text)','Drama \u2014 Sabapathi by Pammal Sambanda Mudaliar','Literary History and Grammar','Creative Writing Practice']},{id:'s2y2',name:'English',units:['Soft Skills for Employability','Professional Speaking \u2014 Job Interview','Group Discussion','Presentation Skills','Technical Writing']},{id:'s3y2',name:'Plant and Animal Biotechnology',units:['Cell and Tissue Culture','Cell Culture Methods','Animal Cell Culture','Transgenic Animals','Animal Cloning']},{id:'s4y2',name:'Basics in Forensic Science',units:['Introduction to Forensic Science','Forensic Biology and Serology','Instrumentation and Sampling','Forensic Science Laboratory','Emerging Role of Forensic Science']},{id:'s5y2',name:'Computer Application II \u2014 Python',units:['Variables, Literals and Data Types','Indentation and Arithmetic Operations','Looping','Decision Making','List Slice, Dictionary, Functions, Lambda, DNA Sequence Programs']}],
+  2:[
+    {id:'s1y2',name:'Tamil',type:'theory',units:[
+      {name:'\u0b85\u0bb2\u0b95\u0bc1 1 \u2014 \u0b8e\u0b9f\u0bcd\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4\u0bca\u0b95\u0bc8 (Ettuthokai)',topics:['\u0ba8\u0bb1\u0bcd\u0bb1\u0bbf\u0ba3\u0bc8 \u2014 2 \u0baa\u0bbe\u0b9f\u0bb2\u0bcd\u0b95\u0bb3\u0bcd (183, 355)','\u0b95\u0bc1\u0bb1\u0bc1\u0ba8\u0bcd\u0ba4\u0bca\u0b95\u0bc8 \u2014 5 \u0baa\u0bbe\u0b9f\u0bb2\u0bcd\u0b95\u0bb3\u0bcd (2, 3, 40, 135, 210)','\u0b95\u0bb2\u0bbf\u0ba4\u0bcd\u0ba4\u0bca\u0b95\u0bc8 \u2014 2 \u0baa\u0bbe\u0b9f\u0bb2\u0bcd\u0b95\u0bb3\u0bcd (25, 51)','\u0baa\u0bc1\u0bb1\u0ba8\u0bbe\u0ba9\u0bc2\u0bb1\u0bc1 \u2014 5 \u0baa\u0bbe\u0b9f\u0bb2\u0bcd\u0b95\u0bb3\u0bcd (18, 134, 189, 192, 312)'],lessons:[]},
+      {name:'\u0b85\u0bb2\u0b95\u0bc1 2 \u2014 \u0bae\u0bc1\u0bb2\u0bcd\u0bb2\u0bc8\u0baa\u0bcd\u0baa\u0bbe\u0b9f\u0bcd\u0b9f\u0bc1',topics:['\u0bae\u0bc1\u0bb2\u0bcd\u0bb2\u0bc8\u0baa\u0bcd\u0baa\u0bbe\u0b9f\u0bcd\u0b9f\u0bc1 \u0bae\u0bc1\u0bb4\u0bc1\u0bb5\u0ba4\u0bc1\u0bae\u0bcd (Full text)'],lessons:[]},
+      {name:'\u0b85\u0bb2\u0b95\u0bc1 3 \u2014 \u0ba8\u0bbe\u0b9f\u0b95\u0bae\u0bcd (Drama)',topics:['\u0b9a\u0baa\u0bbe\u0baa\u0ba4\u0bbf \u2014 \u0baa\u0bae\u0bcd\u0bae\u0bb2\u0bcd \u0b9a\u0bae\u0bcd\u0baa\u0ba8\u0bcd\u0ba4\u0bb0\u0bcd \u0bae\u0bc1\u0ba4\u0bb2\u0bbf\u0baf\u0bbe\u0bb0\u0bcd'],lessons:[]},
+      {name:'\u0b85\u0bb2\u0b95\u0bc1 4 \u2014 \u0b87\u0bb2\u0b95\u0bcd\u0b95\u0bbf\u0baf \u0bb5\u0bb0\u0bb2\u0bbe\u0bb1\u0bc1 & \u0b87\u0bb2\u0b95\u0bcd\u0b95\u0ba3\u0bae\u0bcd',topics:['\u0b9a\u0b99\u0bcd\u0b95 \u0b87\u0bb2\u0b95\u0bcd\u0b95\u0bbf\u0baf\u0bae\u0bcd \u2014 \u0b8e\u0b9f\u0bcd\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4\u0bca\u0b95\u0bc8, \u0baa\u0ba4\u0bcd\u0ba4\u0bc1\u0baa\u0bcd\u0baa\u0bbe\u0b9f\u0bcd\u0b9f\u0bc1','\u0ba8\u0bbe\u0b9f\u0b95\u0ba4\u0bcd\u0ba4\u0bbf\u0ba9\u0bcd \u0ba4\u0bcb\u0bb1\u0bcd\u0bb1\u0bae\u0bc1\u0bae\u0bcd \u0bb5\u0bb3\u0bb0\u0bcd\u0b9a\u0bcd\u0b9a\u0bbf\u0baf\u0bc1\u0bae\u0bcd','\u0b85\u0b95 \u0b87\u0bb2\u0b95\u0bcd\u0b95\u0ba3\u0bae\u0bcd \u2014 \u0bae\u0bc1\u0ba4\u0bb2\u0bcd, \u0b95\u0bb0\u0bc1, \u0b89\u0bb0\u0bbf\u0baa\u0bcd\u0baa\u0bca\u0bb0\u0bc1\u0bb3\u0bcd','\u0baa\u0bc1\u0bb1 \u0b87\u0bb2\u0b95\u0bcd\u0b95\u0ba3\u0bae\u0bcd \u2014 \u0baa\u0bc1\u0bb1\u0ba4\u0bcd\u0ba4\u0bbf\u0ba3\u0bc8\u0b95\u0bb3\u0bcd 12 \u0bb5\u0b95\u0bc8\u0b95\u0bb3\u0bcd'],lessons:[]},
+      {name:'\u0b85\u0bb2\u0b95\u0bc1 5 \u2014 \u0baa\u0b9f\u0bc8\u0baa\u0bcd\u0baa\u0bbf\u0bb2\u0b95\u0bcd\u0b95\u0bbf\u0baf\u0baa\u0bcd \u0baa\u0baf\u0bbf\u0bb1\u0bcd\u0b9a\u0bbf',topics:['\u0ba8\u0bbe\u0b9f\u0b95 \u0b89\u0bb0\u0bc1\u0bb5\u0bbe\u0b95\u0bcd\u0b95\u0bae\u0bcd','\u0b93\u0bb0\u0b99\u0bcd\u0b95 \u0ba8\u0bbe\u0b9f\u0b95\u0bae\u0bcd'],lessons:[]}
+    ]},
+    {id:'s2y2',name:'English',type:'theory',units:[
+      {name:'Unit 1 \u2014 Soft Skills for Employability',topics:['Self Assessment','Goal Setting','Time Management','Team Building / Networking','Openers to Criticism','Stress Management','Work Life Balance','Critical Thinking','Problem Solving','Life Long Learning'],lessons:[]},
+      {name:'Unit 2 \u2014 Professional Speaking (Job Interview)',topics:['Characteristics of a Job Interview','Preparation Techniques','Interview Questions','Important Aspects for a Job Interview','Alternative Interview Formats'],lessons:[]},
+      {name:'Unit 3 \u2014 Group Discussion',topics:['Definition of Group Discussion','Importance of Group Discussion','Characteristics of a Successful Group Discussion','Group Discussion as a Tool for Selection','Cross Group Discussion Strategies'],lessons:[]},
+      {name:'Unit 4 \u2014 Presentation Skills',topics:['Definition of Presentation Skills','Oral Presentation','Importance of Presentation Skills','Stages of a Presentation','Planning & Organising the Presentation','Rehearsing the Presentation','Improving the Delivery','Checklist for Making a Presentation'],lessons:[]},
+      {name:'Unit 5 \u2014 Technical Writing',topics:['Email Writing \u2014 Advantages & Effective Writing','Characteristics of Effective Email','Email Structure & Standard Practices','Email Writing Strategies','Preparing a Circular','Preparing an Agenda','Preparing Minutes','Preparing a Report'],lessons:[]}
+    ]},
+    {id:'s3y2',name:'Plant and Animal Biotechnology',type:'theory',units:[
+      {name:'Unit 1 \u2014 Cell and Tissue Culture',topics:['Introduction to Cell and Tissue Culture','Plant Tissue Culture Media \u2014 Composition, Types and Preparation','Plant Hormones and Growth Regulators in Tissue Culture','Preparation of Suitable Explant for Organogenesis','Micropropagation on a Large Scale','Somatic Embryogenesis','Protoplast Culture and Somatic Hybridization','Anther, Pollen and Ovary Culture for Production of Haploid Plants'],lessons:[]},
+      {name:'Unit 2 \u2014 Cell Culture Methods',topics:['Cell Culture Methods for Secondary Metabolites Production','Somaclonal Variation and its Significance','Cryopreservation','Plant Transformation Techniques','Agrobacterium Mediated Gene Transfer','Mechanism of DNA Transfer','General Features \u2014 Ti and Ri Plasmids and their Uses as Vectors'],lessons:[]},
+      {name:'Unit 3 \u2014 Animal Cell Culture',topics:['Animal Cell Culture \u2014 Culture Media (Composition and Preparation)','Balanced Salt Solution & Role of CO\u2082','Culturing and Maintenance of Different Animal Cell Lines','Primary and Established Cell Lines','Characterization of Cultured Cells','Measurement of Viability \u2014 Cytotoxicity Assays and Cell Growth','Embryonic Stem Cells and their Applications','Cell Culture Based Vaccines','Induced Pluripotent Stem Cells'],lessons:[]},
+      {name:'Unit 4 \u2014 Transgenic Animals',topics:['Methods of Obtaining Transgenic Animals','Fertilized Eggs and Embryonic Blastocyst Cell Method','Increased Productivity of Domestic Animals','Improve Desired Characters of Domestic Animals','Production of Recombinant Gene Products and Proteins for Pharmaceutical Use','Animal Models for Tackling Human Diseases (Gene Knockout in Mice Models)'],lessons:[]},
+      {name:'Unit 5 \u2014 Animal Cloning',topics:['Methods of Cloning in Animal System \u2014 Rat, Sheep and Pig','Importance of Cloning','Gene Therapy and Cell Mediated Therapy','Ethical Issues in Animal Biotechnology','Animal Welfare and its Importance'],lessons:[]}
+    ]},
+    {id:'s4y2',name:'Basics in Forensic Science',type:'theory',units:[
+      {name:'Unit 1 \u2014 Introduction to Forensic Science',topics:['Forensic Science \u2014 Definition and Scope','History and Development of Forensic Science','Role of Forensic Science in Criminal Justice','Ethics in Forensic Science and Investigation','Biological Fluids \u2014 Identification and Analysis'],lessons:[]},
+      {name:'Unit 2 \u2014 Forensic Biology and Serology',topics:['DNA Typing and its Forensic Applications','PCR and STR Analysis in Forensic DNA Profiling','Forensic Botany','Microbial Forensics \u2014 Role of Bacteria and Virus in Crime Investigation','Forensic Anthropology \u2014 Skeletal Analysis','Determining Age, Sex and Identity from Bones','Types of Insects and their Forensic Significance'],lessons:[]},
+      {name:'Unit 3 \u2014 Instrumentation and Sampling',topics:['Crime Scene Investigation','Biological Sample Collection \u2014 Blood, Saliva, Hair, Semen','Forensic Serology \u2014 Preservation, Handling and Evidence Collection','Identification and Morphological Examination of Toxic Plants'],lessons:[]},
+      {name:'Unit 4 \u2014 Forensic Science Laboratory (FSL)',topics:['State and Central Forensic Science Laboratories','Research Institutes in India Handling Forensic Samples','COVID Emergencies','Prevention of Food Adulteration Act and Rules (PFA)','Orders under the Essential Commodities Act','Food Safety and Standards Act'],lessons:[]},
+      {name:'Unit 5 \u2014 Emerging Role of Forensic Science',topics:['Digital and Cyber Forensics \u2014 Basics and Applications','Recent Advances in Forensic Biology and Biotechnology','Case Studies and Real Life Applications','Applications of Forensic Biology in Criminal Investigation','Case Studies Involving Toxicology','Famous Forensic Cases and their Impact','Emerging Trends in Forensic Science'],lessons:[]}
+    ]},
+    {id:'s5y2',name:'Computer Application II \u2014 Python',type:'practical',units:[
+      {name:'Practicals',topics:['Program to Display Data of Different Types using Variables and Literal Constants','Program to Exhibit Indentation Errors and Arithmetic Operations','Program to Demonstrate Looping','Program to Demonstrate Decision Making','Program to Demonstrate the Slice Operation \u2014 Accessing Elements of a List','Program for Demonstrating Add and Modify Items in Dictionary','Program to Demonstrate Concepts using Functions and Lambda','Program for Reverse Complement of a DNA Sequence'],lessons:[]}
+    ]}
+  ],
   3:[{id:'s1y3',name:'Bioinformatics',units:['Introduction to Bioinformatics','Biological Databases','Sequence Alignment \u2014 BLAST, FASTA','Phylogenetics and Molecular Evolution','Structural Bioinformatics']},{id:'s2y3',name:'Molecular Biology and Genetic Engineering',units:['DNA Replication and Repair','Transcription and Translation','Recombinant DNA Technology','Gene Cloning Vectors','PCR and Applications']},{id:'s3y3',name:'Immunology',units:['Introduction to Immune System','Innate Immunity','Adaptive Immunity','Antibody Structure and Function','Vaccines and Immunotherapy']},{id:'s4y3',name:'Environmental Biotechnology',units:['Bioremediation','Waste Water Treatment','Solid Waste Management','Biofuels','Environmental Impact Assessment']},{id:'s5y3',name:'Industrial Biotechnology',units:['Fermentation Technology','Enzyme Technology','Downstream Processing','Bioprocess Scale-Up','Good Manufacturing Practice']}]
 };
 const DEFAULT_TT={
@@ -2559,9 +2845,10 @@ function formatDateDisplay(str){ if(!str)return''; const [y,m,d]=str.split('-');
 // ═══════════════════════════════════════
 // LOGIN & USER MANAGEMENT
 // ═══════════════════════════════════════
+// Passwords stored as SHA-256 hashes — never plain text
 const BASE_USERS=[
-  {email:'24ubio008.deepak_m@nandhaarts.org',password:'30112005',role:'student'},
-  {email:'24ubio008.deepak_m@nandhaarts.org',password:'30112005',role:'faculty',isDev:true}
+  {email:'24ubio008.deepak_m@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'student'},
+  {email:'24ubio008.deepak_m@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'faculty',isDev:true}
 ];
 let extraUsers=[];
 let selectedRole='';
@@ -2608,12 +2895,14 @@ function selectRole(role){ selectedRole=role; document.getElementById('loginRole
 function goBack(){ showStep('step1'); document.getElementById('loginErr').classList.remove('show'); }
 function showStep(id){ document.querySelectorAll('.login-step').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
-function doLogin(){
+async function doLogin(){
   const email=document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pass=document.getElementById('loginPass').value.trim();
+  const plain=document.getElementById('loginPass').value.trim();
   const errEl=document.getElementById('loginErr');
-  const user=getAllUsers().find(u=>u.email.toLowerCase()===email&&u.password===pass&&u.role===selectedRole);
-  if(!user){ errEl.textContent='Invalid email or password.'; errEl.classList.add('show'); ['loginEmail','loginPass'].forEach(id=>{const el=document.getElementById(id);el.classList.add('error');setTimeout(()=>el.classList.remove('error'),1500);}); return; }
+  if(!email||!plain){ errEl.textContent='Please enter email and password.'; errEl.classList.add('show'); return; }
+  const hashed=await hashPassword(plain);
+  const user=getAllUsers().find(u=>u.email.toLowerCase()===email&&u.password===hashed&&u.role===selectedRole);
+  if(!user){ errEl.textContent='Invalid email or password. Please try again.'; errEl.classList.add('show'); ['loginEmail','loginPass'].forEach(id=>{const el=document.getElementById(id);el.classList.add('error');setTimeout(()=>el.classList.remove('error'),1500);}); return; }
   const info=parseProfile(user.email,user.displayName);
   info.email=user.email.toLowerCase();
   currentUserInfo=info;
@@ -2653,6 +2942,7 @@ async function openPortal(info){
     const sl=document.getElementById('sylSoonLabel'); if(sl)sl.textContent=info.yearLabel;
   }
 
+  renderStudentSyllabus(info);
   renderStudentFlash(); renderStudentNotifs();
   renderStudentMarks(info);
 
@@ -2791,11 +3081,17 @@ function stdAttNavMonth(dir){
 let facSylYear=1,facTTYear=1,facFacYear=1,facMarksYear=1,facAttYear=1;
 
 async function openFacPortal(info,user){
+  currentIsDev = !!(user && user.isDev);
   document.getElementById('facName').textContent=info.name;
+  const devBadgeEl=document.getElementById('devBadge');
+  if(devBadgeEl) devBadgeEl.style.display=currentIsDev?'':'none';
+  const hpTabEl=document.getElementById('hpTab');
+  if(hpTabEl) hpTabEl.classList.toggle('dev-visible', currentIsDev);
   document.getElementById('facAvatar').textContent=info.init;
   document.getElementById('facWelcome').textContent='Welcome, '+info.name;
   await loadCoreData();
-  renderFacFlash(); renderFacFlashList(); renderFacNotifList();
+  renderFacFlash();
+  if(currentIsDev) renderHpEditor(); renderFacFlashList(); renderFacNotifList();
   selectSylYear(1,document.querySelector('#ap-syllabus .year-btn'));
   selectTTYear(1,document.querySelector('#ap-timetable .year-btn'));
   selectFacYear(1,document.querySelector('#ap-faculty .year-btn'));
@@ -2870,29 +3166,274 @@ async function deleteNotif(id){
 }
 
 // ── Syllabus Admin ──
-function selectSylYear(yr,btn){ facSylYear=yr; document.querySelectorAll('#ap-syllabus .year-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); renderSylAdmin(); }
-function renderSylAdmin(){
-  const yr=facSylYear,syl=sylData[yr],yname=['I','II','III'][yr-1];
-  document.getElementById('sylAdminTitle').textContent=yname+' Year \u2014 Subjects & Syllabus';
-  document.getElementById('sylAdminBody').innerHTML=syl.map((s,si)=>`
-    <div style="border:1px solid var(--border);border-radius:6px;margin-bottom:0.9rem;overflow:hidden;">
-      <div style="padding:0.7rem 1rem;background:var(--off);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">
-        <strong style="font-size:0.88rem;color:var(--navy);">${s.name}</strong>
-        <div style="display:flex;gap:0.4rem;"><button class="btn-edit" onclick="editSubjName(${si})">&#9998; Rename</button><button class="btn-del" onclick="deleteSubject(${si})">Delete</button></div>
-      </div>
-      <div style="padding:0.8rem 1rem;">${s.units.map((u,ui)=>`<div class="admin-list-row" style="margin-bottom:0.4rem;"><span class="admin-list-text">${u}</span><div class="admin-list-actions"><button class="btn-edit" onclick="editUnit(${si},${ui})">&#9998;</button><button class="btn-del" onclick="deleteUnit(${si},${ui})">&#10005;</button></div></div>`).join('')}
-        <div style="display:flex;gap:0.5rem;margin-top:0.6rem;"><input class="admin-input" id="nu_${si}" placeholder="Add new unit/topic..."><button class="btn-add" onclick="addUnit(${si})">+ Add</button></div>
-      </div>
-    </div>`).join('');
-}
-function addSubject(){ const n=prompt('New subject name:'); if(!n||!n.trim())return; sylData[facSylYear].push({id:'s'+Date.now(),name:n.trim(),units:[]}); renderSylAdmin(); adminToast('Subject added! \u2705'); }
-function deleteSubject(si){ if(!confirm('Delete subject?'))return; sylData[facSylYear].splice(si,1); renderSylAdmin(); adminToast('Deleted.'); }
-function editSubjName(si){ const n=prompt('Rename:',sylData[facSylYear][si].name); if(!n)return; sylData[facSylYear][si].name=n.trim(); renderSylAdmin(); adminToast('Renamed! \u2705'); }
-function addUnit(si){ const inp=document.getElementById('nu_'+si),txt=inp?inp.value.trim():''; if(!txt){adminToast('Enter unit name.');return;} sylData[facSylYear][si].units.push(txt); renderSylAdmin(); adminToast('Unit added! \u2705'); }
-function editUnit(si,ui){ const v=prompt('Edit:',sylData[facSylYear][si].units[ui]); if(v===null)return; sylData[facSylYear][si].units[ui]=v.trim(); renderSylAdmin(); adminToast('Updated! \u2705'); }
-function deleteUnit(si,ui){ sylData[facSylYear][si].units.splice(ui,1); renderSylAdmin(); adminToast('Deleted.'); }
+// ═══════════════════════════════════════
+// SYLLABUS — SHARED DATA STRUCTURE
+// units[ui] = { name: string, topics: string[], lessons: string[] }
+//   topics  = official syllabus points (dev can edit)
+//   lessons = class lessons entered by faculty/dev
+// ═══════════════════════════════════════
 
-// ── Timetable Admin ──
+let currentIsDev = false;  // set in openFacPortal
+
+// ── Migrate legacy string units → object units (one-time) ──
+function migrateSylData(){
+  [1,2,3].forEach(yr=>{
+    (sylData[yr]||[]).forEach((subj,si)=>{
+      if(!subj.type) sylData[yr][si].type = 'theory';
+      sylData[yr][si].units = (subj.units||[]).map(u=>{
+        if(typeof u === 'string') return {name:u, topics:[], lessons:[]};
+        return {name: u.name||'', topics: u.topics||[], lessons: u.lessons||[]};
+      });
+    });
+  });
+}
+
+// ── Load syllabus from Firebase (merge lessons into sylData) ──
+async function loadSyllabusLessons(){
+  if(!FB_ONLINE) return;
+  const data = await fbGet('/syllabusLessons');
+  if(!data) return;
+  [1,2,3].forEach(yr=>{
+    (sylData[yr]||[]).forEach((subj,si)=>{
+      const sk = sKey(subj.name);
+      if(data[yr] && data[yr][sk]){
+        subj.units.forEach((u,ui)=>{
+          const uk = 'u'+ui;
+          if(data[yr][sk][uk]) sylData[yr][si].units[ui].lessons = data[yr][sk][uk];
+        });
+      }
+    });
+  });
+}
+
+async function saveSyllabusLessons(yr, si){
+  if(!FB_ONLINE) return;
+  const subj = sylData[yr][si];
+  const sk = sKey(subj.name);
+  const payload = {};
+  subj.units.forEach((u,ui)=>{ payload['u'+ui] = u.lessons||[]; });
+  await fbSet('/syllabusLessons/'+yr+'/'+sk, payload);
+}
+
+// ─────────────────────────────────────
+// FACULTY ADMIN SYLLABUS PANEL
+// ─────────────────────────────────────
+function selectSylYear(yr,btn){
+  facSylYear=yr;
+  document.querySelectorAll('#ap-syllabus .year-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderSylAdmin();
+}
+
+function renderSylAdmin(){
+  const yr=facSylYear, syl=sylData[yr], yname=['I','II','III'][yr-1];
+  document.getElementById('sylAdminTitle').textContent = yname+' Year \u2014 Subjects & Syllabus';
+
+  // Show "Add Subject" button only for developer
+  const addBtn = document.getElementById('sylAddSubjectBtn');
+  if(addBtn) addBtn.style.display = currentIsDev ? '' : 'none';
+
+  document.getElementById('sylAdminBody').innerHTML = syl.map((s,si)=>{
+    const typeBadge = `<span class="subj-type-badge subj-type-${s.type||'theory'}">${(s.type||'theory').toUpperCase()}</span>`;
+
+    const unitsHTML = s.units.map((u,ui)=>{
+      const lessonsHTML = (u.lessons||[]).map((l,li)=>`
+        <div class="fac-lesson-row">
+          <span class="fac-lesson-idx">${li+1}</span>
+          <span class="fac-lesson-txt">${l}</span>
+          <div class="admin-list-actions" style="opacity:1;">
+            <button class="btn-edit" onclick="editLesson(${si},${ui},${li})">&#9998;</button>
+            <button class="btn-del" onclick="deleteLesson(${si},${ui},${li})">&#10005;</button>
+          </div>
+        </div>`).join('');
+
+      const topicsHTML = currentIsDev && (u.topics||[]).length > 0
+        ? `<div style="margin-bottom:0.5rem;">${(u.topics||[]).map((t,ti)=>`
+            <div class="admin-list-row" style="margin-bottom:0.3rem;font-size:0.77rem;">
+              <span class="admin-list-text">${t}</span>
+              <div class="admin-list-actions"><button class="btn-edit" onclick="editTopic(${si},${ui},${ti})">&#9998;</button><button class="btn-del" onclick="deleteTopic(${si},${ui},${ti})">&#10005;</button></div>
+            </div>`).join('')}</div>` : '';
+
+      return `
+        <div style="border:1px solid var(--border);border-radius:6px;margin-bottom:0.7rem;overflow:hidden;">
+          <div style="background:var(--off);padding:0.55rem 0.9rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.3rem;">
+            <span style="font-size:0.83rem;font-weight:700;color:var(--navy);">Unit ${ui+1} — ${u.name}</span>
+            <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+              ${currentIsDev ? `<button class="btn-edit" style="font-size:0.68rem;padding:0.18rem 0.45rem;" onclick="editUnitName(${si},${ui})">✏️ Rename</button>` : ''}
+              ${currentIsDev ? `<button class="btn-edit" style="font-size:0.68rem;padding:0.18rem 0.45rem;" onclick="addTopic(${si},${ui})">+ Topic</button>` : ''}
+            </div>
+          </div>
+          <div style="padding:0.65rem 0.9rem;">
+            ${currentIsDev && (u.topics||[]).length > 0 ? `<div style="font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.35rem;">📋 Syllabus Topics</div>${topicsHTML}` : ''}
+            ${!currentIsDev && (u.topics||[]).length > 0 ? `<div style="margin-bottom:0.5rem;">${(u.topics||[]).map(t=>`<div style="font-size:0.78rem;color:var(--muted);padding:0.15rem 0;">• ${t}</div>`).join('')}</div>` : ''}
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;margin:0.5rem 0 0.3rem;display:flex;align-items:center;justify-content:space-between;">
+              <span>📖 Lessons (${(u.lessons||[]).length})</span>
+            </div>
+            ${(u.lessons||[]).length ? lessonsHTML : '<div style="font-size:0.75rem;color:var(--muted);font-style:italic;padding:0.1rem 0;">No lessons added yet</div>'}
+            <div style="display:flex;gap:0.5rem;margin-top:0.6rem;">
+              <input class="admin-input" id="nl_${si}_${ui}" placeholder="Add lesson (e.g. Introduction to Tissue Culture)…" style="flex:1;">
+              <button class="btn-add" style="white-space:nowrap;" onclick="addLesson(${si},${ui})">+ Lesson</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    return `
+      <div style="border:2px solid var(--border);border-radius:8px;margin-bottom:1.2rem;overflow:hidden;">
+        <div style="padding:0.7rem 1rem;background:linear-gradient(90deg,var(--navy) 0%,var(--navy2) 100%);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.4rem;">
+          <strong style="color:#fff;font-size:0.9rem;">${s.name} ${typeBadge}</strong>
+          <div style="display:flex;gap:0.4rem;">
+            ${currentIsDev ? `<button class="btn-edit" onclick="editSubjName(${si})">&#9998; Rename</button>` : ''}
+            ${currentIsDev ? `<button class="btn-edit" onclick="addUnitToSubject(${si})">+ Unit</button>` : ''}
+            ${currentIsDev ? `<button class="btn-del" onclick="deleteSubject(${si})">Delete</button>` : ''}
+          </div>
+        </div>
+        <div style="padding:0.9rem 1rem;">${unitsHTML}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── Lesson CRUD ──
+async function addLesson(si,ui){
+  const inp = document.getElementById(`nl_${si}_${ui}`);
+  const txt = inp ? inp.value.trim() : '';
+  if(!txt){ adminToast('Enter a lesson title.'); return; }
+  sylData[facSylYear][si].units[ui].lessons.push(txt);
+  if(inp) inp.value='';
+  await saveSyllabusLessons(facSylYear, si);
+  renderSylAdmin();
+  adminToast('Lesson added! \u2705');
+}
+async function editLesson(si,ui,li){
+  const cur = sylData[facSylYear][si].units[ui].lessons[li];
+  const v = prompt('Edit lesson:', cur);
+  if(v===null || !v.trim()) return;
+  sylData[facSylYear][si].units[ui].lessons[li] = v.trim();
+  await saveSyllabusLessons(facSylYear, si);
+  renderSylAdmin();
+  adminToast('Updated! \u2705');
+}
+async function deleteLesson(si,ui,li){
+  if(!confirm('Delete this lesson?')) return;
+  sylData[facSylYear][si].units[ui].lessons.splice(li,1);
+  await saveSyllabusLessons(facSylYear, si);
+  renderSylAdmin();
+  adminToast('Deleted.');
+}
+
+// ── Topic CRUD (developer only) ──
+async function addTopic(si,ui){
+  const v = prompt('New topic/syllabus point:');
+  if(!v||!v.trim()) return;
+  if(!sylData[facSylYear][si].units[ui].topics) sylData[facSylYear][si].units[ui].topics=[];
+  sylData[facSylYear][si].units[ui].topics.push(v.trim());
+  await saveSyllabusLessons(facSylYear,si);
+  renderSylAdmin(); adminToast('Topic added! \u2705');
+}
+async function editTopic(si,ui,ti){
+  const v=prompt('Edit topic:', sylData[facSylYear][si].units[ui].topics[ti]);
+  if(v===null) return;
+  sylData[facSylYear][si].units[ui].topics[ti]=v.trim();
+  await saveSyllabusLessons(facSylYear,si); renderSylAdmin(); adminToast('Updated! \u2705');
+}
+async function deleteTopic(si,ui,ti){
+  if(!confirm('Delete topic?')) return;
+  sylData[facSylYear][si].units[ui].topics.splice(ti,1);
+  await saveSyllabusLessons(facSylYear,si); renderSylAdmin(); adminToast('Deleted.');
+}
+
+// ── Unit rename & add (developer only) ──
+async function editUnitName(si,ui){
+  const v = prompt('Rename unit:',sylData[facSylYear][si].units[ui].name);
+  if(!v) return;
+  sylData[facSylYear][si].units[ui].name=v.trim();
+  renderSylAdmin(); adminToast('Renamed! \u2705');
+}
+async function addUnitToSubject(si){
+  const v=prompt('New unit name (e.g. Unit 6 — Advanced Topics):');
+  if(!v||!v.trim()) return;
+  sylData[facSylYear][si].units.push({name:v.trim(),topics:[],lessons:[]});
+  renderSylAdmin(); adminToast('Unit added! \u2705');
+}
+
+// ── Subject CRUD (developer only) ──
+function addSubject(){
+  if(!currentIsDev){ adminToast('Only the developer can add subjects.'); return; }
+  const n=prompt('New subject name:'); if(!n||!n.trim()) return;
+  const t=confirm('Is this a Theory subject?\nOK = Theory  |  Cancel = Practical');
+  sylData[facSylYear].push({id:'s'+Date.now(),name:n.trim(),type:t?'theory':'practical',units:[]});
+  renderSylAdmin(); adminToast('Subject added! \u2705');
+}
+function deleteSubject(si){
+  if(!currentIsDev){ adminToast('Only the developer can delete subjects.'); return; }
+  if(!confirm('Delete this subject and all its content?')) return;
+  sylData[facSylYear].splice(si,1); renderSylAdmin(); adminToast('Deleted.');
+}
+function editSubjName(si){
+  if(!currentIsDev){ adminToast('Only the developer can rename subjects.'); return; }
+  const n=prompt('Rename subject:',sylData[facSylYear][si].name); if(!n) return;
+  sylData[facSylYear][si].name=n.trim(); renderSylAdmin(); adminToast('Renamed! \u2705');
+}
+// Legacy stubs kept for window.* bindings
+function editUnit(si,ui){ editUnitName(si,ui); }
+function addUnit(si){ addUnitToSubject(si); }
+function deleteUnit(si,ui){ if(!confirm('Delete unit?'))return; sylData[facSylYear][si].units.splice(ui,1); renderSylAdmin(); adminToast('Deleted.'); }
+
+// ─────────────────────────────────────
+// STUDENT SYLLABUS — DYNAMIC RENDER
+// ─────────────────────────────────────
+function renderStudentSyllabus(info){
+  const el = document.getElementById('stdSylBody'); if(!el) return;
+  const subjs = sylData[info.yearOfStudy] || [];
+  const badge = document.getElementById('stdSylBadge');
+  if(badge) badge.textContent = subjs.length + ' Subjects \u2014 ' + info.yearLabel;
+
+  if(!subjs.length){
+    el.innerHTML='<div style="text-align:center;padding:2rem;"><div style="font-size:2rem;margin-bottom:0.5rem;">📚</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);">Syllabus Will Be Updated Soon</div></div>';
+    return;
+  }
+
+  // Build subject tabs + panels
+  const tabs = subjs.map((s,si)=>`<button class="syl-tab${si===0?' active':''}" onclick="stdSylTab(${si},this)">${s.name}</button>`).join('');
+
+  const panels = subjs.map((s,si)=>{
+    const unitRows = (s.units||[]).map((u,ui)=>{
+      const topicList = (u.topics||[]).map(t=>`<li>${t}</li>`).join('');
+      const lessonList = (u.lessons||[]).length
+        ? (u.lessons||[]).map((l,li)=>`
+          <div class="syl-lesson-item">
+            <div class="syl-lesson-num">${li+1}</div>
+            <div class="syl-lesson-text">${l}</div>
+          </div>`).join('')
+        : `<div class="syl-no-lessons">No lessons posted yet</div>`;
+      return `
+        <div class="syl-unit">
+          <div class="syl-unit-header" onclick="toggleUnit(this)">
+            <span class="syl-unit-title">${u.name}</span>
+            <span class="syl-unit-arrow">\u25bc</span>
+          </div>
+          <div class="syl-unit-body">
+            ${topicList ? `<ul class="syl-topics">${topicList}</ul>` : ''}
+            <div class="syl-lessons-wrap">
+              <div class="syl-lessons-title">\uD83D\uDCDA Lessons</div>
+              ${lessonList}
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+    return `<div class="syl-panel${si===0?' active':''}" id="std-syl-${si}">${unitRows||'<div style="padding:1rem;color:var(--muted);font-size:0.82rem;">No units listed yet.</div>'}</div>`;
+  }).join('');
+
+  el.innerHTML = `<div class="syllabus-tabs">${tabs}</div>${panels}`;
+}
+
+function stdSylTab(si,btn){
+  document.querySelectorAll('#stdSylBody .syl-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#stdSylBody .syl-tab').forEach(t=>t.classList.remove('active'));
+  const p=document.getElementById('std-syl-'+si); if(p) p.classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
 function selectTTYear(yr,btn){ facTTYear=yr; document.querySelectorAll('#ap-timetable .year-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); renderTTAdmin(); }
 function renderTTAdmin(){
   const yr=facTTYear,tt=ttData[yr],yname=['I','II','III'][yr-1];
@@ -3057,12 +3598,14 @@ async function toggleAtt(email,subjName,date,status,btn){
 // ═══════════════════════════════════════
 async function addNewUser(){
   const email=document.getElementById('nuEmail').value.trim().toLowerCase();
-  const pass=document.getElementById('nuPass').value.trim();
+  const plain=document.getElementById('nuPass').value.trim();
   const role=document.getElementById('nuRole').value;
   const dname=document.getElementById('nuName').value.trim()||null;
-  if(!email||!pass){adminToast('Enter email and password.');return;}
+  if(!email||!plain){adminToast('Enter email and password.');return;}
+  if(!email.includes('@nandhaarts.org')){adminToast('Email must be a @nandhaarts.org address.');return;}
   if(getAllUsers().find(u=>u.email===email&&u.role===role)){adminToast('User already exists.');return;}
-  const user={email,password:pass,role,displayName:dname||undefined};
+  const hashed=await hashPassword(plain);
+  const user={email,password:hashed,role,displayName:dname||undefined};
   extraUsers.push(user);
   await saveExtraUserToFB(user);
   document.getElementById('nuEmail').value=''; document.getElementById('nuPass').value=''; document.getElementById('nuName').value='';
@@ -3080,15 +3623,21 @@ function renderUserList(){
   const all=getAllUsers();
   const el=document.getElementById('userListBody'); if(!el)return;
   const lbl=document.getElementById('userCountLabel'); if(lbl)lbl.textContent=all.length+' user'+(all.length!==1?'s':'');
-  el.innerHTML=all.map((u,i)=>`
-    <div class="admin-list-row">
-      <span class="admin-list-text">
-        <strong>${u.role==='faculty'?'\uD83D\uDC68\u200D\uD83C\uDFEB':'🎓'} ${u.email}</strong>
-        ${u.displayName?'<em> ('+u.displayName+')</em>':''} \u2014 <code>${u.role}</code>
-        ${i<BASE_USERS.length?'<span style="font-size:0.68rem;color:var(--muted);"> (built-in)</span>':''}
+  el.innerHTML=all.map((u,i)=>{
+    const info=parseProfile(u.email,u.displayName);
+    const yr=['I','II','III'][info.yearOfStudy-1]||'';
+    return`<div class="admin-list-row" style="flex-wrap:wrap;gap:0.3rem;">
+      <span class="admin-list-text" style="flex:1;min-width:200px;">
+        <strong>${u.role==='faculty'?'\uD83D\uDC68\u200D\uD83C\uDFEB':'\uD83C\uDF93'} ${info.name}</strong>
+        <span style="font-size:0.72rem;color:var(--muted);"> — ${u.email}</span><br>
+        <code style="font-size:0.68rem;">${u.role}</code>
+        ${u.role==='student'&&yr?`<span style="font-size:0.68rem;color:var(--sky);margin-left:0.3rem;">${yr} Year</span>`:''}
+        <span style="font-size:0.68rem;color:#68d391;margin-left:0.3rem;">🔒 password hashed</span>
+        ${i<BASE_USERS.length?'<span style="font-size:0.67rem;color:var(--muted);margin-left:0.3rem;">(built-in)</span>':''}
       </span>
       ${i>=BASE_USERS.length?`<div class="admin-list-actions"><button class="btn-del" onclick="deleteUser(${i-BASE_USERS.length})">Remove</button></div>`:''}
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ── Admin Toast ──
@@ -3114,8 +3663,35 @@ function toggleUnit(header){
 
 // ── Load users from Firebase on page load ──
 window.addEventListener('DOMContentLoaded', async ()=>{
+  // ── Set department email in DOM (split to prevent scraper harvesting) ──
+  (function(){
+    const u='biotechnology';
+    const d='nandhaarts';
+    const t='org';
+    const full=u+'@'+d+'.'+t;
+    // Topbar chip
+    const chip=document.getElementById('deptEmailChip');
+    if(chip){ chip.textContent='\u2709 '+full; chip.href='mailto:'+full; }
+    // Contact section link
+    const cl=document.getElementById('contactEmailLink');
+    const cl2=document.getElementById('contactEmailGeneral');
+    if(cl2){ cl2.textContent='info@nandhaarts.org'; cl2.href='mailto:info@nandhaarts.org'; }
+    if(cl){ cl.textContent=full; cl.href='mailto:'+full; }
+    // Footer email links (replace obfuscated ones)
+    document.querySelectorAll('a[href*="cdn-cgi/l/email-protection"]').forEach(a=>{
+      a.href='mailto:info@nandhaarts.org';
+      if(a.querySelector('.__cf_email__')) a.innerHTML='info@nandhaarts.org';
+      else if(a.textContent.includes('[email')) a.textContent='info@nandhaarts.org';
+    });
+  })();
+
+  migrateSylData();               // ensure unit objects have topics/lessons keys
+  applyHpData();                  // apply default homepage content immediately
   await testFbConnection();       // ping Firebase first — sets FB_ONLINE flag
   if(FB_ONLINE){
+    await loadHpData();           // pull saved homepage content from Firebase
+    applyHpData();                // re-apply with Firebase data
+    await loadSyllabusLessons();  // pull faculty-entered lessons from Firebase
     await loadExtraUsers();
     await loadCoreData();
   }
@@ -3131,6 +3707,21 @@ window.addFlashNews=addFlashNews; window.deleteFlash=deleteFlash;
 window.addNotification=addNotification; window.deleteNotif=deleteNotif;
 window.selectSylYear=selectSylYear; window.addSubject=addSubject; window.deleteSubject=deleteSubject;
 window.editSubjName=editSubjName; window.addUnit=addUnit; window.editUnit=editUnit; window.deleteUnit=deleteUnit;
+window.addLesson=addLesson; window.editLesson=editLesson; window.deleteLesson=deleteLesson;
+window.addTopic=addTopic; window.editTopic=editTopic; window.deleteTopic=deleteTopic;
+window.editUnitName=editUnitName; window.addUnitToSubject=addUnitToSubject;
+window.stdSylTab=stdSylTab;
+window.renderHpEditor=renderHpEditor;
+window.hpSaveHero=hpSaveHero; window.hpSaveAbout=hpSaveAbout; window.hpSavePrograms=hpSavePrograms;
+window.hpSaveScope=hpSaveScope; window.hpSaveWhy=hpSaveWhy; window.hpSavePubs=hpSavePubs;
+window.hpSaveRankers=hpSaveRankers; window.hpSaveTestimonials=hpSaveTestimonials; window.hpSaveContact=hpSaveContact;
+window.hpAddAboutPt=hpAddAboutPt; window.hpDelAboutPt=hpDelAboutPt;
+window.hpAddProg=hpAddProg; window.hpDelProg=hpDelProg;
+window.hpAddScope=hpAddScope; window.hpDelScope=hpDelScope;
+window.hpAddWhy=hpAddWhy; window.hpDelWhy=hpDelWhy;
+window.hpAddPub=hpAddPub; window.hpDelPub=hpDelPub;
+window.hpAddRanker=hpAddRanker; window.hpDelRanker=hpDelRanker;
+window.hpAddTesti=hpAddTesti; window.hpDelTesti=hpDelTesti;
 window.selectTTYear=selectTTYear; window.saveTimetable=saveTimetable;
 window.selectFacYear=selectFacYear; window.editFac=editFac; window.deleteFac=deleteFac; window.addFac=addFac;
 window.selectMarksYear=selectMarksYear; window.saveStudentMarks=saveStudentMarks;
