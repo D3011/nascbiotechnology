@@ -726,6 +726,49 @@ footer{background:var(--navy);}
   .admin-tab{padding:0.4rem 0.7rem;font-size:0.73rem;}
   .admin-form-row{flex-direction:column;}
 }
+
+/* ──── ATTENDANCE CALENDAR ──── */
+.att-cal-wrap{background:#fff;border-radius:8px;padding:0;}
+.att-cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.7rem;}
+.att-cal-nav-btn{background:none;border:1.5px solid var(--border);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;color:var(--navy);transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
+.att-cal-nav-btn:hover{background:var(--navy);color:#fff;}
+.att-cal-month-label{font-family:'Merriweather',serif;font-size:0.92rem;font-weight:700;color:var(--navy);}
+.att-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:0.8rem;}
+.att-cal-dayname{font-size:0.62rem;text-align:center;font-weight:700;color:var(--muted);padding:0.15rem 0;text-transform:uppercase;}
+.att-cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:0.78rem;font-weight:600;cursor:default;transition:transform 0.12s;}
+.att-cal-day.att-p{background:#48bb78;color:#fff;}
+.att-cal-day.att-a{background:#fc8181;color:#fff;}
+.att-cal-day.att-none{background:#f3f4f6;color:#9ca3af;}
+.att-cal-day.att-future{color:#d1d5db;background:transparent;}
+.att-cal-day.att-empty{background:transparent;}
+.att-cal-day.att-today{box-shadow:0 0 0 2.5px var(--gold);font-weight:800;}
+.att-legend{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:0.9rem;}
+.att-leg-item{display:flex;align-items:center;gap:0.35rem;font-size:0.72rem;color:var(--muted);}
+.att-leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.att-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.5rem;}
+.att-stat-box{background:var(--off);border-radius:6px;padding:0.5rem;text-align:center;}
+.att-stat-val{font-family:'Merriweather',serif;font-size:1.15rem;font-weight:700;color:var(--navy);}
+.att-stat-lbl{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;}
+/* Faculty attendance toggle buttons */
+.att-fac-date-row{display:flex;align-items:center;gap:0.7rem;flex-wrap:wrap;margin-bottom:1rem;padding:0.8rem 1rem;background:var(--off);border-radius:8px;}
+.att-fac-date-label{font-size:0.8rem;font-weight:700;color:var(--navy);}
+input.att-date-pick{padding:0.45rem 0.7rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.84rem;color:var(--navy);font-family:'Source Sans 3',sans-serif;cursor:pointer;background:#fff;}
+input.att-date-pick:focus{outline:none;border-color:var(--gold);}
+.att-today-badge{font-size:0.7rem;background:var(--gold);color:#fff;border-radius:4px;padding:0.1rem 0.45rem;font-weight:700;}
+.att-stu-card{border:1px solid var(--border);border-radius:8px;margin-bottom:0.8rem;overflow:hidden;}
+.att-stu-card-head{background:var(--off);padding:0.5rem 0.9rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.att-stu-card-name{font-size:0.84rem;font-weight:700;color:var(--navy);}
+.att-stu-card-reg{font-size:0.72rem;color:var(--muted);}
+.att-subj-grid{display:flex;flex-wrap:wrap;gap:0.5rem;padding:0.65rem 0.9rem;}
+.att-subj-item{display:flex;align-items:center;gap:0.3rem;background:#f8f9fa;border-radius:6px;padding:0.25rem 0.5rem;}
+.att-subj-name-sm{font-size:0.72rem;color:var(--muted);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.att-tog-btn{border:none;padding:0.18rem 0.5rem;border-radius:4px;font-size:0.7rem;font-weight:700;cursor:pointer;transition:all 0.15s;min-width:28px;}
+.att-tog-btn.on-p{background:#48bb78;color:#fff;}
+.att-tog-btn.on-a{background:#fc8181;color:#fff;}
+.att-tog-btn.off{background:#e5e7eb;color:#9ca3af;}
+.att-tog-btn:hover{transform:scale(1.08);opacity:0.9;}
+.att-saving{font-size:0.7rem;color:var(--gold);margin-left:0.4rem;}
+@media(max-width:500px){.att-stats-grid{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
 <body>
@@ -1626,9 +1669,16 @@ footer{background:var(--navy);}
       <div class="admin-card">
         <div class="admin-card-header">
           <span class="admin-card-title" id="attAdminTitle">I Year — Attendance</span>
+          <span id="attSavingStatus" class="att-saving" style="display:none;">Saving…</span>
         </div>
-        <div class="admin-card-body" id="attAdminBody">
-          <!-- rendered by JS -->
+        <div class="admin-card-body">
+          <div class="att-fac-date-row">
+            <span class="att-fac-date-label">📅 Date:</span>
+            <input type="date" class="att-date-pick" id="attDatePicker" onchange="renderAttAdmin()">
+            <button class="btn-save" style="padding:0.35rem 0.8rem;font-size:0.78rem;" onclick="setAttToday()">Today</button>
+            <span class="att-today-badge" id="attTodayLabel"></span>
+          </div>
+          <div id="attAdminBody"><!-- rendered by JS --></div>
         </div>
       </div>
     </div>
@@ -2289,6 +2339,7 @@ footer{background:var(--navy);}
     <div class="portal-section" id="stdAttSection">
       <div class="portal-sec-header">
         <span class="portal-sec-title">✅ Attendance</span>
+        <span class="portal-sec-badge" id="stdAttOverallBadge"></span>
       </div>
       <div class="portal-sec-body" id="stdAttBody">
         <!-- rendered by JS -->
@@ -2366,46 +2417,147 @@ function showToast(){
 }
 
 // ═══════════════════════════════════════
-// IN-MEMORY DATA STORE (no localStorage)
+// FIREBASE REALTIME DATABASE
 // ═══════════════════════════════════════
+const DB = 'https://nascbiotechnology-992bf-default-rtdb.firebaseio.com';
 
-let flashNewsData = [
-  {id:1, text:'Welcome to the Department of Biotechnology Portal', type:'general'},
-  {id:2, text:'II Year Core Practical IV examination scheduled next week', type:'urgent'},
-  {id:3, text:'Department Annual Day celebrations coming soon!', type:'event'}
-];
-let notificationsData = [
-  {id:1, title:'Internal Assessment I Results', desc:'IA-I results have been uploaded. Contact your class teacher for details.', type:'info', date:'March 2026'},
-  {id:2, title:'Lab Record Submission', desc:'Submit completed lab records for Core Practical IV before 15th March.', type:'urgent', date:'March 2026'}
-];
+// Firebase key helpers — Firebase keys can't have . # $ [ ] /
+function eKey(email){ return email.toLowerCase().replace(/\./g,'_').replace(/@/g,'--'); }
+function sKey(subj){ return subj.replace(/[^a-zA-Z0-9\u0B80-\u0BFF]/g,'_').substring(0,64); }
 
-// marksData[email] = { 'Subject Name': {ia1:'', ia2:'', ia3:''}, ... }
-let marksData = {};
-// attendanceData[email] = { 'Subject Name': {present:0, total:0}, ... }
-let attendanceData = {};
+// ── Firebase connection state ──
+let FB_ONLINE = false;   // set after successful ping
+let FB_CHECKED = false;  // have we tested yet?
 
-const DEFAULT_SYL={1:[{id:'s1y1',name:'Tamil',units:['Sangam Literature Introduction','Grammar and Composition','Classical Texts','Poetry Analysis','Creative Writing']},{id:'s2y1',name:'English',units:['Reading Comprehension','Grammar Usage','Writing Skills','Communication Basics','Literature Appreciation']},{id:'s3y1',name:'Biochemistry and Biology of Cells',units:['Cell Structure and Function','Biomolecules','Metabolism \u2014 Carbohydrates and Lipids','Protein Structure and Enzymology','DNA and RNA Structure']},{id:'s4y1',name:'Microbiology',units:['Introduction to Microbiology','Bacteria Structure and Classification','Viruses and Bacteriophages','Fungi and Protozoa','Sterilization and Disinfection']},{id:'s5y1',name:'Computer Application I',units:['Introduction to Computers','MS Word','MS Excel','MS PowerPoint','Internet Basics']}],2:[{id:'s1y2',name:'Tamil',units:['Ettuthokai \u2014 Natrinai, Kuruntokai, Kalittokai, Purananuru poems','Mullaippattu (full text)','Drama \u2014 Sabapathi by Pammal Sambanda Mudaliar','Literary History and Grammar','Creative Writing Practice']},{id:'s2y2',name:'English',units:['Soft Skills for Employability','Professional Speaking \u2014 Job Interview','Group Discussion','Presentation Skills','Technical Writing']},{id:'s3y2',name:'Plant and Animal Biotechnology',units:['Cell and Tissue Culture','Cell Culture Methods','Animal Cell Culture','Transgenic Animals','Animal Cloning']},{id:'s4y2',name:'Basics in Forensic Science',units:['Introduction to Forensic Science','Forensic Biology and Serology','Instrumentation and Sampling','Forensic Science Laboratory','Emerging Role of Forensic Science']},{id:'s5y2',name:'Computer Application II \u2014 Python',units:['Variables, Literals and Data Types','Indentation and Arithmetic Operations','Looping','Decision Making','List Slice, Dictionary, Functions, Lambda, DNA Sequence Programs']}],3:[{id:'s1y3',name:'Bioinformatics',units:['Introduction to Bioinformatics','Biological Databases','Sequence Alignment \u2014 BLAST, FASTA','Phylogenetics and Molecular Evolution','Structural Bioinformatics']},{id:'s2y3',name:'Molecular Biology and Genetic Engineering',units:['DNA Replication and Repair','Transcription and Translation','Recombinant DNA Technology','Gene Cloning Vectors','PCR and Applications']},{id:'s3y3',name:'Immunology',units:['Introduction to Immune System','Innate Immunity','Adaptive Immunity','Antibody Structure and Function','Vaccines and Immunotherapy']},{id:'s4y3',name:'Environmental Biotechnology',units:['Bioremediation','Waste Water Treatment','Solid Waste Management','Biofuels','Environmental Impact Assessment']},{id:'s5y3',name:'Industrial Biotechnology',units:['Fermentation Technology','Enzyme Technology','Downstream Processing','Bioprocess Scale-Up','Good Manufacturing Practice']}]};
-const DEFAULT_TT={1:[{day:'I',p:['Tamil','English','CA-I','BBOC','BBOC']},{day:'II',p:['Tamil','English','','Allied Practical','']},{day:'III',p:['BBOC','Tamil','English','CA-I','Tamil']},{day:'IV',p:['BBOC','CA-I','','Core Practical I','']},{day:'V',p:['English','BBOC','CA-I','Tamil','BBOC']},{day:'VI',p:['English','CA-I','Tamil','BBOC','English']}],2:[{day:'I',p:['PABT','English','Tamil','GA','PABT']},{day:'II',p:['PABT','English','','Core Practical IV','']},{day:'III',p:['BSF','PABT','GA','Tamil','CA']},{day:'IV',p:['BSF','','Skill Based Practical II','','Allied Practical II']},{day:'V',p:['BSF','English','CA','CA','BSF']},{day:'VI',p:['English','CA','Tamil','CA','BSF']}],3:[{day:'I',p:['Bioinformatics','English','MPEM','Bioinformatics','MPEM']},{day:'II',p:['MPEM','English','','Core Practical VI','']},{day:'III',p:['Bioinformatics','MPEM','English','Bioinformatics','MPEM']},{day:'IV',p:['MPEM','','Project','','Elective']},{day:'V',p:['Bioinformatics','MPEM','Elective','MPEM','Bioinformatics']},{day:'VI',p:['English','Bioinformatics','MPEM','Bioinformatics','Elective']}]};
-const DEFAULT_FAC={1:[{subject:'Tamil',faculty:'Tamil Department Staff'},{subject:'English',faculty:'English Department Staff'},{subject:'Biochemistry and Biology of Cells',faculty:'Dr. K. Abdhul'},{subject:'Microbiology',faculty:'Dr. M. Poonkothai'},{subject:'Computer Application I',faculty:'Ms. S. Sarumathi'}],2:[{subject:'Tamil',faculty:'Tamil Department Staff'},{subject:'English',faculty:'English Department Staff'},{subject:'Plant and Animal Biotechnology',faculty:'Mr. S. S. Naveen'},{subject:'Basics in Forensic Science',faculty:'Dr. M. Poonkothai'},{subject:'Computer Application II Python',faculty:'Ms. D. Sriya'}],3:[{subject:'Bioinformatics',faculty:'Dr. V. Senthil Kumar'},{subject:'Molecular Biology and Genetic Engineering',faculty:'Dr. K. Karthik'},{subject:'Immunology',faculty:'Dr. S. Karthik'},{subject:'Environmental Biotechnology',faculty:'Mr. K. Saravanan'},{subject:'Industrial Biotechnology',faculty:'Ms. S. Sarumathi'}]};
-
-let sylData = JSON.parse(JSON.stringify(DEFAULT_SYL));
-let ttData  = JSON.parse(JSON.stringify(DEFAULT_TT));
-let facData = JSON.parse(JSON.stringify(DEFAULT_FAC));
-
-// Helper: get students (role=student) for a given year from all users
-function getStudentsByYear(yr){
-  return getAllUsers().filter(u=>{
-    if(u.role!=='student') return false;
-    const m=u.email.split('@')[0].split('.')[0].match(/^(\d+)/);
-    if(!m) return false;
-    return (2026-(parseInt(m[1])+2000))===yr;
-  });
+// ── Connection status banner ──
+function showFbBanner(state){
+  let bar=document.getElementById('fbStatusBar');
+  if(!bar){
+    bar=document.createElement('div');
+    bar.id='fbStatusBar';
+    bar.style.cssText='position:fixed;top:0;left:0;right:0;z-index:999998;font-size:0.78rem;font-family:"Source Sans 3",sans-serif;padding:0.45rem 1.2rem;text-align:center;font-weight:600;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:0.6rem;';
+    document.body.prepend(bar);
+  }
+  if(state==='online'){
+    bar.style.background='#276749'; bar.style.color='#fff';
+    bar.innerHTML='🔥 Firebase connected — data syncing in real-time';
+    setTimeout(()=>{ bar.style.opacity='0'; setTimeout(()=>bar.remove(),600); },3000);
+  } else if(state==='offline'){
+    bar.style.background='#744210'; bar.style.color='#fff'; bar.style.opacity='1';
+    bar.innerHTML='⚠️ Firebase unreachable — working offline. <strong>Open Firebase Console → Realtime Database → Rules</strong> and set <code style="background:rgba(255,255,255,0.15);padding:0 4px;border-radius:3px;">".read":true,".write":true</code>';
+  } else if(state==='denied'){
+    bar.style.background='#c53030'; bar.style.color='#fff'; bar.style.opacity='1';
+    bar.innerHTML='🔒 Firebase rules are blocking access. Go to <strong>Firebase Console → Realtime Database → Rules</strong> and change <code style="background:rgba(255,255,255,0.15);padding:0 4px;border-radius:3px;">false → true</code> for .read and .write';
+  }
 }
-// Helper: get subject list for a year
-function getSubjectsForYear(yr){ return sylData[yr]||[]; }
+
+// ── Test Firebase connection once on load ──
+async function testFbConnection(){
+  if(FB_CHECKED) return;
+  FB_CHECKED=true;
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),5000); // 5s timeout
+    const r=await fetch(DB+'/.json?shallow=true',{signal:ctrl.signal});
+    clearTimeout(timer);
+    if(r.status===401||r.status===403){
+      FB_ONLINE=false; showFbBanner('denied'); return;
+    }
+    // Any 2xx means we can reach Firebase
+    FB_ONLINE=true; showFbBanner('online');
+  } catch(e){
+    FB_ONLINE=false; showFbBanner('offline');
+  }
+}
+
+async function fbGet(path){
+  if(!FB_ONLINE && FB_CHECKED) return null;
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),6000);
+    const r=await fetch(DB+path+'.json',{signal:ctrl.signal});
+    clearTimeout(timer);
+    if(!r.ok){ if(r.status===401||r.status===403){ FB_ONLINE=false; showFbBanner('denied'); } return null; }
+    const d=await r.json();
+    return d;
+  } catch(e){ return null; }
+}
+async function fbSet(path,data){
+  if(!FB_ONLINE) return;
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),6000);
+    await fetch(DB+path+'.json',{method:'PUT',body:JSON.stringify(data),headers:{'Content-Type':'application/json'},signal:ctrl.signal});
+    clearTimeout(timer);
+  } catch(e){}
+}
+async function fbDel(path){
+  if(!FB_ONLINE) return;
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),6000);
+    await fetch(DB+path+'.json',{method:'DELETE',signal:ctrl.signal});
+    clearTimeout(timer);
+  } catch(e){}
+}
+
+// ── Show/hide saving indicator ──
+function fbSaving(show){ const el=document.getElementById('attSavingStatus'); if(el) el.style.display=show?'inline':'none'; }
 
 // ═══════════════════════════════════════
-// LOGIN
+// DEFAULT STATIC DATA (in-memory fallback)
+// ═══════════════════════════════════════
+const DEFAULT_FLASH=[
+  {id:'f1',text:'Welcome to the Department of Biotechnology Portal',type:'general'},
+  {id:'f2',text:'II Year Core Practical IV examination scheduled next week',type:'urgent'},
+  {id:'f3',text:'Department Annual Day celebrations coming soon!',type:'event'}
+];
+const DEFAULT_NOTIFS=[
+  {id:'n1',title:'Internal Assessment I Results',desc:'IA-I results have been uploaded. Contact your class teacher for details.',type:'info',date:'March 2026'},
+  {id:'n2',title:'Lab Record Submission',desc:'Submit completed lab records for Core Practical IV before 15th March.',type:'urgent',date:'March 2026'}
+];
+const DEFAULT_SYL={
+  1:[{id:'s1y1',name:'Tamil',units:['Sangam Literature Introduction','Grammar and Composition','Classical Texts','Poetry Analysis','Creative Writing']},{id:'s2y1',name:'English',units:['Reading Comprehension','Grammar Usage','Writing Skills','Communication Basics','Literature Appreciation']},{id:'s3y1',name:'Biochemistry and Biology of Cells',units:['Cell Structure and Function','Biomolecules','Metabolism \u2014 Carbohydrates and Lipids','Protein Structure and Enzymology','DNA and RNA Structure']},{id:'s4y1',name:'Microbiology',units:['Introduction to Microbiology','Bacteria Structure and Classification','Viruses and Bacteriophages','Fungi and Protozoa','Sterilization and Disinfection']},{id:'s5y1',name:'Computer Application I',units:['Introduction to Computers','MS Word','MS Excel','MS PowerPoint','Internet Basics']}],
+  2:[{id:'s1y2',name:'Tamil',units:['Ettuthokai \u2014 Natrinai, Kuruntokai, Kalittokai, Purananuru poems','Mullaippattu (full text)','Drama \u2014 Sabapathi by Pammal Sambanda Mudaliar','Literary History and Grammar','Creative Writing Practice']},{id:'s2y2',name:'English',units:['Soft Skills for Employability','Professional Speaking \u2014 Job Interview','Group Discussion','Presentation Skills','Technical Writing']},{id:'s3y2',name:'Plant and Animal Biotechnology',units:['Cell and Tissue Culture','Cell Culture Methods','Animal Cell Culture','Transgenic Animals','Animal Cloning']},{id:'s4y2',name:'Basics in Forensic Science',units:['Introduction to Forensic Science','Forensic Biology and Serology','Instrumentation and Sampling','Forensic Science Laboratory','Emerging Role of Forensic Science']},{id:'s5y2',name:'Computer Application II \u2014 Python',units:['Variables, Literals and Data Types','Indentation and Arithmetic Operations','Looping','Decision Making','List Slice, Dictionary, Functions, Lambda, DNA Sequence Programs']}],
+  3:[{id:'s1y3',name:'Bioinformatics',units:['Introduction to Bioinformatics','Biological Databases','Sequence Alignment \u2014 BLAST, FASTA','Phylogenetics and Molecular Evolution','Structural Bioinformatics']},{id:'s2y3',name:'Molecular Biology and Genetic Engineering',units:['DNA Replication and Repair','Transcription and Translation','Recombinant DNA Technology','Gene Cloning Vectors','PCR and Applications']},{id:'s3y3',name:'Immunology',units:['Introduction to Immune System','Innate Immunity','Adaptive Immunity','Antibody Structure and Function','Vaccines and Immunotherapy']},{id:'s4y3',name:'Environmental Biotechnology',units:['Bioremediation','Waste Water Treatment','Solid Waste Management','Biofuels','Environmental Impact Assessment']},{id:'s5y3',name:'Industrial Biotechnology',units:['Fermentation Technology','Enzyme Technology','Downstream Processing','Bioprocess Scale-Up','Good Manufacturing Practice']}]
+};
+const DEFAULT_TT={
+  1:[{day:'I',p:['Tamil','English','CA-I','BBOC','BBOC']},{day:'II',p:['Tamil','English','','Allied Practical','']},{day:'III',p:['BBOC','Tamil','English','CA-I','Tamil']},{day:'IV',p:['BBOC','CA-I','','Core Practical I','']},{day:'V',p:['English','BBOC','CA-I','Tamil','BBOC']},{day:'VI',p:['English','CA-I','Tamil','BBOC','English']}],
+  2:[{day:'I',p:['PABT','English','Tamil','GA','PABT']},{day:'II',p:['PABT','English','','Core Practical IV','']},{day:'III',p:['BSF','PABT','GA','Tamil','CA']},{day:'IV',p:['BSF','','Skill Based Practical II','','Allied Practical II']},{day:'V',p:['BSF','English','CA','CA','BSF']},{day:'VI',p:['English','CA','Tamil','CA','BSF']}],
+  3:[{day:'I',p:['Bioinformatics','English','MPEM','Bioinformatics','MPEM']},{day:'II',p:['MPEM','English','','Core Practical VI','']},{day:'III',p:['Bioinformatics','MPEM','English','Bioinformatics','MPEM']},{day:'IV',p:['MPEM','','Project','','Elective']},{day:'V',p:['Bioinformatics','MPEM','Elective','MPEM','Bioinformatics']},{day:'VI',p:['English','Bioinformatics','MPEM','Bioinformatics','Elective']}]
+};
+const DEFAULT_FAC={
+  1:[{subject:'Tamil',faculty:'Tamil Department Staff'},{subject:'English',faculty:'English Department Staff'},{subject:'Biochemistry and Biology of Cells',faculty:'Dr. K. Abdhul'},{subject:'Microbiology',faculty:'Dr. M. Poonkothai'},{subject:'Computer Application I',faculty:'Ms. S. Sarumathi'}],
+  2:[{subject:'Tamil',faculty:'Tamil Department Staff'},{subject:'English',faculty:'English Department Staff'},{subject:'Plant and Animal Biotechnology',faculty:'Mr. S. S. Naveen'},{subject:'Basics in Forensic Science',faculty:'Dr. M. Poonkothai'},{subject:'Computer Application II Python',faculty:'Ms. D. Sriya'}],
+  3:[{subject:'Bioinformatics',faculty:'Dr. V. Senthil Kumar'},{subject:'Molecular Biology and Genetic Engineering',faculty:'Dr. K. Karthik'},{subject:'Immunology',faculty:'Dr. S. Karthik'},{subject:'Environmental Biotechnology',faculty:'Mr. K. Saravanan'},{subject:'Industrial Biotechnology',faculty:'Ms. S. Sarumathi'}]
+};
+
+// In-memory caches (synced from Firebase)
+let flashNewsData=[...DEFAULT_FLASH];
+let notificationsData=[...DEFAULT_NOTIFS];
+let sylData=JSON.parse(JSON.stringify(DEFAULT_SYL));
+let ttData=JSON.parse(JSON.stringify(DEFAULT_TT));
+let facData=JSON.parse(JSON.stringify(DEFAULT_FAC));
+let marksCache={};       // { eKey: { sKey: {ia1,ia2,ia3} } }
+let attendanceCache={};  // { eKey: { sKey: { 'YYYY-MM-DD': 'P'|'A' } } }
+let stdAttCalMonth=new Date().getMonth();
+let stdAttCalYear=new Date().getFullYear();
+let stdAttActiveSubj=null;
+
+// ── Load core data from Firebase ──
+async function loadCoreData(){
+  const fn=await fbGet('/flashNews');
+  if(fn&&typeof fn==='object') flashNewsData=Object.values(fn);
+  const nt=await fbGet('/notifications');
+  if(nt&&typeof nt==='object') notificationsData=Object.values(nt);
+}
+
+// ── Helper: today's date string ──
+function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function formatDateDisplay(str){ if(!str)return''; const [y,m,d]=str.split('-'); const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; const dt=new Date(y,parseInt(m)-1,parseInt(d)); return days[dt.getDay()]+', '+parseInt(d)+' '+mn[parseInt(m)-1]+' '+y; }
+
+// ═══════════════════════════════════════
+// LOGIN & USER MANAGEMENT
 // ═══════════════════════════════════════
 const BASE_USERS=[
   {email:'24ubio008.deepak_m@nandhaarts.org',password:'30112005',role:'student'},
@@ -2415,7 +2567,32 @@ let extraUsers=[];
 let selectedRole='';
 let currentUserInfo=null;
 
-function getAllUsers(){return[...BASE_USERS,...extraUsers];}
+function getAllUsers(){ return[...BASE_USERS,...extraUsers]; }
+function getStudentsByYear(yr){
+  return getAllUsers().filter(u=>{
+    if(u.role!=='student')return false;
+    const m=u.email.split('@')[0].split('.')[0].match(/^(\d+)/);
+    if(!m)return false;
+    return(2026-(parseInt(m[1])+2000))===yr;
+  });
+}
+function getSubjectsForYear(yr){ return sylData[yr]||[]; }
+
+// Load users from Firebase
+async function loadExtraUsers(){
+  const data=await fbGet('/extraUsers');
+  if(data&&typeof data==='object'){
+    extraUsers=Object.values(data);
+  }
+}
+async function saveExtraUserToFB(user){
+  const k=eKey(user.email)+'_'+user.role;
+  await fbSet('/extraUsers/'+k, user);
+}
+async function deleteExtraUserFromFB(user){
+  const k=eKey(user.email)+'_'+user.role;
+  await fbDel('/extraUsers/'+k);
+}
 
 function openLogin(e){
   e.preventDefault();
@@ -2426,17 +2603,17 @@ function openLogin(e){
   document.getElementById('loginEmail').value='';
   document.getElementById('loginPass').value='';
 }
-function closeLogin(){document.getElementById('loginOverlay').classList.remove('active');document.body.style.overflow='';}
-function selectRole(role){selectedRole=role;document.getElementById('loginRoleLabel').textContent=role==='student'?'Logging in as Student':'Logging in as Faculty';showStep('step2');}
-function goBack(){showStep('step1');document.getElementById('loginErr').classList.remove('show');}
-function showStep(id){document.querySelectorAll('.login-step').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function closeLogin(){ document.getElementById('loginOverlay').classList.remove('active'); document.body.style.overflow=''; }
+function selectRole(role){ selectedRole=role; document.getElementById('loginRoleLabel').textContent=role==='student'?'Logging in as Student':'Logging in as Faculty'; showStep('step2'); }
+function goBack(){ showStep('step1'); document.getElementById('loginErr').classList.remove('show'); }
+function showStep(id){ document.querySelectorAll('.login-step').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
 function doLogin(){
   const email=document.getElementById('loginEmail').value.trim().toLowerCase();
   const pass=document.getElementById('loginPass').value.trim();
   const errEl=document.getElementById('loginErr');
   const user=getAllUsers().find(u=>u.email.toLowerCase()===email&&u.password===pass&&u.role===selectedRole);
-  if(!user){errEl.textContent='Invalid email or password. Please try again.';errEl.classList.add('show');['loginEmail','loginPass'].forEach(id=>{const el=document.getElementById(id);el.classList.add('error');setTimeout(()=>el.classList.remove('error'),1500);});return;}
+  if(!user){ errEl.textContent='Invalid email or password.'; errEl.classList.add('show'); ['loginEmail','loginPass'].forEach(id=>{const el=document.getElementById(id);el.classList.add('error');setTimeout(()=>el.classList.remove('error'),1500);}); return; }
   const info=parseProfile(user.email,user.displayName);
   info.email=user.email.toLowerCase();
   currentUserInfo=info;
@@ -2449,7 +2626,7 @@ function parseProfile(email,displayName){
   const reg=parts[0],nm=parts[1]||'user';
   const name=displayName||(nm.split('_').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '));
   const init=nm.split('_').map(w=>w.charAt(0).toUpperCase()).join('');
-  const m=reg.match(/^(\d+)/);const yc=m?parseInt(m[1]):24;
+  const m=reg.match(/^(\d+)/); const yc=m?parseInt(m[1]):24;
   const yr=2026-(yc+2000);
   const yl={1:'I Year',2:'II Year',3:'III Year'};
   return{name,init,reg:reg.toUpperCase(),yearLabel:yl[yr]||(yr+' Year'),yearOfStudy:yr};
@@ -2458,7 +2635,7 @@ function parseProfile(email,displayName){
 // ═══════════════════════════════════════
 // STUDENT PORTAL
 // ═══════════════════════════════════════
-function openPortal(info){
+async function openPortal(info){
   document.getElementById('profileName').textContent=info.name;
   document.getElementById('profileAvatar').textContent=info.init;
   document.getElementById('profileReg').textContent=info.reg;
@@ -2472,60 +2649,140 @@ function openPortal(info){
   document.getElementById('stdSylSection').style.display=isY2?'':'none';
   document.getElementById('stdSylSoon').style.display=isY2?'none':'';
   if(!isY2){
-    const tl=document.getElementById('ttSoonLabel');  if(tl)tl.textContent=info.yearLabel+' \u2014 B.Sc. Biotechnology';
+    const tl=document.getElementById('ttSoonLabel'); if(tl)tl.textContent=info.yearLabel+' \u2014 B.Sc. Biotechnology';
     const sl=document.getElementById('sylSoonLabel'); if(sl)sl.textContent=info.yearLabel;
   }
 
-  renderStudentMarks(info);
-  renderStudentAttendance(info);
   renderStudentFlash(); renderStudentNotifs();
+  renderStudentMarks(info);
+
+  // Load attendance from Firebase then render
+  const ek=eKey(info.email);
+  const attData=await fbGet('/attendance/'+ek);
+  if(attData&&typeof attData==='object') attendanceCache[ek]=attData;
+  stdAttCalMonth=new Date().getMonth();
+  stdAttCalYear=new Date().getFullYear();
+  stdAttActiveSubj=null;
+  renderStudentAttendance(info);
+
   document.getElementById('portalOverlay').classList.add('active');
   document.body.style.overflow='hidden'; window.scrollTo(0,0);
 }
-function doLogout(){document.getElementById('portalOverlay').classList.remove('active');document.body.style.overflow='';}
+function doLogout(){ document.getElementById('portalOverlay').classList.remove('active'); document.body.style.overflow=''; }
 
-// ── Student Marks display ──
-function renderStudentMarks(info){
+// ── Student Marks ──
+async function renderStudentMarks(info){
   const el=document.getElementById('stdMarksBody'); if(!el)return;
+  el.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.82rem;">Loading marks…</div>';
+  const ek=eKey(info.email);
+  const data=await fbGet('/marks/'+ek);
   const subjs=getSubjectsForYear(info.yearOfStudy);
-  const myMarks=marksData[info.email]||{};
-  const hasAny=subjs.some(s=>myMarks[s.name]&&(myMarks[s.name].ia1||myMarks[s.name].ia2||myMarks[s.name].ia3));
+  const myM=data||{};
+  const hasAny=subjs.some(s=>{const m=myM[sKey(s.name)];return m&&(m.ia1||m.ia2||m.ia3);});
   if(!subjs.length||!hasAny){
-    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;"><div style="font-size:2.2rem;margin-bottom:0.6rem;">📝</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">Will Be Updated Soon</div><div style="font-size:0.82rem;color:var(--muted);">Internal marks will be updated by the faculty. Please check back later.</div></div>';
+    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;"><div style="font-size:2rem;margin-bottom:0.5rem;">📝</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">Will Be Updated Soon</div><div style="font-size:0.82rem;color:var(--muted);">Internal marks will be updated by the faculty.</div></div>';
     return;
   }
   const rows=subjs.map(s=>{
-    const m=myMarks[s.name]||{ia1:'-',ia2:'-',ia3:'-'};
-    const total=[m.ia1,m.ia2,m.ia3].filter(v=>v&&v!=='-').map(Number).reduce((a,b)=>a+b,0);
-    return `<tr><td style="font-size:0.82rem;font-weight:600;color:var(--navy);padding:0.6rem 0.8rem;">${s.name}</td>
-      <td style="text-align:center;font-size:0.82rem;padding:0.6rem;">${m.ia1||'-'}</td>
-      <td style="text-align:center;font-size:0.82rem;padding:0.6rem;">${m.ia2||'-'}</td>
-      <td style="text-align:center;font-size:0.82rem;padding:0.6rem;">${m.ia3||'-'}</td>
-      <td style="text-align:center;font-size:0.82rem;font-weight:700;color:var(--sky);padding:0.6rem;">${(m.ia1&&m.ia1!=='-')?total:'-'}</td></tr>`;
+    const m=myM[sKey(s.name)]||{ia1:'-',ia2:'-',ia3:'-'};
+    const vals=[m.ia1,m.ia2,m.ia3].filter(v=>v&&v!=='-').map(Number);
+    const total=vals.length?vals.reduce((a,b)=>a+b,0):'-';
+    return`<tr><td style="font-size:0.82rem;font-weight:600;color:var(--navy);padding:0.55rem 0.8rem;">${s.name}</td><td style="text-align:center;font-size:0.82rem;padding:0.55rem;">${m.ia1||'-'}</td><td style="text-align:center;font-size:0.82rem;padding:0.55rem;">${m.ia2||'-'}</td><td style="text-align:center;font-size:0.82rem;padding:0.55rem;">${m.ia3||'-'}</td><td style="text-align:center;font-size:0.82rem;font-weight:700;color:var(--sky);padding:0.55rem;">${total}</td></tr>`;
   }).join('');
-  el.innerHTML=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--navy);color:#fff;"><th style="padding:0.6rem 0.8rem;text-align:left;font-size:0.75rem;">Subject</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">IA 1</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">IA 2</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">IA 3</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">Total</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  el.innerHTML=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--navy);color:#fff;"><th style="padding:0.55rem 0.8rem;text-align:left;font-size:0.73rem;">Subject</th><th style="padding:0.55rem;text-align:center;font-size:0.73rem;">IA 1</th><th style="padding:0.55rem;text-align:center;font-size:0.73rem;">IA 2</th><th style="padding:0.55rem;text-align:center;font-size:0.73rem;">IA 3</th><th style="padding:0.55rem;text-align:center;font-size:0.73rem;">Total</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
-// ── Student Attendance display ──
+// ── Student Attendance Calendar ──
 function renderStudentAttendance(info){
   const el=document.getElementById('stdAttBody'); if(!el)return;
   const subjs=getSubjectsForYear(info.yearOfStudy);
-  const myAtt=attendanceData[info.email]||{};
-  const hasAny=subjs.some(s=>myAtt[s.name]&&myAtt[s.name].total>0);
-  if(!subjs.length||!hasAny){
-    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;"><div style="font-size:2.2rem;margin-bottom:0.6rem;">📅</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">Will Be Updated Soon</div><div style="font-size:0.82rem;color:var(--muted);">Daily attendance will be updated by your class teacher.</div></div>';
-    return;
+  if(!subjs.length){ el.innerHTML='<div style="text-align:center;padding:2rem;">No subjects found.</div>'; return; }
+  if(!stdAttActiveSubj) stdAttActiveSubj=subjs[0].name;
+  const tabs=subjs.map(s=>`<button class="syl-tab${s.name===stdAttActiveSubj?' active':''}" onclick="stdAttTab('${s.name.replace(/'/g,"\\'")}')">${s.name}</button>`).join('');
+  const calHTML=buildStudentAttCal(info);
+  el.innerHTML=`<div class="syllabus-tabs" style="margin-bottom:1rem;">${tabs}</div>${calHTML}`;
+  // Update overall badge
+  updateStdAttBadge(info);
+}
+function buildStudentAttCal(info){
+  const ek=eKey(info.email);
+  const sk=sKey(stdAttActiveSubj);
+  const monthData=(attendanceCache[ek]&&attendanceCache[ek][sk])||{};
+  const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DN=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const daysInMonth=new Date(stdAttCalYear,stdAttCalMonth+1,0).getDate();
+  const firstDay=new Date(stdAttCalYear,stdAttCalMonth,1).getDay();
+  const today=new Date();
+  // Build cells
+  let cells=DN.map(d=>`<div class="att-cal-dayname">${d}</div>`).join('');
+  for(let i=0;i<firstDay;i++) cells+=`<div class="att-cal-day att-empty"></div>`;
+  let pCnt=0,aCnt=0,totCnt=0;
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=stdAttCalYear+'-'+String(stdAttCalMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const st=monthData[ds];
+    const isToday=d===today.getDate()&&stdAttCalMonth===today.getMonth()&&stdAttCalYear===today.getFullYear();
+    const isFuture=new Date(stdAttCalYear,stdAttCalMonth,d)>today;
+    let cls='att-cal-day';
+    if(st==='P'){cls+=' att-p';pCnt++;totCnt++;}
+    else if(st==='A'){cls+=' att-a';aCnt++;totCnt++;}
+    else if(isFuture)cls+=' att-future';
+    else cls+=' att-none';
+    if(isToday)cls+=' att-today';
+    cells+=`<div class="${cls}" title="${ds}">${d}</div>`;
   }
-  const rows=subjs.map(s=>{
-    const a=myAtt[s.name]||{present:0,total:0};
-    const pct=a.total>0?Math.round((a.present/a.total)*100):0;
-    const color=pct>=75?'#2d7d46':pct>=60?'#c9882a':'#e53e3e';
-    return `<tr><td style="font-size:0.82rem;font-weight:600;color:var(--navy);padding:0.6rem 0.8rem;">${s.name}</td>
-      <td style="text-align:center;font-size:0.82rem;padding:0.6rem;">${a.present}</td>
-      <td style="text-align:center;font-size:0.82rem;padding:0.6rem;">${a.total}</td>
-      <td style="text-align:center;font-size:0.82rem;font-weight:700;color:${color};padding:0.6rem;">${a.total>0?pct+'%':'-'}</td></tr>`;
-  }).join('');
-  el.innerHTML=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--navy);color:#fff;"><th style="padding:0.6rem 0.8rem;text-align:left;font-size:0.75rem;">Subject</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">Present</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">Total</th><th style="padding:0.6rem;text-align:center;font-size:0.75rem;">%</th></tr></thead><tbody>${rows}</tbody></table></div><p style="font-size:0.72rem;color:var(--muted);margin-top:0.6rem;">🟢 ≥75% &nbsp; 🟡 60–74% &nbsp; 🔴 &lt;60%</p>`;
+  // All-time stats for this subject
+  const allData=attendanceCache[ek]&&attendanceCache[ek][sk]?attendanceCache[ek][sk]:{};
+  const allDates=Object.keys(allData);
+  const allP=allDates.filter(d=>allData[d]==='P').length;
+  const allT=allDates.length;
+  const pct=allT>0?Math.round(allP/allT*100):0;
+  const pctColor=pct>=75?'#2d7d46':pct>=60?'#c9882a':'#e53e3e';
+  return`<div class="att-cal-wrap">
+    <div class="att-cal-nav">
+      <button class="att-cal-nav-btn" onclick="stdAttNavMonth(-1)">&#8249;</button>
+      <span class="att-cal-month-label">${MN[stdAttCalMonth]} ${stdAttCalYear}</span>
+      <button class="att-cal-nav-btn" onclick="stdAttNavMonth(1)">&#8250;</button>
+    </div>
+    <div class="att-cal-grid">${cells}</div>
+    <div class="att-legend">
+      <div class="att-leg-item"><div class="att-leg-dot" style="background:#48bb78;"></div>Present</div>
+      <div class="att-leg-item"><div class="att-leg-dot" style="background:#fc8181;"></div>Absent</div>
+      <div class="att-leg-item"><div class="att-leg-dot" style="background:#f3f4f6;border:1px solid #e5e7eb;"></div>Not Marked</div>
+    </div>
+    <div class="att-stats-grid">
+      <div class="att-stat-box"><div class="att-stat-val">${allT}</div><div class="att-stat-lbl">Total Days</div></div>
+      <div class="att-stat-box"><div class="att-stat-val" style="color:#48bb78;">${allP}</div><div class="att-stat-lbl">Present</div></div>
+      <div class="att-stat-box"><div class="att-stat-val" style="color:#fc8181;">${allT-allP}</div><div class="att-stat-lbl">Absent</div></div>
+      <div class="att-stat-box"><div class="att-stat-val" style="color:${pctColor};">${allT>0?pct+'%':'—'}</div><div class="att-stat-lbl">Percentage</div></div>
+    </div>
+  </div>`;
+}
+function updateStdAttBadge(info){
+  const badge=document.getElementById('stdAttOverallBadge'); if(!badge)return;
+  const ek=eKey(info.email);
+  const subjs=getSubjectsForYear(info.yearOfStudy);
+  let totP=0,totD=0;
+  subjs.forEach(s=>{
+    const sk2=sKey(s.name);
+    const md=attendanceCache[ek]&&attendanceCache[ek][sk2]?attendanceCache[ek][sk2]:{};
+    const dates=Object.keys(md);
+    totD+=dates.length;
+    totP+=dates.filter(d=>md[d]==='P').length;
+  });
+  if(totD===0){badge.textContent='No data yet';return;}
+  const p=Math.round(totP/totD*100);
+  badge.textContent=p+'% Overall';
+  badge.style.background=p>=75?'var(--sky)':p>=60?'var(--gold)':'#e53e3e';
+}
+function stdAttTab(subjName){
+  stdAttActiveSubj=subjName;
+  if(currentUserInfo) renderStudentAttendance(currentUserInfo);
+}
+function stdAttNavMonth(dir){
+  stdAttCalMonth+=dir;
+  if(stdAttCalMonth>11){stdAttCalMonth=0;stdAttCalYear++;}
+  if(stdAttCalMonth<0){stdAttCalMonth=11;stdAttCalYear--;}
+  if(currentUserInfo) renderStudentAttendance(currentUserInfo);
 }
 
 // ═══════════════════════════════════════
@@ -2533,21 +2790,25 @@ function renderStudentAttendance(info){
 // ═══════════════════════════════════════
 let facSylYear=1,facTTYear=1,facFacYear=1,facMarksYear=1,facAttYear=1;
 
-function openFacPortal(info,user){
+async function openFacPortal(info,user){
   document.getElementById('facName').textContent=info.name;
   document.getElementById('facAvatar').textContent=info.init;
   document.getElementById('facWelcome').textContent='Welcome, '+info.name;
+  await loadCoreData();
   renderFacFlash(); renderFacFlashList(); renderFacNotifList();
   selectSylYear(1,document.querySelector('#ap-syllabus .year-btn'));
   selectTTYear(1,document.querySelector('#ap-timetable .year-btn'));
   selectFacYear(1,document.querySelector('#ap-faculty .year-btn'));
+  // Set attendance date to today
+  const dp=document.getElementById('attDatePicker');
+  if(dp){ dp.value=todayStr(); updateTodayLabel(); }
   selectMarksYear(1,document.querySelector('#ap-marks .year-btn'));
   selectAttYear(1,document.querySelector('#ap-attendance .year-btn'));
   renderUserList();
   document.getElementById('facPortalOverlay').classList.add('active');
   document.body.style.overflow='hidden'; window.scrollTo(0,0);
 }
-function doFacLogout(){document.getElementById('facPortalOverlay').classList.remove('active');document.body.style.overflow='';}
+function doFacLogout(){ document.getElementById('facPortalOverlay').classList.remove('active'); document.body.style.overflow=''; }
 
 function showAdminTab(id,btn){
   document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
@@ -2555,24 +2816,31 @@ function showAdminTab(id,btn){
   document.getElementById('ap-'+id).classList.add('active'); btn.classList.add('active');
 }
 
-// ── FLASH NEWS ──
-function buildFlashHTML(items){const d=[...items,...items];return d.map(i=>`<span class="flash-item">${i.text}</span>`).join('');}
-function renderStudentFlash(){const t=document.getElementById('studentFlashTrack');if(t)t.innerHTML=buildFlashHTML(flashNewsData);}
-function renderFacFlash(){const t=document.getElementById('facFlashTrack');if(t)t.innerHTML=buildFlashHTML(flashNewsData);}
+// ── Flash News ──
+function buildFlashHTML(items){ const d=[...items,...items]; return d.map(i=>`<span class="flash-item">${i.text}</span>`).join(''); }
+function renderStudentFlash(){ const t=document.getElementById('studentFlashTrack'); if(t)t.innerHTML=buildFlashHTML(flashNewsData); }
+function renderFacFlash(){ const t=document.getElementById('facFlashTrack'); if(t)t.innerHTML=buildFlashHTML(flashNewsData); }
 function renderFacFlashList(){
-  const list=document.getElementById('fnList');if(!list)return;
-  list.innerHTML=flashNewsData.length?flashNewsData.map((item,i)=>`<div class="admin-list-row"><span class="admin-list-text"><strong>[${item.type.toUpperCase()}]</strong> ${item.text}</span><div class="admin-list-actions"><button class="btn-del" onclick="deleteFlash(${i})">Delete</button></div></div>`).join(''):'<div class="notif-empty">No flash news yet.</div>';
+  const list=document.getElementById('fnList'); if(!list)return;
+  list.innerHTML=flashNewsData.length?flashNewsData.map((item,i)=>`<div class="admin-list-row"><span class="admin-list-text"><strong>[${item.type.toUpperCase()}]</strong> ${item.text}</span><div class="admin-list-actions"><button class="btn-del" onclick="deleteFlash('${item.id}')">Delete</button></div></div>`).join(''):'<div class="notif-empty">No flash news yet.</div>';
 }
-function addFlashNews(){
+async function addFlashNews(){
   const txt=document.getElementById('fnInput').value.trim(),type=document.getElementById('fnType').value;
   if(!txt){adminToast('Enter flash news text.');return;}
-  flashNewsData.push({id:Date.now(),text:txt,type});
+  const id='f'+Date.now();
+  const item={id,text:txt,type};
+  flashNewsData.push(item);
+  await fbSet('/flashNews/'+id, item);
   document.getElementById('fnInput').value='';
-  renderFacFlashList();renderFacFlash();renderStudentFlash();adminToast('Flash news added! \u2705');
+  renderFacFlashList(); renderFacFlash(); renderStudentFlash(); adminToast('Flash news added! \u2705');
 }
-function deleteFlash(i){flashNewsData.splice(i,1);renderFacFlashList();renderFacFlash();renderStudentFlash();adminToast('Deleted.');}
+async function deleteFlash(id){
+  flashNewsData=flashNewsData.filter(i=>i.id!==id);
+  await fbDel('/flashNews/'+id);
+  renderFacFlashList(); renderFacFlash(); renderStudentFlash(); adminToast('Deleted.');
+}
 
-// ── NOTIFICATIONS ──
+// ── Notifications ──
 const NOTIF_ICONS={info:'\u2139\ufe0f',urgent:'\ud83d\udea8',event:'\ud83c\udf89'};
 function renderStudentNotifs(){
   const list=document.getElementById('studentNotifList'),badge=document.getElementById('notifCountBadge');
@@ -2581,21 +2849,28 @@ function renderStudentNotifs(){
   list.innerHTML=notificationsData.length?notificationsData.map(n=>`<div class="notif-item ${n.type}"><div class="notif-ico">${NOTIF_ICONS[n.type]||'\ud83d\udccc'}</div><div class="notif-body"><div class="notif-title">${n.title}</div><div class="notif-desc">${n.desc}</div>${n.date?`<div class="notif-date">${n.date}</div>`:''}</div></div>`).join(''):'<div class="notif-empty">No notifications yet.</div>';
 }
 function renderFacNotifList(){
-  const list=document.getElementById('nfList');if(!list)return;
-  list.innerHTML=notificationsData.length?notificationsData.map((n,i)=>`<div class="admin-list-row"><span class="admin-list-text"><strong>${n.title}</strong> \u2014 ${n.desc}</span><div class="admin-list-actions"><button class="btn-del" onclick="deleteNotif(${i})">Delete</button></div></div>`).join(''):'<div class="notif-empty">No notifications yet.</div>';
+  const list=document.getElementById('nfList'); if(!list)return;
+  list.innerHTML=notificationsData.length?notificationsData.map((n,i)=>`<div class="admin-list-row"><span class="admin-list-text"><strong>${n.title}</strong> \u2014 ${n.desc}</span><div class="admin-list-actions"><button class="btn-del" onclick="deleteNotif('${n.id}')">Delete</button></div></div>`).join(''):'<div class="notif-empty">No notifications yet.</div>';
 }
-function addNotification(){
+async function addNotification(){
   const title=document.getElementById('nfTitle').value.trim(),desc=document.getElementById('nfDesc').value.trim(),type=document.getElementById('nfType').value;
   if(!title){adminToast('Enter notification title.');return;}
   const now=new Date(),mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  notificationsData.unshift({id:Date.now(),title,desc,type,date:mo[now.getMonth()]+' '+now.getFullYear()});
-  document.getElementById('nfTitle').value='';document.getElementById('nfDesc').value='';
-  renderFacNotifList();renderStudentNotifs();adminToast('Notification added! \u2705');
+  const id='n'+Date.now();
+  const item={id,title,desc,type,date:mo[now.getMonth()]+' '+now.getFullYear()};
+  notificationsData.unshift(item);
+  await fbSet('/notifications/'+id, item);
+  document.getElementById('nfTitle').value=''; document.getElementById('nfDesc').value='';
+  renderFacNotifList(); renderStudentNotifs(); adminToast('Notification added! \u2705');
 }
-function deleteNotif(i){notificationsData.splice(i,1);renderFacNotifList();renderStudentNotifs();adminToast('Deleted.');}
+async function deleteNotif(id){
+  notificationsData=notificationsData.filter(n=>n.id!==id);
+  await fbDel('/notifications/'+id);
+  renderFacNotifList(); renderStudentNotifs(); adminToast('Deleted.');
+}
 
-// ── SYLLABUS ADMIN ──
-function selectSylYear(yr,btn){facSylYear=yr;document.querySelectorAll('#ap-syllabus .year-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderSylAdmin();}
+// ── Syllabus Admin ──
+function selectSylYear(yr,btn){ facSylYear=yr; document.querySelectorAll('#ap-syllabus .year-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); renderSylAdmin(); }
 function renderSylAdmin(){
   const yr=facSylYear,syl=sylData[yr],yname=['I','II','III'][yr-1];
   document.getElementById('sylAdminTitle').textContent=yname+' Year \u2014 Subjects & Syllabus';
@@ -2610,190 +2885,201 @@ function renderSylAdmin(){
       </div>
     </div>`).join('');
 }
-function addSubject(){const n=prompt('New subject name:');if(!n||!n.trim())return;sylData[facSylYear].push({id:'s'+Date.now(),name:n.trim(),units:[]});renderSylAdmin();adminToast('Subject added! \u2705');}
-function deleteSubject(si){if(!confirm('Delete subject and all units?'))return;sylData[facSylYear].splice(si,1);renderSylAdmin();adminToast('Deleted.');}
-function editSubjName(si){const n=prompt('Rename subject:',sylData[facSylYear][si].name);if(!n)return;sylData[facSylYear][si].name=n.trim();renderSylAdmin();adminToast('Renamed! \u2705');}
-function addUnit(si){const inp=document.getElementById('nu_'+si),txt=inp?inp.value.trim():'';if(!txt){adminToast('Enter unit name.');return;}sylData[facSylYear][si].units.push(txt);renderSylAdmin();adminToast('Unit added! \u2705');}
-function editUnit(si,ui){const v=prompt('Edit unit:',sylData[facSylYear][si].units[ui]);if(v===null)return;sylData[facSylYear][si].units[ui]=v.trim();renderSylAdmin();adminToast('Updated! \u2705');}
-function deleteUnit(si,ui){sylData[facSylYear][si].units.splice(ui,1);renderSylAdmin();adminToast('Deleted.');}
+function addSubject(){ const n=prompt('New subject name:'); if(!n||!n.trim())return; sylData[facSylYear].push({id:'s'+Date.now(),name:n.trim(),units:[]}); renderSylAdmin(); adminToast('Subject added! \u2705'); }
+function deleteSubject(si){ if(!confirm('Delete subject?'))return; sylData[facSylYear].splice(si,1); renderSylAdmin(); adminToast('Deleted.'); }
+function editSubjName(si){ const n=prompt('Rename:',sylData[facSylYear][si].name); if(!n)return; sylData[facSylYear][si].name=n.trim(); renderSylAdmin(); adminToast('Renamed! \u2705'); }
+function addUnit(si){ const inp=document.getElementById('nu_'+si),txt=inp?inp.value.trim():''; if(!txt){adminToast('Enter unit name.');return;} sylData[facSylYear][si].units.push(txt); renderSylAdmin(); adminToast('Unit added! \u2705'); }
+function editUnit(si,ui){ const v=prompt('Edit:',sylData[facSylYear][si].units[ui]); if(v===null)return; sylData[facSylYear][si].units[ui]=v.trim(); renderSylAdmin(); adminToast('Updated! \u2705'); }
+function deleteUnit(si,ui){ sylData[facSylYear][si].units.splice(ui,1); renderSylAdmin(); adminToast('Deleted.'); }
 
-// ── TIMETABLE ADMIN ──
-function selectTTYear(yr,btn){facTTYear=yr;document.querySelectorAll('#ap-timetable .year-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderTTAdmin();}
+// ── Timetable Admin ──
+function selectTTYear(yr,btn){ facTTYear=yr; document.querySelectorAll('#ap-timetable .year-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); renderTTAdmin(); }
 function renderTTAdmin(){
   const yr=facTTYear,tt=ttData[yr],yname=['I','II','III'][yr-1];
   document.getElementById('ttAdminTitle').textContent=yname+' Year \u2014 Timetable Editor';
   document.getElementById('ttAdminBody').innerHTML=`<table class="tt-table" style="min-width:580px;"><thead><tr><th>Day</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th></tr></thead><tbody>${tt.map((row,ri)=>`<tr><td class="tt-dayorder">${row.day}</td>${row.p.map((cell,ci)=>`<td><input class="tt-edit-cell" id="tt_${ri}_${ci}" value="${cell}" placeholder="\u2014"></td>`).join('')}</tr>`).join('')}</tbody></table><p style="font-size:0.74rem;color:var(--muted);margin-top:0.7rem;">\u270f\ufe0f Click any cell to edit. Press Save when done.</p>`;
 }
-function saveTimetable(){ttData[facTTYear].forEach((row,ri)=>{row.p=row.p.map((_,ci)=>{const el=document.getElementById('tt_'+ri+'_'+ci);return el?el.value.trim():'';});});adminToast('Timetable saved! \u2705');}
+function saveTimetable(){ ttData[facTTYear].forEach((row,ri)=>{row.p=row.p.map((_,ci)=>{const el=document.getElementById('tt_'+ri+'_'+ci);return el?el.value.trim():'';});}); adminToast('Timetable saved! \u2705'); }
 
-// ── FACULTY ADMIN ──
-function selectFacYear(yr,btn){facFacYear=yr;document.querySelectorAll('#ap-faculty .year-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderFacAdmin();}
+// ── Faculty Subject Admin ──
+function selectFacYear(yr,btn){ facFacYear=yr; document.querySelectorAll('#ap-faculty .year-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); renderFacAdmin(); }
 function renderFacAdmin(){
   const yr=facFacYear,data=facData[yr],yname=['I','II','III'][yr-1];
   document.getElementById('facAdminTitle').textContent=yname+' Year \u2014 Subject Faculty';
   document.getElementById('facAdminBody').innerHTML=data.map((row,i)=>`<div class="admin-list-row" style="margin-bottom:0.5rem;"><div style="flex:1;"><div style="font-size:0.82rem;font-weight:700;color:var(--navy);">${row.subject}</div><div style="font-size:0.76rem;color:var(--muted);">${row.faculty}</div></div><div class="admin-list-actions"><button class="btn-edit" onclick="editFac(${i})">&#9998; Edit</button><button class="btn-del" onclick="deleteFac(${i})">Delete</button></div></div>`).join('')
     +`<div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1rem;padding-top:0.8rem;border-top:1px solid var(--border);"><input class="admin-input" id="nfs" placeholder="Subject name" style="flex:1;min-width:140px;"><input class="admin-input" id="nff" placeholder="Faculty name" style="flex:1;min-width:140px;"><button class="btn-add" onclick="addFac()">+ Add</button></div>`;
 }
-function editFac(i){const s=prompt('Subject:',facData[facFacYear][i].subject);if(s===null)return;const f=prompt('Faculty:',facData[facFacYear][i].faculty);if(f===null)return;facData[facFacYear][i].subject=s.trim();facData[facFacYear][i].faculty=f.trim();renderFacAdmin();adminToast('Updated! \u2705');}
-function deleteFac(i){if(!confirm('Delete?'))return;facData[facFacYear].splice(i,1);renderFacAdmin();adminToast('Deleted.');}
-function addFac(){const s=document.getElementById('nfs')?.value.trim(),f=document.getElementById('nff')?.value.trim();if(!s||!f){adminToast('Enter subject and faculty name.');return;}facData[facFacYear].push({subject:s,faculty:f});document.getElementById('nfs').value='';document.getElementById('nff').value='';renderFacAdmin();adminToast('Added! \u2705');}
+function editFac(i){ const s=prompt('Subject:',facData[facFacYear][i].subject); if(s===null)return; const f=prompt('Faculty:',facData[facFacYear][i].faculty); if(f===null)return; facData[facFacYear][i].subject=s.trim(); facData[facFacYear][i].faculty=f.trim(); renderFacAdmin(); adminToast('Updated! \u2705'); }
+function deleteFac(i){ if(!confirm('Delete?'))return; facData[facFacYear].splice(i,1); renderFacAdmin(); adminToast('Deleted.'); }
+function addFac(){ const s=document.getElementById('nfs')?.value.trim(),f=document.getElementById('nff')?.value.trim(); if(!s||!f){adminToast('Enter subject and faculty name.');return;} facData[facFacYear].push({subject:s,faculty:f}); document.getElementById('nfs').value=''; document.getElementById('nff').value=''; renderFacAdmin(); adminToast('Added! \u2705'); }
 
 // ═══════════════════════════════════════
 // INTERNAL MARKS — FACULTY PANEL
 // ═══════════════════════════════════════
-function selectMarksYear(yr,btn){
-  facMarksYear=yr;
-  document.querySelectorAll('#ap-marks .year-btn').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
-  document.getElementById('marksAdminTitle').textContent=['I','II','III'][yr-1]+' Year \u2014 Internal Marks';
-  renderMarksAdmin();
-}
-function renderMarksAdmin(){
+function selectMarksYear(yr,btn){ facMarksYear=yr; document.querySelectorAll('#ap-marks .year-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); document.getElementById('marksAdminTitle').textContent=['I','II','III'][yr-1]+' Year \u2014 Internal Marks'; renderMarksAdmin(); }
+async function renderMarksAdmin(){
   const yr=facMarksYear;
   const students=getStudentsByYear(yr);
   const subjs=getSubjectsForYear(yr);
   const el=document.getElementById('marksAdminBody'); if(!el)return;
   if(!students.length){
-    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;background:#fffbf0;border:2px dashed var(--gold);border-radius:8px;"><div style="font-size:2rem;margin-bottom:0.6rem;">\uD83D\uDCDD</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">No Students in Database</div><div style="font-size:0.8rem;color:var(--muted);">Add students via the <strong>Users</strong> tab. Once added, their marks can be entered here.</div></div>';
+    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;background:#fffbf0;border:2px dashed var(--gold);border-radius:8px;"><div style="font-size:2rem;margin-bottom:0.5rem;">📝</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">No Students in Database</div><div style="font-size:0.8rem;color:var(--muted);">Add students via the <strong>Users</strong> tab.</div></div>';
     return;
+  }
+  el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted);font-size:0.82rem;">Loading marks data…</div>';
+  // Load all marks for this year's students from Firebase
+  for(const u of students){
+    const ek=eKey(u.email);
+    if(!marksCache[ek]){ const d=await fbGet('/marks/'+ek); marksCache[ek]=d||{}; }
   }
   el.innerHTML=students.map(u=>{
     const info=parseProfile(u.email,u.displayName);
-    const myM=marksData[u.email.toLowerCase()]||{};
+    const ek=eKey(u.email);
+    const myM=marksCache[ek]||{};
     const subjRows=subjs.map((s,si)=>{
-      const m=myM[s.name]||{ia1:'',ia2:'',ia3:''};
-      const eid=`mk_${u.email.replace(/[@.]/g,'_')}_${si}`;
-      return `<tr>
-        <td style="font-size:0.78rem;padding:0.45rem 0.6rem;color:var(--navy);">${s.name}</td>
-        <td style="padding:0.35rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_1" value="${m.ia1}" placeholder="-" style="width:50px;text-align:center;"></td>
-        <td style="padding:0.35rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_2" value="${m.ia2}" placeholder="-" style="width:50px;text-align:center;"></td>
-        <td style="padding:0.35rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_3" value="${m.ia3}" placeholder="-" style="width:50px;text-align:center;"></td>
-      </tr>`;
+      const sk2=sKey(s.name);
+      const m=myM[sk2]||{ia1:'',ia2:'',ia3:''};
+      const eid=`mk_${ek}_${si}`;
+      return`<tr><td style="font-size:0.78rem;padding:0.4rem 0.6rem;color:var(--navy);">${s.name}</td><td style="padding:0.3rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_1" value="${m.ia1}" placeholder="-" style="width:50px;text-align:center;"></td><td style="padding:0.3rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_2" value="${m.ia2}" placeholder="-" style="width:50px;text-align:center;"></td><td style="padding:0.3rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_3" value="${m.ia3}" placeholder="-" style="width:50px;text-align:center;"></td></tr>`;
     }).join('');
-    const saveId=`saveMarks_${u.email.replace(/[@.]/g,'_')}`;
-    return `<div style="border:1px solid var(--border);border-radius:6px;margin-bottom:1.1rem;overflow:hidden;">
-      <div style="background:var(--navy2);padding:0.65rem 1rem;display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-family:'Merriweather',serif;font-size:0.86rem;color:#fff;font-weight:700;">\uD83C\uDF93 ${info.name}</span>
-        <span style="font-size:0.72rem;color:rgba(255,255,255,0.6);">${info.reg}</span>
-      </div>
-      <div style="padding:0.9rem;overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;min-width:380px;">
-          <thead><tr style="background:var(--off);"><th style="font-size:0.72rem;padding:0.4rem 0.6rem;text-align:left;border-bottom:1px solid var(--border);">Subject</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">IA 1</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">IA 2</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">IA 3</th></tr></thead>
-          <tbody>${subjRows}</tbody>
-        </table>
-        <button class="btn-save" style="margin-top:0.7rem;" onclick="saveStudentMarks('${u.email.toLowerCase()}')">💾 Save Marks</button>
-      </div>
-    </div>`;
+    return`<div class="att-stu-card"><div class="att-stu-card-head"><span class="att-stu-card-name">\uD83C\uDF93 ${info.name}</span><span class="att-stu-card-reg">${info.reg}</span></div><div style="padding:0.9rem;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:350px;"><thead><tr style="background:var(--off);"><th style="font-size:0.72rem;padding:0.35rem 0.6rem;text-align:left;border-bottom:1px solid var(--border);">Subject</th><th style="font-size:0.72rem;padding:0.35rem;text-align:center;border-bottom:1px solid var(--border);">IA 1</th><th style="font-size:0.72rem;padding:0.35rem;text-align:center;border-bottom:1px solid var(--border);">IA 2</th><th style="font-size:0.72rem;padding:0.35rem;text-align:center;border-bottom:1px solid var(--border);">IA 3</th></tr></thead><tbody>${subjRows}</tbody></table><button class="btn-save" style="margin-top:0.7rem;" onclick="saveStudentMarks('${u.email.toLowerCase()}')">💾 Save Marks</button></div></div>`;
   }).join('');
 }
-
-function saveStudentMarks(email){
-  const yr=facMarksYear;
-  const subjs=getSubjectsForYear(yr);
-  const safeE=email.replace(/[@.]/g,'_');
-  if(!marksData[email])marksData[email]={};
+async function saveStudentMarks(email){
+  const yr=facMarksYear, subjs=getSubjectsForYear(yr);
+  const ek=eKey(email);
+  const data={};
   subjs.forEach((s,si)=>{
-    const eid=`mk_${safeE}_${si}`;
-    marksData[email][s.name]={
-      ia1:document.getElementById(eid+'_1')?.value.trim()||'',
-      ia2:document.getElementById(eid+'_2')?.value.trim()||'',
-      ia3:document.getElementById(eid+'_3')?.value.trim()||''
-    };
+    const eid=`mk_${ek}_${si}`;
+    data[sKey(s.name)]={ia1:document.getElementById(eid+'_1')?.value.trim()||'',ia2:document.getElementById(eid+'_2')?.value.trim()||'',ia3:document.getElementById(eid+'_3')?.value.trim()||''};
   });
-  adminToast('Marks saved for student! \u2705');
-  // If this student is currently logged in, refresh their view
+  marksCache[ek]=data;
+  await fbSet('/marks/'+ek, data);
+  adminToast('Marks saved! \u2705');
   if(currentUserInfo&&currentUserInfo.email===email) renderStudentMarks(currentUserInfo);
 }
 
 // ═══════════════════════════════════════
-// ATTENDANCE — FACULTY PANEL
+// ATTENDANCE — FACULTY PANEL (Calendar-based)
 // ═══════════════════════════════════════
+function setAttToday(){
+  const dp=document.getElementById('attDatePicker');
+  if(dp){ dp.value=todayStr(); updateTodayLabel(); renderAttAdmin(); }
+}
+function updateTodayLabel(){
+  const dp=document.getElementById('attDatePicker');
+  const lbl=document.getElementById('attTodayLabel');
+  if(!dp||!lbl)return;
+  const isToday=dp.value===todayStr();
+  lbl.textContent=isToday?'Today':'';
+  lbl.style.display=isToday?'inline':'none';
+  // Show formatted date in title
+  const title=document.getElementById('attAdminTitle');
+  if(title) title.textContent=['I','II','III'][facAttYear-1]+' Year \u2014 Attendance — '+formatDateDisplay(dp.value);
+}
+
 function selectAttYear(yr,btn){
   facAttYear=yr;
   document.querySelectorAll('#ap-attendance .year-btn').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
-  document.getElementById('attAdminTitle').textContent=['I','II','III'][yr-1]+' Year \u2014 Attendance';
+  updateTodayLabel();
   renderAttAdmin();
 }
-function renderAttAdmin(){
+async function renderAttAdmin(){
+  updateTodayLabel();
   const yr=facAttYear;
   const students=getStudentsByYear(yr);
   const subjs=getSubjectsForYear(yr);
   const el=document.getElementById('attAdminBody'); if(!el)return;
+  const dp=document.getElementById('attDatePicker');
+  const selDate=dp?dp.value:todayStr();
   if(!students.length){
-    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;background:#f0fff4;border:2px dashed #38a169;border-radius:8px;"><div style="font-size:2rem;margin-bottom:0.6rem;">\uD83D\uDCC5</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">No Students in Database</div><div style="font-size:0.8rem;color:var(--muted);">Add students via the <strong>Users</strong> tab. Attendance can be entered here once students are added.</div></div>';
+    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;background:#f0fff4;border:2px dashed #38a169;border-radius:8px;"><div style="font-size:2rem;margin-bottom:0.5rem;">📅</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">No Students in Database</div><div style="font-size:0.8rem;color:var(--muted);">Add students via the <strong>Users</strong> tab.</div></div>';
     return;
+  }
+  // Load attendance cache for all students
+  for(const u of students){
+    const ek=eKey(u.email);
+    if(!attendanceCache[ek]){ const d=await fbGet('/attendance/'+ek); attendanceCache[ek]=d||{}; }
   }
   el.innerHTML=students.map(u=>{
     const info=parseProfile(u.email,u.displayName);
-    const myA=attendanceData[u.email.toLowerCase()]||{};
-    const subjRows=subjs.map((s,si)=>{
-      const a=myA[s.name]||{present:0,total:0};
-      const eid=`at_${u.email.replace(/[@.]/g,'_')}_${si}`;
-      return `<tr>
-        <td style="font-size:0.78rem;padding:0.45rem 0.6rem;color:var(--navy);">${s.name}</td>
-        <td style="padding:0.35rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_p" value="${a.present}" placeholder="0" style="width:55px;text-align:center;" type="number" min="0"></td>
-        <td style="padding:0.35rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_t" value="${a.total}" placeholder="0" style="width:55px;text-align:center;" type="number" min="0"></td>
-        <td style="padding:0.45rem 0.6rem;font-weight:700;font-size:0.78rem;color:${a.total>0?(Math.round(a.present/a.total*100)>=75?'#2d7d46':Math.round(a.present/a.total*100)>=60?'#c9882a':'#e53e3e'):'var(--muted)'};">${a.total>0?Math.round(a.present/a.total*100)+'%':'-'}</td>
-      </tr>`;
+    const ek=eKey(u.email);
+    const myAtt=attendanceCache[ek]||{};
+    const subjBtns=subjs.map(s=>{
+      const sk2=sKey(s.name);
+      const cur=(myAtt[sk2]&&myAtt[sk2][selDate])||'';
+      const pOn=cur==='P', aOn=cur==='A';
+      return`<div class="att-subj-item">
+        <span class="att-subj-name-sm" title="${s.name}">${s.name.split(' ').slice(0,3).join(' ')}</span>
+        <button class="att-tog-btn ${pOn?'on-p':'off'}" onclick="toggleAtt('${u.email}','${s.name}','${selDate}','P',this)">P</button>
+        <button class="att-tog-btn ${aOn?'on-a':'off'}" onclick="toggleAtt('${u.email}','${s.name}','${selDate}','A',this)">A</button>
+      </div>`;
     }).join('');
-    return `<div style="border:1px solid var(--border);border-radius:6px;margin-bottom:1.1rem;overflow:hidden;">
-      <div style="background:var(--navy2);padding:0.65rem 1rem;display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-family:'Merriweather',serif;font-size:0.86rem;color:#fff;font-weight:700;">\uD83C\uDF93 ${info.name}</span>
-        <span style="font-size:0.72rem;color:rgba(255,255,255,0.6);">${info.reg}</span>
-      </div>
-      <div style="padding:0.9rem;overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;min-width:380px;">
-          <thead><tr style="background:var(--off);"><th style="font-size:0.72rem;padding:0.4rem 0.6rem;text-align:left;border-bottom:1px solid var(--border);">Subject</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">Present</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">Total</th><th style="font-size:0.72rem;padding:0.4rem;text-align:center;border-bottom:1px solid var(--border);">%</th></tr></thead>
-          <tbody>${subjRows}</tbody>
-        </table>
-        <button class="btn-save" style="margin-top:0.7rem;" onclick="saveStudentAtt('${u.email.toLowerCase()}')">💾 Save Attendance</button>
-      </div>
-    </div>`;
+    // Quick stats for this student today summary
+    const markedToday=subjs.filter(s=>{const sk2=sKey(s.name);return myAtt[sk2]&&myAtt[sk2][selDate];}).length;
+    return`<div class="att-stu-card"><div class="att-stu-card-head"><span class="att-stu-card-name">\uD83C\uDF93 ${info.name}</span><span class="att-stu-card-reg">${info.reg} &nbsp;·&nbsp; <span style="color:${markedToday===subjs.length&&subjs.length>0?'#48bb78':markedToday>0?'var(--gold)':'#aaa'}">${markedToday}/${subjs.length} marked</span></span></div><div class="att-subj-grid">${subjBtns}</div></div>`;
   }).join('');
 }
-
-function saveStudentAtt(email){
-  const yr=facAttYear;
-  const subjs=getSubjectsForYear(yr);
-  const safeE=email.replace(/[@.]/g,'_');
-  if(!attendanceData[email])attendanceData[email]={};
-  subjs.forEach((s,si)=>{
-    const eid=`at_${safeE}_${si}`;
-    const p=parseInt(document.getElementById(eid+'_p')?.value)||0;
-    const t=parseInt(document.getElementById(eid+'_t')?.value)||0;
-    attendanceData[email][s.name]={present:p,total:t};
-  });
-  renderAttAdmin(); // re-render to refresh % colours
-  adminToast('Attendance saved! \u2705');
-  if(currentUserInfo&&currentUserInfo.email===email) renderStudentAttendance(currentUserInfo);
+async function toggleAtt(email,subjName,date,status,btn){
+  const ek=eKey(email), sk2=sKey(subjName);
+  if(!attendanceCache[ek]) attendanceCache[ek]={};
+  if(!attendanceCache[ek][sk2]) attendanceCache[ek][sk2]={};
+  const cur=attendanceCache[ek][sk2][date];
+  const newVal=(cur===status)?null:status; // toggle off if same
+  // Update UI immediately
+  const card=btn.closest('.att-stu-card');
+  if(card){
+    const allBtns=btn.parentElement.querySelectorAll('.att-tog-btn');
+    allBtns.forEach(b=>b.className='att-tog-btn off');
+    if(newVal) btn.className='att-tog-btn '+(newVal==='P'?'on-p':'on-a');
+  }
+  // Save to Firebase
+  fbSaving(true);
+  if(newVal){ attendanceCache[ek][sk2][date]=newVal; await fbSet('/attendance/'+ek+'/'+sk2+'/'+date, newVal); }
+  else { delete attendanceCache[ek][sk2][date]; await fbDel('/attendance/'+ek+'/'+sk2+'/'+date); }
+  fbSaving(false);
+  // Update marked count
+  const subjs=getSubjectsForYear(facAttYear);
+  const myAtt=attendanceCache[ek];
+  const markedToday=subjs.filter(s=>{const sk2b=sKey(s.name);return myAtt[sk2b]&&myAtt[sk2b][date];}).length;
+  const regEl=card?card.querySelector('.att-stu-card-reg'):null;
+  if(regEl){
+    const reg=regEl.textContent.split('·')[0].trim();
+    regEl.innerHTML=`${reg} &nbsp;·&nbsp; <span style="color:${markedToday===subjs.length&&subjs.length>0?'#48bb78':markedToday>0?'var(--gold)':'#aaa'}">${markedToday}/${subjs.length} marked</span>`;
+  }
+  // Live update student if they're viewing
+  if(currentUserInfo&&currentUserInfo.email===email.toLowerCase()) renderStudentAttendance(currentUserInfo);
 }
 
 // ═══════════════════════════════════════
 // USER MANAGEMENT
 // ═══════════════════════════════════════
-function addNewUser(){
+async function addNewUser(){
   const email=document.getElementById('nuEmail').value.trim().toLowerCase();
   const pass=document.getElementById('nuPass').value.trim();
   const role=document.getElementById('nuRole').value;
   const dname=document.getElementById('nuName').value.trim()||null;
   if(!email||!pass){adminToast('Enter email and password.');return;}
-  if(getAllUsers().find(u=>u.email===email&&u.role===role)){adminToast('User with this email & role already exists.');return;}
-  extraUsers.push({email,password:pass,role,displayName:dname||undefined});
-  document.getElementById('nuEmail').value='';document.getElementById('nuPass').value='';document.getElementById('nuName').value='';
+  if(getAllUsers().find(u=>u.email===email&&u.role===role)){adminToast('User already exists.');return;}
+  const user={email,password:pass,role,displayName:dname||undefined};
+  extraUsers.push(user);
+  await saveExtraUserToFB(user);
+  document.getElementById('nuEmail').value=''; document.getElementById('nuPass').value=''; document.getElementById('nuName').value='';
   renderUserList();
-  // Refresh marks/attendance panels so new student shows up
-  if(role==='student'){renderMarksAdmin();renderAttAdmin();}
+  if(role==='student'){ renderMarksAdmin(); renderAttAdmin(); }
   adminToast('User added! \u2705');
 }
-function deleteUser(i){
+async function deleteUser(i){
+  const user=extraUsers[i];
   extraUsers.splice(i,1);
-  renderUserList();renderMarksAdmin();renderAttAdmin();adminToast('User removed.');
+  await deleteExtraUserFromFB(user);
+  renderUserList(); renderMarksAdmin(); renderAttAdmin(); adminToast('User removed.');
 }
 function renderUserList(){
   const all=getAllUsers();
-  const el=document.getElementById('userListBody');if(!el)return;
-  const lbl=document.getElementById('userCountLabel');if(lbl)lbl.textContent=all.length+' user'+(all.length!==1?'s':'');
+  const el=document.getElementById('userListBody'); if(!el)return;
+  const lbl=document.getElementById('userCountLabel'); if(lbl)lbl.textContent=all.length+' user'+(all.length!==1?'s':'');
   el.innerHTML=all.map((u,i)=>`
     <div class="admin-list-row">
       <span class="admin-list-text">
@@ -2805,22 +3091,20 @@ function renderUserList(){
     </div>`).join('');
 }
 
-// ── ADMIN TOAST ──
-function adminToast(msg){const t=document.getElementById('adminToast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500);}
+// ── Admin Toast ──
+function adminToast(msg){ const t=document.getElementById('adminToast'); if(!t)return; t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2500); }
 
-// ── LOGIN EVENTS ──
+// ── Login events ──
 document.getElementById('loginOverlay').addEventListener('click',function(e){if(e.target===this)closeLogin();});
 document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('loginOverlay').classList.contains('active')){if(document.getElementById('step2').classList.contains('active'))doLogin();}});
 
-// ── STUDENT SYLLABUS TABS ──
+// ── Student Syllabus ──
 function showSyl(id,btn){
   document.querySelectorAll('.syl-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.syl-tab').forEach(t=>t.classList.remove('active'));
-  const panel=document.getElementById('syl-'+id);if(panel)panel.classList.add('active');
+  const panel=document.getElementById('syl-'+id); if(panel)panel.classList.add('active');
   if(btn)btn.classList.add('active');
 }
-
-// ── STUDENT SYLLABUS ACCORDION ──
 function toggleUnit(header){
   const body=header.nextElementSibling,isOpen=header.classList.contains('open');
   const panel=header.closest('.syl-panel');
@@ -2828,21 +3112,32 @@ function toggleUnit(header){
   if(!isOpen){header.classList.add('open');if(body)body.classList.add('open');}
 }
 
+// ── Load users from Firebase on page load ──
+window.addEventListener('DOMContentLoaded', async ()=>{
+  await testFbConnection();       // ping Firebase first — sets FB_ONLINE flag
+  if(FB_ONLINE){
+    await loadExtraUsers();
+    await loadCoreData();
+  }
+});
+
 // ── EXPOSE TO WINDOW ──
-window.toggleNav=toggleNav;window.openLogin=openLogin;window.closeLogin=closeLogin;
-window.selectRole=selectRole;window.goBack=goBack;window.doLogin=doLogin;
-window.doLogout=doLogout;window.doFacLogout=doFacLogout;
-window.showSyl=showSyl;window.toggleUnit=toggleUnit;
+window.toggleNav=toggleNav; window.openLogin=openLogin; window.closeLogin=closeLogin;
+window.selectRole=selectRole; window.goBack=goBack; window.doLogin=doLogin;
+window.doLogout=doLogout; window.doFacLogout=doFacLogout;
+window.showSyl=showSyl; window.toggleUnit=toggleUnit;
 window.showAdminTab=showAdminTab;
-window.addFlashNews=addFlashNews;window.deleteFlash=deleteFlash;
-window.addNotification=addNotification;window.deleteNotif=deleteNotif;
-window.selectSylYear=selectSylYear;window.addSubject=addSubject;window.deleteSubject=deleteSubject;
-window.editSubjName=editSubjName;window.addUnit=addUnit;window.editUnit=editUnit;window.deleteUnit=deleteUnit;
-window.selectTTYear=selectTTYear;window.saveTimetable=saveTimetable;
-window.selectFacYear=selectFacYear;window.editFac=editFac;window.deleteFac=deleteFac;window.addFac=addFac;
-window.selectMarksYear=selectMarksYear;window.saveStudentMarks=saveStudentMarks;
-window.selectAttYear=selectAttYear;window.saveStudentAtt=saveStudentAtt;
-window.addNewUser=addNewUser;window.deleteUser=deleteUser;
+window.addFlashNews=addFlashNews; window.deleteFlash=deleteFlash;
+window.addNotification=addNotification; window.deleteNotif=deleteNotif;
+window.selectSylYear=selectSylYear; window.addSubject=addSubject; window.deleteSubject=deleteSubject;
+window.editSubjName=editSubjName; window.addUnit=addUnit; window.editUnit=editUnit; window.deleteUnit=deleteUnit;
+window.selectTTYear=selectTTYear; window.saveTimetable=saveTimetable;
+window.selectFacYear=selectFacYear; window.editFac=editFac; window.deleteFac=deleteFac; window.addFac=addFac;
+window.selectMarksYear=selectMarksYear; window.saveStudentMarks=saveStudentMarks;
+window.selectAttYear=selectAttYear; window.setAttToday=setAttToday; window.renderAttAdmin=renderAttAdmin; window.toggleAtt=toggleAtt;
+window.stdAttTab=stdAttTab; window.stdAttNavMonth=stdAttNavMonth;
+window.addNewUser=addNewUser; window.deleteUser=deleteUser;
+
 </script>
 </body>
 </html>
