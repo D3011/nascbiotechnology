@@ -1366,7 +1366,7 @@ footer{background:var(--navy);}
         <div class="login-err" id="loginErr">Invalid email or password. Please try again.</div>
         <div class="form-group">
           <label class="form-label">College Mail Account</label>
-          <input type="email" class="form-input" id="loginEmail" placeholder="e.g. 24ubio008.deepak_m@nandhaarts.org" autocomplete="off">
+          <input type="text" class="form-input" id="loginEmail" placeholder="e.g. 24ubio008.deepak_m@nandhaarts.org" autocomplete="off">
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
@@ -2017,17 +2017,17 @@ function showStep(stepId) {
 
 function doLogin() {
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('loginPass').value;
+  const pass = document.getElementById('loginPass').value.trim();
   const errEl = document.getElementById('loginErr');
 
-  // Find user
+  // Find user — match email and password only
   const user = USERS.find(u =>
     u.email.toLowerCase() === email &&
-    u.password === pass &&
-    u.role === selectedRole
+    u.password === pass
   );
 
   if (!user) {
+    errEl.textContent = 'Invalid email or password. Please try again.';
     errEl.classList.add('show');
     document.getElementById('loginEmail').classList.add('error');
     document.getElementById('loginPass').classList.add('error');
@@ -2121,6 +2121,27 @@ function showSyl(id, btn) {
 function toggleUnit(header) {
   const body = header.nextElementSibling;
   const isOpen = header.classList.contains('open');
-  // Close all in same panel
   const panel = header.closest('.syl-panel');
-  panel.querySelecto
+  panel.querySelectorAll('.syl-unit-header').forEach(h => {
+    h.classList.remove('open');
+    if (h.nextElementSibling) h.nextElementSibling.classList.remove('open');
+  });
+  if (!isOpen) {
+    header.classList.add('open');
+    body.classList.add('open');
+  }
+}
+
+// ── EXPOSE ALL FUNCTIONS TO WINDOW (fixes onclick not defined errors) ──
+window.toggleNav    = toggleNav;
+window.openLogin    = openLogin;
+window.closeLogin   = closeLogin;
+window.selectRole   = selectRole;
+window.goBack       = goBack;
+window.doLogin      = doLogin;
+window.doLogout     = doLogout;
+window.showSyl      = showSyl;
+window.toggleUnit   = toggleUnit;
+</script>
+</body>
+</html>
