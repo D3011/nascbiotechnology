@@ -905,6 +905,81 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
 .ans-review-q{font-size:0.82rem;font-weight:600;color:var(--navy);margin-bottom:0.4rem;}
 .ans-review-a{font-size:0.82rem;color:#333;background:#f7f8fa;border-radius:5px;padding:0.5rem 0.7rem;margin-bottom:0.3rem;}
 
+
+/* ════════════════════════════════════════
+   MOBILE & DESKTOP RESPONSIVE OPTIMIZATION
+   ════════════════════════════════════════ */
+/* Base layout */
+*{box-sizing:border-box;}
+img{max-width:100%;}
+
+/* Admin tabs — scroll on mobile */
+.admin-tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:0.3rem;padding-bottom:2px;scrollbar-width:none;}
+.admin-tabs::-webkit-scrollbar{display:none;}
+.admin-tab{flex-shrink:0;font-size:0.75rem;padding:0.45rem 0.8rem;white-space:nowrap;}
+
+/* Portal sections — full width on mobile */
+.portal-section{border-radius:10px;}
+.portal-sec-body{padding:0.8rem;}
+@media(max-width:600px){
+  .portal-sec-body{padding:0.6rem 0.5rem;}
+  .fac-portal-body{padding:0.7rem 0.5rem;}
+  .fac-portal-topbar{padding:0.55rem 0.7rem;gap:0.4rem;}
+  .fac-portal-topbar-name{font-size:0.78rem;}
+  .fac-portal-topbar-brand img{height:24px;}
+  .profile-card{flex-direction:column;text-align:center;padding:1rem 0.8rem;}
+  .profile-avatar{margin:0 auto 0.6rem;}
+  .profile-meta{flex-direction:column;gap:0.3rem;}
+  .admin-card-header{flex-direction:column;align-items:flex-start;gap:0.3rem;}
+  .admin-form-row{flex-direction:column;}
+  .admin-form-group{min-width:0;width:100%;}
+  .quiz-body{padding:1rem 0.6rem;}
+  .quiz-topbar{padding:0.55rem 0.8rem;}
+  .quiz-topbar-title{font-size:0.82rem;}
+  .lesson-overlay .quiz-body{padding:0.8rem 0.5rem;}
+  .att-stu-card{flex-wrap:wrap;gap:0.4rem;}
+  .btn-save,.btn-del,.btn-add,.btn-edit{font-size:0.75rem;padding:0.3rem 0.6rem;}
+  .year-btn{font-size:0.72rem;padding:0.3rem 0.6rem;}
+  .syl-unit-title{font-size:0.8rem;}
+  .syl-tab{font-size:0.73rem;padding:0.35rem 0.6rem;}
+  .admin-tab{font-size:0.7rem;padding:0.35rem 0.6rem;}
+  table{font-size:0.76rem;}
+  .tt-table th,.tt-table td{padding:0.3rem 0.4rem;font-size:0.72rem;}
+  .tt-edit-cell{width:60px;font-size:0.72rem;padding:0.2rem;}
+  .prog-overall-bar{width:80px;}
+  .prog-student-row{flex-direction:column;align-items:flex-start;gap:0.4rem;}
+  .hero-cta-wrap{flex-direction:column;align-items:stretch;}
+  .hero-cta-wrap .cta{text-align:center;}
+  .hero-stats{flex-wrap:wrap;gap:0.8rem;}
+  .hero-stat{min-width:80px;}
+  .quick-grid{grid-template-columns:repeat(2,1fr);}
+  .fac-grid{grid-template-columns:1fr;}
+  .why-grid{grid-template-columns:1fr;}
+  .rec-grid{grid-template-columns:repeat(2,1fr);}
+  .testimonials-grid{grid-template-columns:1fr;}
+  .prog-grid{grid-template-columns:repeat(2,1fr);}
+  .nav-links{display:none;}
+  .flash-bar{font-size:0.72rem;}
+  .notif-card{padding:0.7rem 0.8rem;}
+  .sec-rules-code{font-size:0.68rem;}
+  .marks-table th,.marks-table td{padding:0.35rem 0.4rem;font-size:0.75rem;}
+  .quiz-mcq-opt{font-size:0.8rem;padding:0.45rem 0.65rem;}
+  .quiz-q-text{font-size:0.84rem;}
+  .quiz-result-score{font-size:2.2rem;}
+}
+@media(max-width:400px){
+  .admin-tab{font-size:0.65rem;padding:0.3rem 0.5rem;}
+  .quick-grid{grid-template-columns:1fr;}
+}
+
+/* Desktop — wider content */
+@media(min-width:1024px){
+  .fac-portal-body{max-width:1100px;margin:0 auto;}
+  .portal-section{max-width:900px;margin-left:auto;margin-right:auto;}
+  .quiz-body{max-width:820px;}
+  .admin-card{max-width:100%;}
+}
+
 </style>
 </head>
 <body>
@@ -1828,8 +1903,8 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
     <!-- ── USER MANAGEMENT PANEL ── -->
     <div class="admin-panel" id="ap-users">
 
-      <!-- Firebase Security Rules reminder -->
-      <div class="sec-rules-box">
+      <!-- Firebase Security Rules reminder — dev only -->
+      <div id="secRulesWrap" style="display:none;"><div class="sec-rules-box">
         <h4>🔒 Firebase Security Rules — Required for Data Protection</h4>
         <p style="font-size:0.78rem;color:rgba(255,255,255,0.75);margin:0 0 0.6rem;">Copy and paste these rules in <strong>Firebase Console → Realtime Database → Rules</strong> tab, then click Publish. This restricts public access to sensitive data while keeping flash news &amp; notifications readable.</p>
         <div class="sec-rules-code">{
@@ -1841,7 +1916,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
         <p style="font-size:0.72rem;color:rgba(255,255,255,0.5);margin:0;">⚠️ These open rules allow marks, attendance, lessons and all data to save permanently — same pattern as the restaurant system. Paste this in <strong>Firebase Console → Realtime Database → Rules → Publish</strong>.</p>
         <button onclick="testFirebaseConnection()" style="margin-top:0.8rem;width:100%;padding:0.55rem;background:var(--gold);color:#fff;border:none;border-radius:6px;font-size:0.82rem;font-weight:600;cursor:pointer;">🔥 Test Firebase Connection Now</button>
         <div id="fbTestResult" style="margin-top:0.5rem;font-size:0.78rem;padding:0.5rem;border-radius:6px;display:none;"></div>
-      </div>
+      </div></div>
 
       <div class="admin-card">
         <div class="admin-card-header">
@@ -2280,15 +2355,23 @@ const so = new IntersectionObserver(entries => {
 const statsEl = document.querySelector('.hero-stats');
 if(statsEl) so.observe(statsEl);
 
-// ── COPY PROTECTION ──
+// ── COPY PROTECTION — blocked for non-developers ──
+function isDevSession(){ return !!(window._currentUserIsDev); }
 document.addEventListener('keydown',function(e){
+  if(isDevSession()) return; // developer can do anything
   const bl=['c','a','s','u','p','x'];
   if((e.ctrlKey||e.metaKey)&&bl.includes(e.key.toLowerCase())){e.preventDefault();if(['c','a'].includes(e.key.toLowerCase()))showToast();return false;}
   if(e.key==='F12'){e.preventDefault();return false;}
   if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['i','j','c'].includes(e.key.toLowerCase())){e.preventDefault();return false;}
 });
-document.addEventListener('copy',function(e){e.clipboardData.setData('text/plain','');e.preventDefault();showToast();return false;});
-document.addEventListener('cut',function(e){e.preventDefault();return false;});
+document.addEventListener('copy',function(e){
+  if(isDevSession()) return; // developer allowed
+  e.clipboardData.setData('text/plain','');e.preventDefault();showToast();return false;
+});
+document.addEventListener('cut',function(e){
+  if(isDevSession()) return;
+  e.preventDefault();return false;
+});
 function showToast(){
   let t=document.getElementById('cpToast');
   if(!t){t=document.createElement('div');t.id='cpToast';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0b2545;color:#fff;padding:0.65rem 1.4rem;border-radius:6px;font-size:0.82rem;z-index:99999;opacity:0;transition:opacity 0.3s;pointer-events:none;border-left:3px solid #c9882a;font-family:Source Sans 3,sans-serif;';t.textContent='🔒 Content is protected and cannot be copied.';document.body.appendChild(t);}
@@ -2834,9 +2917,9 @@ function showFbBanner(state){
     document.body.prepend(bar);
   }
   if(state==='online'){
-    bar.style.background='#276749'; bar.style.color='#fff';
-    bar.innerHTML='🔥 Firebase connected — data syncing in real-time';
-    setTimeout(()=>{ bar.style.opacity='0'; setTimeout(()=>bar.remove(),600); },3000);
+    // Silently connected — no banner shown
+    if(bar.parentNode) bar.remove();
+    return;
   } else if(state==='offline'){
     bar.style.background='#744210'; bar.style.color='#fff'; bar.style.opacity='1';
     bar.innerHTML='⚠️ Firebase unreachable — working offline. <strong>Open Firebase Console → Realtime Database → Rules</strong> and set <code style="background:rgba(255,255,255,0.15);padding:0 4px;border-radius:3px;">".read":true,".write":true</code>';
@@ -3167,6 +3250,7 @@ function parseProfile(email,displayName){
 // STUDENT PORTAL
 // ═══════════════════════════════════════
 async function openPortal(info,user){
+  window._currentUserIsDev = !!(user && user.isDev);
   document.getElementById('profileName').textContent=info.name;
   document.getElementById('profileAvatar').textContent=info.init;
   document.getElementById('profileReg').textContent=info.reg;
@@ -3360,7 +3444,7 @@ async function checkFirebaseWriteAccess(){
 
   if(writeOk){
     // Rules are open — no banner needed, just a quick toast
-    adminToast('\u2705 Firebase connected & saving permanently');
+    // Firebase rules OK — no toast needed
     return;
   }
 
@@ -3378,6 +3462,7 @@ async function checkFirebaseWriteAccess(){
 
 async function openFacPortal(info,user){
   currentIsDev = !!(user && user.isDev);
+  window._currentUserIsDev = currentIsDev;
   // Show "← Student View" if this dev also has a student account
   const backBtn=document.getElementById('backToStudentBtn');
   if(backBtn){
@@ -3387,6 +3472,8 @@ async function openFacPortal(info,user){
   document.getElementById('facName').textContent=info.name;
   const devBadgeEl=document.getElementById('devBadge');
   if(devBadgeEl) devBadgeEl.style.display=currentIsDev?'':'none';
+  const secWrap=document.getElementById('secRulesWrap');
+  if(secWrap) secWrap.style.display=currentIsDev?'block':'none';
   const hpTabEl=document.getElementById('hpTab');
   if(hpTabEl) hpTabEl.classList.toggle('dev-visible', currentIsDev);
   document.getElementById('facAvatar').textContent=info.init;
@@ -3418,7 +3505,7 @@ async function openFacPortal(info,user){
     if(!FB_ONLINE) adminToast('⚠️ Firebase unreachable — saves will retry when reconnected. Check rules.');
   },600);
 }
-function doFacLogout(){ document.getElementById('facPortalOverlay').classList.remove('active'); document.body.style.overflow=''; }
+function doFacLogout(){ document.getElementById('facPortalOverlay').classList.remove('active'); document.body.style.overflow=''; window._currentUserIsDev=false; }
 
 function showAdminTab(id,btn){
   document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
@@ -3573,12 +3660,34 @@ function renderSylAdmin(){
           </div>
         </div>`).join('');
 
-      const topicsHTML = currentIsDev && (u.topics||[]).length > 0
-        ? `<div style="margin-bottom:0.5rem;">${(u.topics||[]).map((t,ti)=>`
-            <div class="admin-list-row" style="margin-bottom:0.3rem;font-size:0.77rem;">
-              <span class="admin-list-text">${t}</span>
-              <div class="admin-list-actions"><button class="btn-edit" onclick="editTopic(${si},${ui},${ti})">&#9998;</button><button class="btn-del" onclick="deleteTopic(${si},${ui},${ti})">&#10005;</button></div>
-            </div>`).join('')}</div>` : '';
+      // Per-topic lessons (stored in unit.topicLessons[topicIdx])
+      const topicLessons = u.topicLessons || {};
+      const topicsHTML = (u.topics||[]).map((t,ti)=>{
+        const tLessons = topicLessons[ti] || [];
+        const lessonsForTopic = tLessons.map((l,li)=>`
+          <div class="fac-lesson-row" style="margin-left:0.5rem;">
+            <span class="fac-lesson-idx">${li+1}</span>
+            <span class="fac-lesson-txt">${l}</span>
+            <div class="admin-list-actions" style="opacity:1;">
+              <button class="btn-edit" onclick="editTopicLesson(${si},${ui},${ti},${li})">&#9998;</button>
+              <button class="btn-del" onclick="deleteTopicLesson(${si},${ui},${ti},${li})">&#10005;</button>
+            </div>
+          </div>`).join('');
+        const addInput = `<div style="display:flex;gap:0.4rem;margin-top:0.3rem;margin-left:0.5rem;">
+          <input class="admin-input" id="tl_${si}_${ui}_${ti}" placeholder="Add lesson for this topic…" style="flex:1;font-size:0.78rem;padding:0.3rem 0.6rem;">
+          <button class="btn-add" style="font-size:0.72rem;padding:0.25rem 0.6rem;white-space:nowrap;" onclick="addTopicLesson(${si},${ui},${ti})">+ Add</button>
+        </div>`;
+        return `<div style="margin-bottom:0.5rem;border:1px solid #e8edf5;border-radius:6px;padding:0.4rem 0.6rem;background:#f9fafc;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:0.4rem;flex-wrap:wrap;">
+            <span style="font-size:0.78rem;color:var(--navy);font-weight:600;">📌 ${t}</span>
+            <div style="display:flex;gap:0.3rem;">
+              ${currentIsDev ? `<button class="btn-edit" style="font-size:0.65rem;padding:0.15rem 0.4rem;" onclick="editTopic(${si},${ui},${ti})">✏️</button><button class="btn-del" style="font-size:0.65rem;padding:0.15rem 0.4rem;" onclick="deleteTopic(${si},${ui},${ti})">✕</button>` : ''}
+            </div>
+          </div>
+          ${tLessons.length ? lessonsForTopic : '<div style="font-size:0.72rem;color:var(--muted);padding:0.2rem 0.5rem;font-style:italic;">No lessons yet</div>'}
+          ${addInput}
+        </div>`;
+      }).join('');
 
       return `
         <div style="border:1px solid var(--border);border-radius:6px;margin-bottom:0.7rem;overflow:hidden;">
@@ -3590,16 +3699,7 @@ function renderSylAdmin(){
             </div>
           </div>
           <div style="padding:0.65rem 0.9rem;">
-            ${currentIsDev && (u.topics||[]).length > 0 ? `<div style="font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.35rem;">📋 Syllabus Topics</div>${topicsHTML}` : ''}
-            ${!currentIsDev && (u.topics||[]).length > 0 ? `<div style="margin-bottom:0.5rem;">${(u.topics||[]).map(t=>`<div style="font-size:0.78rem;color:var(--muted);padding:0.15rem 0;">• ${t}</div>`).join('')}</div>` : ''}
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;margin:0.5rem 0 0.3rem;display:flex;align-items:center;justify-content:space-between;">
-              <span>📖 Lessons (${(u.lessons||[]).length})</span>
-            </div>
-            ${(u.lessons||[]).length ? lessonsHTML : '<div style="font-size:0.75rem;color:var(--muted);font-style:italic;padding:0.1rem 0;">No lessons added yet</div>'}
-            <div style="display:flex;gap:0.5rem;margin-top:0.6rem;">
-              <input class="admin-input" id="nl_${si}_${ui}" placeholder="Add lesson (e.g. Introduction to Tissue Culture)…" style="flex:1;">
-              <button class="btn-add" style="white-space:nowrap;" onclick="addLesson(${si},${ui})">+ Lesson</button>
-            </div>
+            ${(u.topics||[]).length ? topicsHTML : '<div style="font-size:0.75rem;color:var(--muted);font-style:italic;">No topics defined yet</div>'}
           </div>
         </div>`;
     }).join('');
@@ -3619,7 +3719,35 @@ function renderSylAdmin(){
   }).join('');
 }
 
-// ── Lesson CRUD ──
+// ── Per-Topic Lesson CRUD ──
+async function addTopicLesson(si,ui,ti){
+  const inp = document.getElementById('tl_'+si+'_'+ui+'_'+ti);
+  const txt = inp ? inp.value.trim() : '';
+  if(!txt){ adminToast('Enter a lesson title.'); return; }
+  if(!sylData[facSylYear][si].units[ui].topicLessons) sylData[facSylYear][si].units[ui].topicLessons={};
+  if(!sylData[facSylYear][si].units[ui].topicLessons[ti]) sylData[facSylYear][si].units[ui].topicLessons[ti]=[];
+  sylData[facSylYear][si].units[ui].topicLessons[ti].push(txt);
+  if(inp) inp.value='';
+  await saveSyllabusLessons(facSylYear,si);
+  renderSylAdmin();
+  adminToast('Lesson added! ✅');
+}
+async function editTopicLesson(si,ui,ti,li){
+  const cur = sylData[facSylYear][si].units[ui].topicLessons?.[ti]?.[li];
+  const v = prompt('Edit lesson:', cur||'');
+  if(v===null||!v.trim()) return;
+  sylData[facSylYear][si].units[ui].topicLessons[ti][li]=v.trim();
+  await saveSyllabusLessons(facSylYear,si);
+  renderSylAdmin(); adminToast('Updated! ✅');
+}
+async function deleteTopicLesson(si,ui,ti,li){
+  if(!confirm('Delete this lesson?')) return;
+  sylData[facSylYear][si].units[ui].topicLessons[ti].splice(li,1);
+  await saveSyllabusLessons(facSylYear,si);
+  renderSylAdmin(); adminToast('Deleted.');
+}
+
+// ── (Legacy) Unit-level Lesson CRUD kept for backward compat ──
 async function addLesson(si,ui){
   const inp = document.getElementById(`nl_${si}_${ui}`);
   const txt = inp ? inp.value.trim() : '';
@@ -4229,31 +4357,65 @@ function renderStudentSyllabus(info){
     const unitRows = (s.units||[]).map((u,ui)=>{
       const lessons = u.lessons || [];
       const total = lessons.length;
-      const done = total > 0 ? completedLessonsInUnit(info.email, s.id, ui, total) : 0;
-      const pct = total>0 ? Math.round(done/total*100) : 0;
+      const done = total > 0 ? completedLessonsInUnit(info.email, s.id, ui, lessonTotal) : 0;
+      const pct = lessonTotal>0 ? Math.round(done/lessonTotal*100) : 0;
       const unitDone = isUnitTestDone(info.email, s.id, ui);
-      const allLessonsDone = total > 0 && done === total;
+      const allLessonsDone = lessonTotal > 0 && done === lessonTotal;
 
-      const lessonRows = total > 0
-        ? lessons.map((l,li)=>{
-            const lDone = isLessonDone(info.email, s.id, ui, li);
-            const score = getLessonScore(info.email, s.id, ui, li);
-            return `<div class="lesson-row" onclick="openLesson(${si},${ui},${li})">
-              <div class="lesson-row-num">${li+1}</div>
-              <div class="lesson-row-text">${l}</div>
-              <span class="lesson-row-badge ${lDone?'lbadge-done':'lbadge-todo'}">${lDone?'✅ Done'+(score!==null?' · '+score+'%':''):'Study'}</span>
-            </div>`;
-          }).join('')
+      // Lessons now stored per-topic in topicLessons
+      const topicLessons = u.topicLessons || {};
+      // Flatten all lessons across topics for progress counting
+      const allTopicLessons = (u.topics||[]).flatMap((t,ti)=>
+        (topicLessons[ti]||[]).map((l,li)=>({t,ti,l,li}))
+      );
+      // Also keep legacy unit.lessons
+      const legacyLessons = u.lessons||[];
+      const lessonCount = allTopicLessons.length + legacyLessons.length;
+
+      // Build per-topic lesson rows
+      const topicLessonRows = (u.topics||[]).map((t,ti)=>{
+        const tLessons = topicLessons[ti]||[];
+        const lRows = tLessons.map((l,li)=>{
+          const globalIdx = (u.topics||[]).slice(0,ti).reduce((a,_,i2)=>a+(topicLessons[i2]||[]).length,0)+li;
+          const lDone = isLessonDone(info.email, s.id, ui, globalIdx);
+          const score = getLessonScore(info.email, s.id, ui, globalIdx);
+          return `<div class="lesson-row" onclick="openLessonByTopic(${si},${ui},${ti},${li})">
+            <div class="lesson-row-num">${li+1}</div>
+            <div class="lesson-row-text">${l}</div>
+            <span class="lesson-row-badge ${lDone?'lbadge-done':'lbadge-todo'}">${lDone?'✅ Done'+(score!==null?' · '+score+'%':''):'Study'}</span>
+          </div>`;
+        }).join('');
+        if(!tLessons.length) return '';
+        return `<div style="margin-bottom:0.3rem;">
+          <div style="font-size:0.7rem;font-weight:700;color:var(--muted);padding:0.2rem 0 0.1rem;">📌 ${t}</div>
+          ${lRows}
+        </div>`;
+      }).join('');
+
+      const legacyRows = legacyLessons.map((l,li)=>{
+        const globalIdx = allTopicLessons.length + li;
+        const lDone = isLessonDone(info.email, s.id, ui, globalIdx);
+        const score = getLessonScore(info.email, s.id, ui, globalIdx);
+        return `<div class="lesson-row" onclick="openLesson(${si},${ui},${globalIdx})">
+          <div class="lesson-row-num">${li+1}</div>
+          <div class="lesson-row-text">${l}</div>
+          <span class="lesson-row-badge ${lDone?'lbadge-done':'lbadge-todo'}">${lDone?'✅ Done'+(score!==null?' · '+score+'%':''):'Study'}</span>
+        </div>`;
+      }).join('');
+
+      const lessonRows = (topicLessonRows||legacyRows)
+        ? (topicLessonRows+legacyRows)||'<div class="syl-no-lessons">No lessons posted yet — check back soon</div>'
         : '<div class="syl-no-lessons">No lessons posted yet — check back soon</div>';
+      const lessonTotal = lessonCount;
 
-      const unitTestLabel = unitDone ? '✅ Unit Test Passed' : (allLessonsDone ? '🎯 Take Unit Test' : `Complete all ${total} lessons to unlock unit test`);
+      const unitTestLabel = unitDone ? '✅ Unit Test Passed' : (allLessonsDone ? '🎯 Take Unit Test' : `Complete all ${lessonTotal} lessons to unlock unit test`);
       const unitTestCls = 'unit-test-btn' + (unitDone?' done':allLessonsDone?' unlocked':'');
       const unitTestOnclick = (allLessonsDone && !unitDone) ? `onclick="startUnitTest(${si},${ui})"` : '';
 
       return `<div class="syl-unit">
         <div class="syl-unit-header" onclick="toggleUnit(this)">
           <span class="syl-unit-title">${u.name}</span>
-          <span style="font-size:0.7rem;color:var(--muted);margin-right:0.5rem;">${total>0?done+'/'+total+' done':''}</span>
+          <span style="font-size:0.7rem;color:var(--muted);margin-right:0.5rem;">${lessonTotal>0?done+'/'+lessonTotal+' done':''}</span>
           <span class="syl-unit-arrow">▼</span>
         </div>
         <div class="syl-unit-body">
@@ -4272,6 +4434,31 @@ function renderStudentSyllabus(info){
 // ═══════════════════════════════════════════════════════════════════
 // OPEN LESSON
 // ═══════════════════════════════════════════════════════════════════
+async function openLessonByTopic(si, ui, ti, li){
+  // Compute global lesson index from topic index
+  const info = currentUserInfo; if(!info) return;
+  const subjs = sylData[info.yearOfStudy]||[];
+  const subj = subjs[si]; if(!subj) return;
+  const unit = (subj.units||[])[ui]; if(!unit) return;
+  const topicLessons = unit.topicLessons||{};
+  const lesson = (topicLessons[ti]||[])[li];
+  if(!lesson) return;
+  const globalIdx = (unit.topics||[]).slice(0,ti).reduce((a,_,i2)=>a+(topicLessons[i2]||[]).length,0)+li;
+  currentLesson = {si,ui,li:globalIdx,subjectId:subj.id,subjectName:subj.name,unitName:unit.name,lessonName:lesson,topics:unit.topics||[],topicName:(unit.topics||[])[ti]||''};
+  document.getElementById('lessonTitle').textContent = lesson;
+  document.getElementById('lessonMeta').textContent = subj.name+' · '+((unit.topics||[])[ti]||unit.name);
+  document.getElementById('lessonBody').innerHTML = '<div class="ai-loading"><div class="spinner"></div>Generating study material using AI…</div>';
+  document.getElementById('lessonOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+  document.getElementById('lessonBody').style.userSelect='none';
+  const material = await generateLessonContent(lesson, unit.name, subj.name, unit.topics||[]);
+  document.getElementById('lessonBody').innerHTML = `
+    <div class="lesson-content-box">${material}</div>
+    <div style="text-align:center;margin:1.5rem 0;">
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">You have read the lesson. Ready to test your knowledge?</p>
+      <button onclick="closeLessonAndStartQuiz()" style="background:var(--navy);color:#fff;border:none;border-radius:8px;padding:0.8rem 2.5rem;font-size:0.9rem;font-weight:700;cursor:pointer;">🎯 Take Lesson Quiz</button>
+    </div>`;
+}
 async function openLesson(si, ui, li){
   const info = currentUserInfo; if(!info) return;
   const subjs = sylData[info.yearOfStudy] || [];
@@ -4764,8 +4951,8 @@ function viewAnswers(ek, pk){
   document.body.appendChild(modal);
 }
 
-window.openLesson=openLesson; window.closeLessonOverlay=closeLessonOverlay; window.closeLessonAndStartQuiz=closeLessonAndStartQuiz;
-window.startLessonQuiz=startLessonQuiz; window.startUnitTest=startUnitTest; window.submitQuiz=submitQuiz; window.retakeQuiz=retakeQuiz; window.closeQuizOverlay=closeQuizOverlay; window.selectMcq=selectMcq;
+window.openLesson=openLesson; window.openLessonByTopic=openLessonByTopic; window.closeLessonOverlay=closeLessonOverlay; window.closeLessonAndStartQuiz=closeLessonAndStartQuiz;
+window.startLessonQuiz=startLessonQuiz; window.addTopicLesson=addTopicLesson; window.editTopicLesson=editTopicLesson; window.deleteTopicLesson=deleteTopicLesson; window.startUnitTest=startUnitTest; window.submitQuiz=submitQuiz; window.retakeQuiz=retakeQuiz; window.closeQuizOverlay=closeQuizOverlay; window.selectMcq=selectMcq;
 window.selectProgYear=selectProgYear; window.renderProgressAdmin=renderProgressAdmin; window.toggleProgDetail=toggleProgDetail; window.viewAnswers=viewAnswers;
 window.selectTTYear=selectTTYear; window.saveTimetable=saveTimetable;
 window.selectFacYear=selectFacYear; window.editFac=editFac; window.deleteFac=deleteFac; window.addFac=addFac;
