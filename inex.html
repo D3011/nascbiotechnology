@@ -2113,7 +2113,12 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── SERVICE WORKER ──
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(()=>{}); });
+  // Unregister all old SWs first (clears cached interceptors), then re-register
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    Promise.all(regs.map(r => r.unregister())).then(() => {
+      navigator.serviceWorker.register('/sw.js').catch(()=>{});
+    });
+  });
 }
 
 // ── SCROLL REVEAL ──
@@ -2689,7 +2694,7 @@ async function hpSaveContact(){
   applyHpData(); await saveHpData(); adminToast('Contact section updated! ✅');
 }
 
-const DB = 'https://nascbiotechnology-992bf-default-rtdb.firebaseio.com';
+const DB = 'https://nascbiotechnology-992bf-default-rtdb.asia-southeast1.firebasedatabase.app';
 
 // ── SHA-256 password hashing (Web Crypto API) ──
 async function hashPassword(plain){
@@ -2733,10 +2738,7 @@ async function testFbConnection(){
   if(FB_CHECKED) return;
   FB_CHECKED=true;
   try{
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),5000); // 5s timeout
-    const r=await fetch(DB+'/.json?shallow=true',{signal:ctrl.signal});
-    clearTimeout(timer);
+    const r=await fetch(DB+'/.json?shallow=true');
     if(r.status===401||r.status===403){
       FB_ONLINE=false; showFbBanner('denied'); return;
     }
@@ -2749,11 +2751,7 @@ async function testFbConnection(){
 
 async function fbGet(path){
   try{
-    const url=DB+path+'.json';
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),7000);
-    const r=await fetch(url,{signal:ctrl.signal});
-    clearTimeout(timer);
+    const r=await fetch(DB+path+'.json');
     console.log('[FB GET]',path,'→',r.status);
     if(!r.ok){
       const body=await r.text();
@@ -2766,27 +2764,15 @@ async function fbGet(path){
 }
 async function fbSet(path,data){
   try{
-    const url=DB+path+'.json';
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),8000);
-    const r=await fetch(url,{method:'PUT',body:JSON.stringify(data),headers:{'Content-Type':'application/json'},signal:ctrl.signal});
-    clearTimeout(timer);
+    const r=await fetch(DB+path+'.json',{method:'PUT',body:JSON.stringify(data),headers:{'Content-Type':'application/json'}});
     console.log('[FB SET]',path,'→',r.status);
-    if(!r.ok){
-      const body=await r.text();
-      console.error('[FB SET FAIL]',path,r.status,body);
-      return false;
-    }
+    if(!r.ok){ const body=await r.text(); console.error('[FB SET FAIL]',path,r.status,body); return false; }
     return true;
   }catch(e){ console.error('[FB SET ERROR]',path,e.message); return false; }
 }
 async function fbDel(path){
   try{
-    const url=DB+path+'.json';
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),8000);
-    const r=await fetch(url,{method:'DELETE',signal:ctrl.signal});
-    clearTimeout(timer);
+    const r=await fetch(DB+path+'.json',{method:'DELETE'});
     console.log('[FB DEL]',path,'→',r.status);
   }catch(e){ console.error('[FB DEL ERROR]',path,e.message); }
 }
@@ -2983,10 +2969,7 @@ async function loadExtraUsers(){
   // Load independently — don't wait for FB_ONLINE flag
   // Firebase rules for /extraUsers must be ".read":true for this to work
   try{
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),6000);
-    const r=await fetch(DB+'/extraUsers.json',{signal:ctrl.signal});
-    clearTimeout(timer);
+    const r=await fetch(DB+'/extraUsers.json',{});
     if(r.ok){
       const data=await r.json();
       if(data===null){
@@ -3004,15 +2987,11 @@ async function saveExtraUserToFB(user){
   // Direct fetch — bypasses FB_ONLINE guard so saves always reach Firebase
   const k = eKey(user.email)+'_'+user.role;
   try{
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),8000);
     const r=await fetch(DB+'/extraUsers/'+k+'.json',{
       method:'PUT',
       body:JSON.stringify(user),
-      headers:{'Content-Type':'application/json'},
-      signal:ctrl.signal
+      headers:{'Content-Type':'application/json'}
     });
-    clearTimeout(timer);
     if(!r.ok){
       const err=await r.json().catch(()=>({error:'unknown'}));
       adminToast('⚠️ Save failed: '+(err.error||r.status)+'. Check Firebase rules.');
@@ -3024,10 +3003,7 @@ async function saveExtraUserToFB(user){
 async function deleteExtraUserFromFB(user){
   const k = eKey(user.email)+'_'+user.role;
   try{
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),8000);
-    await fetch(DB+'/extraUsers/'+k+'.json',{method:'DELETE',signal:ctrl.signal});
-    clearTimeout(timer);
+    await fetch(DB+'/extraUsers/'+k+'.json',{method:'DELETE'});
   }catch(e){}
 }
 
@@ -3885,10 +3861,7 @@ async function addNewUser(){
   await saveExtraUserToFB(user);
   // Verify it actually saved by re-reading from Firebase
   try{
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),5000);
-    const r=await fetch(DB+'/extraUsers.json',{signal:ctrl.signal});
-    clearTimeout(timer);
+    const r=await fetch(DB+'/extraUsers.json',{});
     if(r.ok){
       const data=await r.json();
       if(data&&typeof data==='object') extraUsers=Object.values(data);
@@ -4016,35 +3989,48 @@ window.hpAddTesti=hpAddTesti; window.hpDelTesti=hpDelTesti;
 
 async function testFirebaseConnection(){
   const out=document.getElementById('fbTestResult');
-  if(out){ out.style.display='block'; out.style.background='#f0f4ff'; out.style.color='#333'; out.textContent='Testing…'; }
+  if(out){ out.style.display='block'; out.style.background='#fff9e6'; out.style.color='#333'; out.innerHTML='<em>Testing…</em>'; }
   const results=[];
-  // Test 1: Write
-  const key='fbtest_'+Date.now();
-  const writeOk=await fbSet('/'+key, {test:true,ts:Date.now()});
-  results.push('Write: '+(writeOk?'✅ OK':'❌ FAILED'));
-  // Test 2: Read back
-  let readOk=false;
-  if(writeOk){
-    const val=await fbGet('/'+key);
-    readOk=!!(val&&val.test===true);
-    results.push('Read: '+(readOk?'✅ OK':'❌ FAILED'));
-    // Test 3: Delete
-    await fbDel('/'+key);
-    results.push('Delete: ✅ OK');
+  // Show DB URL being tested
+  results.push('<span style="font-size:0.72rem;color:#666;">DB: '+DB+'</span>');
+
+  // Raw test — bypass fbSet wrapper to get the real HTTP status & error text
+  async function rawTest(method, path, body){
+    try{
+      const opts={method, headers:{'Content-Type':'application/json'}};
+      if(body!==undefined) opts.body=JSON.stringify(body);
+      const r=await fetch(DB+path+'.json', opts);
+      const txt=await r.text();
+      return {ok:r.ok, status:r.status, body:txt};
+    } catch(e){ return {ok:false, status:0, body:e.message}; }
   }
-  // Test 4: Marks path
-  const marksTest=await fbSet('/marks/test_key', {ia1:'1'});
-  results.push('Marks path write: '+(marksTest?'✅ OK':'❌ FAILED (rules blocking)'));
-  if(marksTest) await fbDel('/marks/test_key');
-  // Test 5: Attendance path
-  const attTest=await fbSet('/attendance/test_key/2026-01-01', 'P');
-  results.push('Attendance path write: '+(attTest?'✅ OK':'❌ FAILED (rules blocking)'));
-  if(attTest) await fbDel('/attendance/test_key');
-  const allOk=writeOk&&readOk&&marksTest&&attTest;
+
+  // Test 1: Root write
+  const key='/fbtest_'+Date.now();
+  const w=await rawTest('PUT', key, 'ok');
+  results.push('Root write → HTTP '+w.status+' '+(w.ok?'✅':'❌')+' '+(!w.ok?'<code style="font-size:0.7rem;background:#fee;padding:1px 4px;border-radius:3px;">'+w.body.slice(0,80)+'</code>':''));
+
+  // Test 2: Root read
+  const rd=await rawTest('GET', key);
+  results.push('Root read → HTTP '+rd.status+' '+(rd.ok?'✅':'❌')+(!rd.ok?' <code style="font-size:0.7rem;background:#fee;padding:1px 4px;border-radius:3px;">'+rd.body.slice(0,80)+'</code>':''));
+  if(w.ok) await rawTest('DELETE', key);
+
+  // Test 3: marks/ path
+  const mk=await rawTest('PUT', '/marks/_test_', {ia1:'5'});
+  results.push('marks/ write → HTTP '+mk.status+' '+(mk.ok?'✅':'❌')+(!mk.ok?' <code style="font-size:0.7rem;background:#fee;padding:1px 4px;border-radius:3px;">'+mk.body.slice(0,80)+'</code>':''));
+  if(mk.ok) await rawTest('DELETE', '/marks/_test_');
+
+  // Test 4: attendance/ path
+  const at=await rawTest('PUT', '/attendance/_test_/2026-01-01', 'P');
+  results.push('attendance/ write → HTTP '+at.status+' '+(at.ok?'✅':'❌')+(!at.ok?' <code style="font-size:0.7rem;background:#fee;padding:1px 4px;border-radius:3px;">'+at.body.slice(0,80)+'</code>':''));
+  if(at.ok) await rawTest('DELETE', '/attendance/_test_');
+
+  const allOk=w.ok&&rd.ok&&mk.ok&&at.ok;
   if(out){
     out.style.background=allOk?'#f0fff4':'#fff5f5';
-    out.style.color=allOk?'#276749':'#c0392b';
-    out.innerHTML='<strong>'+(allOk?'✅ All tests passed! Firebase is fully working.':'❌ Some tests failed:')+'</strong><br>'+results.join('<br>');
+    out.style.color='#1a1a1a';
+    out.innerHTML='<strong style="font-size:0.85rem;color:'+(allOk?'#276749':'#c0392b')+'">'+(allOk?'✅ All tests passed! Firebase is fully working.':'❌ Tests failed — see error codes below:')+'</strong><br><br>'+results.join('<br>')+
+      '<br><br><span style="font-size:0.7rem;color:#888;">If you see 401/403 → Rules not published yet. If 0 → Network/CORS error.</span>';
   }
 }
 
