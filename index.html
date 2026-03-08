@@ -3236,25 +3236,34 @@ function stdAttNavMonth(dir){
 // ═══════════════════════════════════════
 let facSylYear=1,facTTYear=1,facFacYear=1,facMarksYear=1,facAttYear=1;
 
-// ── Firebase write access check ──
+// ── Firebase write access check (raw fetch — bypasses all flags) ──
 async function checkFirebaseWriteAccess(){
-  const testPath='/writeTest/'+Date.now();
-  const ok=await fbSet(testPath,'ok');
-  if(ok){
-    await fbDel(testPath);
-    // Remove any existing warning
-    const w=document.getElementById('fbWriteWarn');
-    if(w) w.remove();
-  } else {
-    // Show persistent red warning if not already shown
-    if(!document.getElementById('fbWriteWarn')){
-      const bar=document.createElement('div');
-      bar.id='fbWriteWarn';
-      bar.style.cssText='background:#c0392b;color:#fff;padding:0.6rem 1rem;font-size:0.78rem;font-weight:600;text-align:center;position:sticky;top:0;z-index:100;';
-      bar.innerHTML='🔒 Firebase Rules are blocking saves! Go to <strong>Security tab</strong> in this portal → copy the rules → paste in Firebase Console → Publish. Marks and attendance will NOT save until fixed.';
-      const facPortal=document.getElementById('facPortalOverlay');
-      if(facPortal) facPortal.insertBefore(bar, facPortal.firstChild);
+  // Always remove old banner so result is always fresh
+  const old=document.getElementById('fbWriteWarn');
+  if(old) old.remove();
+  let writeOk=false;
+  try{
+    const testKey='wt'+Date.now();
+    const r=await fetch(DB+'/'+testKey+'.json',{
+      method:'PUT',
+      body:JSON.stringify('ok'),
+      headers:{'Content-Type':'application/json'}
+    });
+    if(r.ok){
+      writeOk=true;
+      fetch(DB+'/'+testKey+'.json',{method:'DELETE'}).catch(()=>{});
     }
+  }catch(e){}
+  if(writeOk){
+    FB_ONLINE=true; showFbBanner('online');
+    adminToast('\u2705 Firebase rules OK \u2014 all saves are permanent');
+  } else {
+    const bar=document.createElement('div');
+    bar.id='fbWriteWarn';
+    bar.style.cssText='background:#c0392b;color:#fff;padding:0.65rem 1rem;font-size:0.78rem;font-weight:700;text-align:center;position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:center;gap:0.8rem;flex-wrap:wrap;';
+    bar.innerHTML='\uD83D\uDD12 Firebase Rules still blocking. After publishing, click: <button onclick="checkFirebaseWriteAccess()" style="background:#fff;color:#c0392b;border:none;border-radius:4px;padding:3px 12px;font-size:0.78rem;font-weight:700;cursor:pointer;">\u21BA Re-check</button>';
+    const fp=document.getElementById('facPortalOverlay');
+    if(fp) fp.insertBefore(bar, fp.firstChild);
   }
 }
 
