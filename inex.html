@@ -3330,18 +3330,18 @@ async function renderStudentMarks(info){
   const data=await fbGet('/marks/'+ek);
   const subjs=getSubjectsForYear(info.yearOfStudy);
   const myM=data||{};
-  const hasAny=subjs.some(s=>{const m=myM[sKey(s.name)];return m&&(m.ia1||m.ia2||m.ia3);});
+  const hasAny=subjs.some(s=>{const m=myM[sKey(s.name)];return m&&(m.ia1||m.ia2);});
   if(!subjs.length||!hasAny){
     el.innerHTML='<div style="text-align:center;padding:2rem 1rem;"><div style="font-size:2rem;margin-bottom:0.5rem;">📝</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">Will Be Updated Soon</div><div style="font-size:0.82rem;color:var(--muted);">Internal marks will be updated by the faculty.</div></div>';
     return;
   }
   const rows=subjs.map(s=>{
-    const m=myM[sKey(s.name)]||{ia1:'-',ia2:'-',ia3:'-'};
-    const vals=[m.ia1,m.ia2,m.ia3].filter(v=>v&&v!=='-').map(Number);
+    const m=myM[sKey(s.name)]||{ia1:'-',ia2:'-'};
+    const vals=[m.ia1,m.ia2].filter(v=>v&&v!=='-').map(Number);
     const total=vals.length?vals.reduce((a,b)=>a+b,0):'-';
-    return`<tr><td style="font-size:0.82rem;font-weight:600;color:var(--navy);padding:0.55rem 0.8rem;">${s.name}</td><td style="text-align:center;font-size:0.82rem;padding:0.55rem;">${m.ia1||'-'}</td><td style="text-align:center;font-size:0.82rem;padding:0.55rem;">${m.ia2||'-'}</td><td style="text-align:center;font-size:0.82rem;padding:0.55rem;">${m.ia3||'-'}</td><td style="text-align:center;font-size:0.82rem;font-weight:700;color:var(--sky);padding:0.55rem;">${total}</td></tr>`;
+    return`<tr><td style="font-size:0.82rem;font-weight:600;color:var(--navy);padding:0.55rem 0.8rem;">${s.name}</td><td style="text-align:center;font-size:0.82rem;padding:0.55rem;">${m.ia1||'-'}</td><td style="text-align:center;font-size:0.82rem;padding:0.55rem;">${m.ia2||'-'}</td><td style="text-align:center;font-size:0.82rem;font-weight:700;color:var(--sky);padding:0.55rem;">${total}</td></tr>`;
   }).join('');
-  el.innerHTML=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--navy);color:#fff;"><th style="padding:0.55rem 0.8rem;text-align:left;font-size:0.73rem;">Subject</th><th style="padding:0.55rem;text-align:center;font-size:0.73rem;">IA 1</th><th style="padding:0.55rem;text-align:center;font-size:0.73rem;">IA 2</th><th style="padding:0.55rem;text-align:center;font-size:0.73rem;">IA 3</th><th style="padding:0.55rem;text-align:center;font-size:0.73rem;">Total</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  el.innerHTML=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--navy);color:#fff;"><th style="padding:0.55rem 0.8rem;text-align:left;font-size:0.73rem;">Subject</th><th style="padding:0.55rem;text-align:center;font-size:0.73rem;">IA 1</th><th style="padding:0.55rem;text-align:center;font-size:0.73rem;">IA 2</th><th style="padding:0.55rem;text-align:center;font-size:0.73rem;">Total</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 // ── Student Attendance Calendar ──
@@ -3944,11 +3944,11 @@ async function renderMarksAdmin(){
     const myM=marksCache[ek]||{};
     const subjRows=subjs.map((s,si)=>{
       const sk2=sKey(s.name);
-      const m=myM[sk2]||{ia1:'',ia2:'',ia3:''};
+      const m=myM[sk2]||{ia1:'',ia2:''};
       const eid=`mk_${ek}_${si}`;
-      return`<tr><td style="font-size:0.78rem;padding:0.4rem 0.6rem;color:var(--navy);">${s.name}</td><td style="padding:0.3rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_1" value="${m.ia1}" placeholder="-" style="width:50px;text-align:center;"></td><td style="padding:0.3rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_2" value="${m.ia2}" placeholder="-" style="width:50px;text-align:center;"></td><td style="padding:0.3rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_3" value="${m.ia3}" placeholder="-" style="width:50px;text-align:center;"></td></tr>`;
+      return`<tr><td style="font-size:0.78rem;padding:0.4rem 0.6rem;color:var(--navy);">${s.name}</td><td style="padding:0.3rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_1" value="${m.ia1}" placeholder="-" style="width:50px;text-align:center;"></td><td style="padding:0.3rem 0.4rem;"><input class="tt-edit-cell" id="${eid}_2" value="${m.ia2}" placeholder="-" style="width:50px;text-align:center;"></td></tr>`;
     }).join('');
-    return`<div class="att-stu-card"><div class="att-stu-card-head"><span class="att-stu-card-name">\uD83C\uDF93 ${info.name}</span><span class="att-stu-card-reg">${info.reg}</span></div><div style="padding:0.9rem;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:350px;"><thead><tr style="background:var(--off);"><th style="font-size:0.72rem;padding:0.35rem 0.6rem;text-align:left;border-bottom:1px solid var(--border);">Subject</th><th style="font-size:0.72rem;padding:0.35rem;text-align:center;border-bottom:1px solid var(--border);">IA 1</th><th style="font-size:0.72rem;padding:0.35rem;text-align:center;border-bottom:1px solid var(--border);">IA 2</th><th style="font-size:0.72rem;padding:0.35rem;text-align:center;border-bottom:1px solid var(--border);">IA 3</th></tr></thead><tbody>${subjRows}</tbody></table><button class="btn-save" style="margin-top:0.7rem;" onclick="saveStudentMarks('${u.email.toLowerCase()}')">💾 Save Marks</button></div></div>`;
+    return`<div class="att-stu-card"><div class="att-stu-card-head"><span class="att-stu-card-name">\uD83C\uDF93 ${info.name}</span><span class="att-stu-card-reg">${info.reg}</span></div><div style="padding:0.9rem;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:350px;"><thead><tr style="background:var(--off);"><th style="font-size:0.72rem;padding:0.35rem 0.6rem;text-align:left;border-bottom:1px solid var(--border);">Subject</th><th style="font-size:0.72rem;padding:0.35rem;text-align:center;border-bottom:1px solid var(--border);">IA 1</th><th style="font-size:0.72rem;padding:0.35rem;text-align:center;border-bottom:1px solid var(--border);">IA 2</th></tr></thead><tbody>${subjRows}</tbody></table><button class="btn-save" style="margin-top:0.7rem;" onclick="saveStudentMarks('${u.email.toLowerCase()}')">💾 Save Marks</button></div></div>`;
   }).join('');
 }
 async function saveStudentMarks(email){
@@ -3957,7 +3957,7 @@ async function saveStudentMarks(email){
   const data={};
   subjs.forEach((s,si)=>{
     const eid=`mk_${ek}_${si}`;
-    data[sKey(s.name)]={ia1:document.getElementById(eid+'_1')?.value.trim()||'',ia2:document.getElementById(eid+'_2')?.value.trim()||'',ia3:document.getElementById(eid+'_3')?.value.trim()||''};
+    data[sKey(s.name)]={ia1:document.getElementById(eid+'_1')?.value.trim()||'',ia2:document.getElementById(eid+'_2')?.value.trim()||''};
   });
   marksCache[ek]=data;
   adminToast('Saving marks…');
