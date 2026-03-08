@@ -844,6 +844,67 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
 .dev-switch-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(201,136,42,0.45);}
 .dev-switch-btn.visible{display:flex;}
 .dev-switch-btn svg{width:13px;height:13px;flex-shrink:0;}
+
+/* ── Lesson & Quiz ── */
+#lessonOverlay,#quizOverlay{display:none;position:fixed;inset:0;z-index:9000;background:#fff;overflow-y:auto;flex-direction:column;}
+#lessonOverlay.active,#quizOverlay.active{display:flex;}
+.quiz-topbar{background:var(--navy);color:#fff;padding:0.7rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:0.8rem;flex-wrap:wrap;position:sticky;top:0;z-index:10;}
+.quiz-topbar-title{font-family:'Merriweather',serif;font-size:0.9rem;font-weight:700;}
+.quiz-topbar-meta{font-size:0.74rem;color:rgba(255,255,255,0.7);}
+.quiz-body{max-width:780px;margin:0 auto;padding:1.5rem 1rem;width:100%;}
+.lesson-content-box{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:1.4rem;margin-bottom:1.5rem;font-size:0.87rem;line-height:1.8;color:#2d3748;}
+.lesson-content-box h3{font-family:'Merriweather',serif;color:var(--navy);margin:1rem 0 0.4rem;font-size:0.95rem;}
+.lesson-content-box p{margin:0 0 0.8rem;}
+.lesson-content-box ul{padding-left:1.4rem;margin:0 0 0.8rem;}
+.lesson-content-box ul li{margin-bottom:0.3rem;}
+.ai-loading{text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;}
+.ai-loading .spinner{width:32px;height:32px;border:3px solid #e2e8f0;border-top-color:var(--navy);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 0.8rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
+/* Progress badges on lessons */
+.lesson-row{display:flex;align-items:center;gap:0.6rem;padding:0.45rem 0.5rem;border-radius:6px;cursor:pointer;transition:background 0.15s;}
+.lesson-row:hover{background:#f0f4ff;}
+.lesson-row-num{width:22px;height:22px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;flex-shrink:0;}
+.lesson-row-text{flex:1;font-size:0.82rem;color:var(--navy);font-weight:500;}
+.lesson-row-badge{font-size:0.68rem;padding:2px 8px;border-radius:10px;font-weight:600;}
+.lbadge-done{background:#f0fff4;color:#276749;border:1px solid #9ae6b4;}
+.lbadge-todo{background:#f7f8fa;color:#aaa;border:1px solid #e2e8f0;}
+.lbadge-locked{background:#fef9e7;color:#c9882a;border:1px solid #f6d860;}
+.unit-progress-bar{height:5px;background:#e2e8f0;border-radius:3px;margin:0.4rem 0 0.8rem;overflow:hidden;}
+.unit-progress-fill{height:100%;background:var(--sky);border-radius:3px;transition:width 0.4s;}
+.unit-test-btn{width:100%;padding:0.6rem;background:linear-gradient(135deg,var(--gold),#e8a040);color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;margin-top:0.5rem;opacity:0.4;pointer-events:none;transition:opacity 0.2s;}
+.unit-test-btn.unlocked{opacity:1;pointer-events:all;}
+.unit-test-btn.done{background:linear-gradient(135deg,#38a169,#48bb78);}
+/* Quiz question cards */
+.quiz-q-card{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:1.2rem;margin-bottom:1.2rem;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.quiz-q-num{font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;}
+.quiz-q-text{font-size:0.9rem;font-weight:600;color:var(--navy);margin-bottom:0.9rem;line-height:1.5;}
+.quiz-mcq-opt{display:flex;align-items:center;gap:0.6rem;padding:0.55rem 0.8rem;border-radius:7px;border:1.5px solid var(--border);margin-bottom:0.45rem;cursor:pointer;transition:all 0.15s;font-size:0.84rem;}
+.quiz-mcq-opt:hover{border-color:var(--sky);background:#f0f7ff;}
+.quiz-mcq-opt.selected{border-color:var(--navy);background:#eef2ff;font-weight:600;}
+.quiz-mcq-opt.correct{border-color:#38a169;background:#f0fff4;}
+.quiz-mcq-opt.wrong{border-color:#e53e3e;background:#fff5f5;}
+.quiz-textarea{width:100%;min-height:100px;border:1.5px solid var(--border);border-radius:7px;padding:0.7rem;font-size:0.84rem;font-family:inherit;resize:vertical;outline:none;transition:border-color 0.15s;box-sizing:border-box;}
+.quiz-textarea:focus{border-color:var(--sky);}
+.quiz-marks-hint{font-size:0.72rem;color:var(--muted);margin-bottom:0.4rem;}
+/* Anti-malpractice warning */
+.malpractice-warn{position:fixed;top:0;left:0;right:0;z-index:9999;background:#c0392b;color:#fff;padding:0.6rem 1rem;font-size:0.8rem;font-weight:700;text-align:center;animation:slideDown 0.3s;}
+@keyframes slideDown{from{transform:translateY(-100%);}to{transform:translateY(0);}}
+/* Quiz result */
+.quiz-result{text-align:center;padding:2rem 1rem;}
+.quiz-result-score{font-size:3rem;font-weight:900;font-family:'Merriweather',serif;}
+.quiz-result-label{font-size:0.9rem;color:var(--muted);margin-bottom:1rem;}
+.quiz-result-badge{display:inline-block;padding:0.4rem 1.2rem;border-radius:20px;font-weight:700;font-size:0.85rem;margin-bottom:1.5rem;}
+/* Faculty progress tab */
+.prog-student-row{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 1rem;border-radius:8px;border:1px solid var(--border);margin-bottom:0.5rem;cursor:pointer;transition:background 0.15s;}
+.prog-student-row:hover{background:#f0f4ff;}
+.prog-overall-bar{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;width:120px;}
+.prog-overall-fill{height:100%;border-radius:4px;transition:width 0.4s;}
+.prog-detail-wrap{padding:1rem;background:#f8fafc;border-radius:8px;margin-top:0.5rem;display:none;}
+.prog-detail-wrap.open{display:block;}
+.ans-review-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:0.8rem 1rem;margin-bottom:0.6rem;}
+.ans-review-q{font-size:0.82rem;font-weight:600;color:var(--navy);margin-bottom:0.4rem;}
+.ans-review-a{font-size:0.82rem;color:#333;background:#f7f8fa;border-radius:5px;padding:0.5rem 0.7rem;margin-bottom:0.3rem;}
+
 </style>
 </head>
 <body>
@@ -1605,6 +1666,7 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       <button class="admin-tab" onclick="showAdminTab('marks',this)">📊 Int. Marks</button>
       <button class="admin-tab" onclick="showAdminTab('attendance',this)">✅ Attendance</button>
       <button class="admin-tab" onclick="showAdminTab('users',this)">👤 Users</button>
+      <button class="admin-tab" onclick="showAdminTab('progress',this)">📈 Progress</button>
       <button class="admin-tab hp-dev-tab" id="hpTab" onclick="showAdminTab('homepage',this)">🏠 Homepage</button>
     </div>
 
@@ -1829,6 +1891,24 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
       </div>
     </div>
 
+    <!-- ── PROGRESS PANEL ── -->
+    <div class="admin-panel" id="ap-progress">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title">📈 Student Progress</span>
+          <span style="font-size:0.72rem;color:var(--muted);">Lesson completion · Quiz scores · Answers</span>
+        </div>
+        <div class="admin-card-body">
+          <div style="display:flex;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+            <button class="year-btn active" onclick="selectProgYear(1,this)">I Year</button>
+            <button class="year-btn" onclick="selectProgYear(2,this)">II Year</button>
+            <button class="year-btn" onclick="selectProgYear(3,this)">III Year</button>
+          </div>
+          <div id="progAdminBody"><div style="text-align:center;padding:2rem;color:var(--muted);">Select a year to view progress</div></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── HOMEPAGE EDITOR PANEL (Developer only) ── -->
     <div class="admin-panel" id="ap-homepage">
       <div class="admin-card">
@@ -1844,6 +1924,41 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
 
   </div><!-- /fac-portal-body -->
 </div><!-- /facPortalOverlay -->
+
+
+<!-- ══ LESSON VIEWER OVERLAY ══ -->
+<div id="lessonOverlay">
+  <div class="quiz-topbar">
+    <div>
+      <div class="quiz-topbar-title" id="lessonTitle">Lesson</div>
+      <div class="quiz-topbar-meta" id="lessonMeta"></div>
+    </div>
+    <div style="display:flex;gap:0.6rem;align-items:center;">
+      <div id="lessonTimer" style="font-size:0.8rem;color:rgba(255,255,255,0.8);display:none;"></div>
+      <button onclick="closeLessonOverlay()" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:6px;padding:5px 14px;font-size:0.78rem;cursor:pointer;">✕ Close</button>
+    </div>
+  </div>
+  <div class="quiz-body" id="lessonBody">
+    <div class="ai-loading"><div class="spinner"></div>Generating study material using AI…</div>
+  </div>
+</div>
+
+<!-- ══ QUIZ OVERLAY ══ -->
+<div id="quizOverlay">
+  <div class="quiz-topbar">
+    <div>
+      <div class="quiz-topbar-title" id="quizTitle">Quiz</div>
+      <div class="quiz-topbar-meta" id="quizMeta"></div>
+    </div>
+    <div style="display:flex;gap:0.6rem;align-items:center;">
+      <div id="quizViolations" style="font-size:0.75rem;color:#fcd34d;display:none;">⚠️ Violations: <span id="vCount">0</span>/3</div>
+      <div id="quizTimerDisplay" style="font-size:0.9rem;font-weight:700;color:#fcd34d;min-width:50px;text-align:right;"></div>
+    </div>
+  </div>
+  <div class="quiz-body" id="quizBody">
+    <div class="ai-loading"><div class="spinner"></div>Generating quiz questions…</div>
+  </div>
+</div>
 
 <div class="admin-toast" id="adminToast"></div>
 
@@ -2112,12 +2227,10 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── SERVICE WORKER ──
+// Unregister any existing service workers so they don't block Firebase requests
 if ('serviceWorker' in navigator) {
-  // Unregister all old SWs first (clears cached interceptors), then re-register
   navigator.serviceWorker.getRegistrations().then(regs => {
-    Promise.all(regs.map(r => r.unregister())).then(() => {
-      navigator.serviceWorker.register('/sw.js').catch(()=>{});
-    });
+    regs.forEach(r => r.unregister());
   });
 }
 
@@ -2897,6 +3010,7 @@ function formatDateDisplay(str){ if(!str)return''; const [y,m,d]=str.split('-');
 const BASE_USERS=[
   {email:'24ubio008.deepak_m@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'student',isDev:true},
   {email:'24ubio008.deepak_m@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'faculty',isDev:true},
+  {email:'faculty01@nandhaarts.org',password:'03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',role:'faculty',displayName:'Bot'},
   {email:'24ubio001.abinaya_s@nandhaarts.org',password:'d2a7cdacbc20b8eaff29fb2456e133b2f6e1f50eec29398e4a210b4c554e3878',role:'student'},
   {email:'24ubio002.ajay_s@nandhaarts.org',password:'bea6f0879f5a3b4401099c48b52bf02fa3ca1cdf5606c25b2abdd95415197cda',role:'student'},
   {email:'24ubio003.angelin_kiruba_a@nandhaarts.org',password:'d457e66b60eb22b56426078d6ece2e6195210c705c2e379191dc3e7cc2a33845',role:'student'},
@@ -3072,6 +3186,8 @@ async function openPortal(info,user){
 
   // Reload syllabus lessons so student sees latest faculty updates
   await loadSyllabusLessons();
+  // Load student progress
+  await loadProgress(info.email);
   renderStudentSyllabus(info);
   renderStudentFlash(); renderStudentNotifs();
   renderStudentMarks(info);  // always does fresh fbGet internally
@@ -3308,6 +3424,7 @@ function showAdminTab(id,btn){
   document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('ap-'+id).classList.add('active'); btn.classList.add('active');
+  if(id==='progress') renderProgressAdmin();
 }
 
 // ── Flash News ──
@@ -4034,6 +4151,622 @@ async function testFirebaseConnection(){
   }
 }
 
+
+// ══════════════════════════════════════════════════════════════════════
+// LEARN & QUIZ SYSTEM
+// ══════════════════════════════════════════════════════════════════════
+const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
+
+let progressCache = {};   // { eKey: { 'subj_unit_lesson': {done,score,ts}, ... } }
+let quizAnswersCache = {}; // { eKey: { key: [{q,type,ans,pts,max}] } }
+let currentLesson = null; // { subjectIdx, unitIdx, lessonIdx, subjectName, unitName, lessonName }
+let currentQuizType = null; // 'lesson' | 'unit'
+let currentQuizQuestions = [];
+let quizViolations = 0;
+let quizTimerInterval = null;
+let quizTimeLeft = 0;
+let facProgYear = 2;
+
+// ── Progress key helpers ──
+function progKey(subjectId, unitIdx, lessonIdx){ return subjectId+'_u'+unitIdx+(lessonIdx===null?'_unit':'_l'+lessonIdx); }
+
+// ── Load progress for a student ──
+async function loadProgress(email){
+  const ek = eKey(email);
+  const d = await fbGet('/progress/'+ek);
+  progressCache[ek] = d && typeof d==='object' ? d : {};
+  const qa = await fbGet('/quizAnswers/'+ek);
+  quizAnswersCache[ek] = qa && typeof qa==='object' ? qa : {};
+}
+
+// ── Save progress entry ──
+async function saveProgress(email, key, data){
+  const ek = eKey(email);
+  if(!progressCache[ek]) progressCache[ek] = {};
+  progressCache[ek][key] = data;
+  await fbSet('/progress/'+ek+'/'+key, data);
+  await fbSet('/quizAnswers/'+ek+'/'+key, data.answers || null);
+}
+
+// ── Is lesson done? ──
+function isLessonDone(email, subjectId, unitIdx, lessonIdx){
+  const ek = eKey(email);
+  const k = progKey(subjectId, unitIdx, lessonIdx);
+  return !!(progressCache[ek] && progressCache[ek][k] && progressCache[ek][k].done);
+}
+function isUnitTestDone(email, subjectId, unitIdx){
+  const ek = eKey(email);
+  const k = progKey(subjectId, unitIdx, null);
+  return !!(progressCache[ek] && progressCache[ek][k] && progressCache[ek][k].done);
+}
+function getLessonScore(email, subjectId, unitIdx, lessonIdx){
+  const ek = eKey(email);
+  const k = progKey(subjectId, unitIdx, lessonIdx);
+  return progressCache[ek] && progressCache[ek][k] ? progressCache[ek][k].score : null;
+}
+
+// ── Count completed lessons in a unit ──
+function completedLessonsInUnit(email, subjectId, unitIdx, totalLessons){
+  let cnt = 0;
+  for(let i=0;i<totalLessons;i++) if(isLessonDone(email,subjectId,unitIdx,i)) cnt++;
+  return cnt;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER student syllabus WITH PROGRESS
+// ═══════════════════════════════════════════════════════════════════
+function renderStudentSyllabus(info){
+  const el = document.getElementById('stdSylBody'); if(!el) return;
+  const subjs = sylData[info.yearOfStudy] || [];
+  const badge = document.getElementById('stdSylBadge');
+  if(badge) badge.textContent = subjs.length + ' Subjects \u2014 ' + info.yearLabel;
+  if(!subjs.length){
+    el.innerHTML='<div style="text-align:center;padding:2rem;"><div style="font-size:2rem;">📚</div><div style="font-weight:700;color:var(--navy);margin-top:0.5rem;">Syllabus Will Be Updated Soon</div></div>';
+    return;
+  }
+  const tabs = subjs.map((s,si)=>`<button class="syl-tab${si===0?' active':''}" onclick="stdSylTab(${si},this)">${s.name}</button>`).join('');
+  const panels = subjs.map((s,si)=>{
+    const unitRows = (s.units||[]).map((u,ui)=>{
+      const lessons = u.lessons || [];
+      const total = lessons.length;
+      const done = total > 0 ? completedLessonsInUnit(info.email, s.id, ui, total) : 0;
+      const pct = total>0 ? Math.round(done/total*100) : 0;
+      const unitDone = isUnitTestDone(info.email, s.id, ui);
+      const allLessonsDone = total > 0 && done === total;
+
+      const lessonRows = total > 0
+        ? lessons.map((l,li)=>{
+            const lDone = isLessonDone(info.email, s.id, ui, li);
+            const score = getLessonScore(info.email, s.id, ui, li);
+            return `<div class="lesson-row" onclick="openLesson(${si},${ui},${li})">
+              <div class="lesson-row-num">${li+1}</div>
+              <div class="lesson-row-text">${l}</div>
+              <span class="lesson-row-badge ${lDone?'lbadge-done':'lbadge-todo'}">${lDone?'✅ Done'+(score!==null?' · '+score+'%':''):'Study'}</span>
+            </div>`;
+          }).join('')
+        : '<div class="syl-no-lessons">No lessons posted yet — check back soon</div>';
+
+      const unitTestLabel = unitDone ? '✅ Unit Test Passed' : (allLessonsDone ? '🎯 Take Unit Test' : `Complete all ${total} lessons to unlock unit test`);
+      const unitTestCls = 'unit-test-btn' + (unitDone?' done':allLessonsDone?' unlocked':'');
+      const unitTestOnclick = (allLessonsDone && !unitDone) ? `onclick="startUnitTest(${si},${ui})"` : '';
+
+      return `<div class="syl-unit">
+        <div class="syl-unit-header" onclick="toggleUnit(this)">
+          <span class="syl-unit-title">${u.name}</span>
+          <span style="font-size:0.7rem;color:var(--muted);margin-right:0.5rem;">${total>0?done+'/'+total+' done':''}</span>
+          <span class="syl-unit-arrow">▼</span>
+        </div>
+        <div class="syl-unit-body">
+          ${total>0?`<div class="unit-progress-bar"><div class="unit-progress-fill" style="width:${pct}%"></div></div>`:''}
+          <div style="font-size:0.72rem;font-weight:700;color:var(--navy);text-transform:uppercase;margin-bottom:0.4rem;margin-top:0.3rem;">📖 Lessons</div>
+          ${lessonRows}
+          ${total>0?`<button class="${unitTestCls}" ${unitTestOnclick}>${unitTestLabel}</button>`:''}
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="syl-panel${si===0?' active':''}" id="std-syl-${si}">${unitRows||'<div style="padding:1rem;color:var(--muted);font-size:0.82rem;">No units listed yet.</div>'}</div>`;
+  }).join('');
+  el.innerHTML = `<div class="syllabus-tabs">${tabs}</div>${panels}`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// OPEN LESSON
+// ═══════════════════════════════════════════════════════════════════
+async function openLesson(si, ui, li){
+  const info = currentUserInfo; if(!info) return;
+  const subjs = sylData[info.yearOfStudy] || [];
+  const subj = subjs[si]; if(!subj) return;
+  const unit = (subj.units||[])[ui]; if(!unit) return;
+  const lesson = (unit.lessons||[])[li]; if(!lesson) return;
+
+  currentLesson = {si, ui, li, subjectId:subj.id, subjectName:subj.name, unitName:unit.name, lessonName:lesson, topics:unit.topics||[]};
+
+  document.getElementById('lessonTitle').textContent = lesson;
+  document.getElementById('lessonMeta').textContent = subj.name + ' · ' + unit.name;
+  document.getElementById('lessonBody').innerHTML = '<div class="ai-loading"><div class="spinner"></div>Generating study material using AI\u2026</div>';
+  document.getElementById('lessonOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  // Anti-malpractice: no text selection/copy
+  document.getElementById('lessonBody').style.userSelect = 'none';
+
+  // Generate study material
+  const material = await generateLessonContent(lesson, unit.name, subj.name, unit.topics||[]);
+  document.getElementById('lessonBody').innerHTML = `
+    <div class="lesson-content-box">${material}</div>
+    <div style="text-align:center;margin:1.5rem 0;">
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">You have read the lesson. Ready to test your knowledge?</p>
+      <button onclick="closeLessonAndStartQuiz()" style="background:var(--navy);color:#fff;border:none;border-radius:8px;padding:0.8rem 2.5rem;font-size:0.9rem;font-weight:700;cursor:pointer;">🎯 Take Lesson Quiz</button>
+    </div>`;
+}
+
+function closeLessonOverlay(){
+  document.getElementById('lessonOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function closeLessonAndStartQuiz(){
+  closeLessonOverlay();
+  if(currentLesson) startLessonQuiz(currentLesson.si, currentLesson.ui, currentLesson.li);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// GENERATE STUDY MATERIAL via Claude API
+// ═══════════════════════════════════════════════════════════════════
+async function generateLessonContent(lessonName, unitName, subjectName, topics){
+  try{
+    const prompt = `You are a Biotechnology professor at an Indian college. Write concise, clear study material for undergraduate students.
+
+Subject: ${subjectName}
+Unit: ${unitName}
+Lesson: ${lessonName}
+Related topics: ${topics.slice(0,4).join(', ')}
+
+Write study notes in HTML format using only <h3>, <p>, <ul>, <li> tags. Include:
+1. A brief introduction (2-3 sentences)
+2. Key concepts (3-5 points as bullet list)
+3. Important definitions or mechanisms (short paragraph)
+4. Significance / applications (2-3 points)
+
+Keep it concise (about 300-400 words). Do not use markdown, only HTML tags listed above.`;
+
+    const res = await fetch(CLAUDE_API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data = await res.json();
+    return data.content?.[0]?.text || '<p>Study material will be available soon. Please refer to your textbook.</p>';
+  } catch(e){
+    return '<p>Could not load study material. Please check your connection and try again.</p>';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// GENERATE QUIZ QUESTIONS via Claude API
+// ═══════════════════════════════════════════════════════════════════
+async function generateQuizQuestions(lessonName, unitName, subjectName, topics, quizType){
+  const isUnit = quizType === 'unit';
+  const prompt = `You are a Biotechnology professor at an Indian college. Create a ${isUnit?'unit test':'lesson quiz'} for undergraduate students.
+
+Subject: ${subjectName}
+Unit: ${unitName}
+${isUnit?'Topics covered: '+topics.join(', '):'Lesson: '+lessonName}
+
+Generate EXACTLY this structure as JSON (no markdown, just raw JSON):
+{
+  "questions": [
+    {"type":"mcq","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"..."},
+    {"type":"mcq","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":2,"explanation":"..."},
+    {"type":"mcq","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":1,"explanation":"..."},
+    {"type":"mcq","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":3,"explanation":"..."},
+    {"type":"mcq","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"..."},
+    {"type":"five","question":"Write a short note on: ...","maxMarks":5},
+    {"type":"eight","question":"Explain in detail: ...","maxMarks":8}
+  ]
+}
+
+${isUnit?'Make questions comprehensive covering all topics.':'Focus specifically on '+lessonName+'.'}
+Rules: MCQ options must start with A./B./C./D., correct is 0-3 index. Return ONLY the JSON object, nothing else.`;
+
+  try{
+    const res = await fetch(CLAUDE_API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1500,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data = await res.json();
+    const text = (data.content?.[0]?.text||'').replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(text);
+    // Shuffle MCQ options randomly
+    return parsed.questions.map(q=>{
+      if(q.type==='mcq'){
+        const shuffled = q.options.map((o,i)=>({o,i})).sort(()=>Math.random()-0.5);
+        const newCorrect = shuffled.findIndex(x=>x.i===q.correct);
+        return {...q, options:shuffled.map(x=>x.o), correct:newCorrect};
+      }
+      return q;
+    });
+  } catch(e){
+    console.error('Quiz generation error:',e);
+    return null;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// START LESSON QUIZ
+// ═══════════════════════════════════════════════════════════════════
+async function startLessonQuiz(si, ui, li){
+  const info = currentUserInfo; if(!info) return;
+  const subjs = sylData[info.yearOfStudy]||[];
+  const subj = subjs[si]; if(!subj) return;
+  const unit = (subj.units||[])[ui]; if(!unit) return;
+  const lesson = (unit.lessons||[])[li]; if(!lesson) return;
+  currentLesson = {si,ui,li,subjectId:subj.id,subjectName:subj.name,unitName:unit.name,lessonName:lesson,topics:unit.topics||[]};
+  currentQuizType = 'lesson';
+  openQuizOverlay(subj.name+' — '+lesson, unit.name, 'lesson');
+  await runQuiz(lesson, unit.name, subj.name, unit.topics||[], 'lesson');
+}
+
+async function startUnitTest(si, ui){
+  const info = currentUserInfo; if(!info) return;
+  const subjs = sylData[info.yearOfStudy]||[];
+  const subj = subjs[si]; if(!subj) return;
+  const unit = (subj.units||[])[ui]; if(!unit) return;
+  currentLesson = {si,ui,li:null,subjectId:subj.id,subjectName:subj.name,unitName:unit.name,lessonName:null,topics:unit.topics||[]};
+  currentQuizType = 'unit';
+  openQuizOverlay(subj.name+' — Unit Test', unit.name, 'unit');
+  await runQuiz(null, unit.name, subj.name, unit.topics||[], 'unit');
+}
+
+function openQuizOverlay(title, meta, type){
+  quizViolations = 0;
+  document.getElementById('quizTitle').textContent = title;
+  document.getElementById('quizMeta').textContent = meta + (type==='unit'?' · Unit Test':' · Lesson Quiz');
+  document.getElementById('quizBody').innerHTML = '<div class="ai-loading"><div class="spinner"></div>Generating questions\u2026</div>';
+  document.getElementById('quizViolations').style.display = 'none';
+  document.getElementById('quizTimerDisplay').textContent = '';
+  document.getElementById('quizOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  // Anti-malpractice: detect tab switch
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+  document.getElementById('quizOverlay').addEventListener('contextmenu', e=>e.preventDefault());
+  document.getElementById('quizOverlay').style.userSelect = 'none';
+}
+
+function handleVisibilityChange(){
+  if(document.hidden && document.getElementById('quizOverlay').classList.contains('active')){
+    quizViolations++;
+    document.getElementById('quizViolations').style.display='block';
+    document.getElementById('vCount').textContent = quizViolations;
+    showMalpracticeWarn('⚠️ Tab switch detected! Violation '+quizViolations+'/3. At 3 violations your quiz will be auto-submitted.');
+    if(quizViolations>=3){
+      showMalpracticeWarn('🚫 3 violations! Quiz auto-submitted due to malpractice.');
+      setTimeout(()=>submitQuiz(true), 2000);
+    }
+  }
+}
+
+function showMalpracticeWarn(msg){
+  const old = document.getElementById('mpWarn'); if(old) old.remove();
+  const w = document.createElement('div');
+  w.id = 'mpWarn';
+  w.className = 'malpractice-warn';
+  w.textContent = msg;
+  document.body.appendChild(w);
+  setTimeout(()=>{ if(w.parentNode) w.remove(); }, 4000);
+}
+
+async function runQuiz(lessonName, unitName, subjectName, topics, quizType){
+  const questions = await generateQuizQuestions(lessonName, unitName, subjectName, topics, quizType);
+  if(!questions){
+    document.getElementById('quizBody').innerHTML = '<div style="text-align:center;padding:2rem;"><p style="color:#e53e3e;">Failed to generate questions. Please check your connection and try again.</p><button onclick="closeQuizOverlay()" style="margin-top:1rem;padding:0.6rem 1.5rem;background:var(--navy);color:#fff;border:none;border-radius:6px;cursor:pointer;">Close</button></div>';
+    return;
+  }
+  currentQuizQuestions = questions;
+  // Timer: 25 min for unit test, 15 min for lesson
+  quizTimeLeft = quizType==='unit' ? 25*60 : 15*60;
+  startQuizTimer();
+  renderQuizQuestions(questions);
+}
+
+function startQuizTimer(){
+  clearInterval(quizTimerInterval);
+  const el = document.getElementById('quizTimerDisplay');
+  quizTimerInterval = setInterval(()=>{
+    quizTimeLeft--;
+    if(quizTimeLeft<=0){ clearInterval(quizTimerInterval); submitQuiz(true); return; }
+    const m = Math.floor(quizTimeLeft/60), s = quizTimeLeft%60;
+    const txt = m+':'+(s<10?'0':'')+s;
+    el.textContent = '⏱ '+txt;
+    el.style.color = quizTimeLeft<120 ? '#fc8181' : '#fcd34d';
+  }, 1000);
+}
+
+function renderQuizQuestions(questions){
+  const cards = questions.map((q,i)=>{
+    if(q.type==='mcq'){
+      const opts = q.options.map((o,oi)=>`<div class="quiz-mcq-opt" onclick="selectMcq(${i},${oi},this)" id="opt_${i}_${oi}">${o}</div>`).join('');
+      return `<div class="quiz-q-card" id="qcard_${i}">
+        <div class="quiz-q-num">Question ${i+1} of ${questions.length} · MCQ · 2 marks</div>
+        <div class="quiz-q-text">${q.question}</div>
+        ${opts}
+        <input type="hidden" id="ans_${i}" value="">
+      </div>`;
+    } else {
+      const marks = q.maxMarks;
+      return `<div class="quiz-q-card" id="qcard_${i}">
+        <div class="quiz-q-num">Question ${i+1} of ${questions.length} · ${marks===5?'5-mark':'8-mark'} · ${marks} marks</div>
+        <div class="quiz-q-text">${q.question}</div>
+        <div class="quiz-marks-hint">Write a detailed answer. (${marks===5?'~150':'~300'} words expected)</div>
+        <textarea class="quiz-textarea" id="ans_${i}" placeholder="Type your answer here…" onpaste="return false;" oncopy="return false;"></textarea>
+      </div>`;
+    }
+  }).join('');
+
+  document.getElementById('quizBody').innerHTML = `
+    <div style="background:#fffbf0;border:1px solid #f6d860;border-radius:8px;padding:0.8rem 1rem;margin-bottom:1.2rem;font-size:0.78rem;color:#7d5a00;">
+      🔒 <strong>Anti-malpractice:</strong> Do not switch tabs. Copy-paste is disabled. Tab switches are logged. Timer is running.
+    </div>
+    ${cards}
+    <div style="text-align:center;margin:2rem 0 1rem;">
+      <button onclick="submitQuiz(false)" style="background:var(--navy);color:#fff;border:none;border-radius:8px;padding:0.85rem 3rem;font-size:0.95rem;font-weight:700;cursor:pointer;">Submit Quiz</button>
+      <p style="font-size:0.74rem;color:var(--muted);margin-top:0.6rem;">Ensure all questions are answered before submitting.</p>
+    </div>`;
+}
+
+function selectMcq(qIdx, optIdx, el){
+  const card = document.getElementById('qcard_'+qIdx);
+  card.querySelectorAll('.quiz-mcq-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('ans_'+qIdx).value = optIdx;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SUBMIT QUIZ
+// ═══════════════════════════════════════════════════════════════════
+async function submitQuiz(autoSubmit){
+  clearInterval(quizTimerInterval);
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
+  const info = currentUserInfo; if(!info) return;
+  const questions = currentQuizQuestions;
+  let totalMarks = 0, earnedMarks = 0;
+  const answers = [];
+
+  questions.forEach((q,i)=>{
+    const rawAns = (document.getElementById('ans_'+i)||{}).value || '';
+    if(q.type==='mcq'){
+      const max = 2;
+      totalMarks += max;
+      const studentAns = parseInt(rawAns);
+      const correct = !isNaN(studentAns) && studentAns===q.correct;
+      if(correct) earnedMarks += max;
+      answers.push({q:q.question,type:'mcq',answer:q.options[studentAns]||'No answer',correct,pts:correct?max:0,max,correctAnswer:q.options[q.correct],explanation:q.explanation||''});
+    } else {
+      totalMarks += q.maxMarks;
+      // Descriptive — not auto-graded, 0 pts until faculty reviews
+      answers.push({q:q.question,type:q.type,answer:rawAns||'(No answer)',correct:null,pts:0,max:q.maxMarks,pendingReview:true});
+    }
+  });
+
+  const mcqScore = totalMarks > 0 ? Math.round(earnedMarks/totalMarks*100) : 0;
+  // MCQ-only score for pass/fail (descriptive graded by faculty later)
+  const mcqOnly = questions.filter(q=>q.type==='mcq');
+  const mcqMax = mcqOnly.length * 2;
+  const mcqEarned = answers.filter(a=>a.type==='mcq'&&a.correct).length * 2;
+  const mcqPct = mcqMax>0 ? Math.round(mcqEarned/mcqMax*100) : 100;
+  const passed = mcqPct >= 90;
+
+  // Save to Firebase
+  const pk = progKey(currentLesson.subjectId, currentLesson.ui, currentQuizType==='unit'?null:currentLesson.li);
+  const progData = {
+    done: passed,
+    score: mcqPct,
+    totalMarks, earnedMarks,
+    violations: quizViolations,
+    autoSubmit: !!autoSubmit,
+    ts: Date.now(),
+    type: currentQuizType,
+    answers
+  };
+  await saveProgress(info.email, pk, progData);
+
+  // Show result
+  showQuizResult(mcqPct, passed, answers, questions, autoSubmit);
+}
+
+function showQuizResult(pct, passed, answers, questions, autoSubmit){
+  const color = passed?'#276749':'#c0392b';
+  const mcqAnswers = answers.filter(a=>a.type==='mcq');
+  const descAnswers = answers.filter(a=>a.type!=='mcq');
+
+  const reviewCards = mcqAnswers.map(a=>`
+    <div class="ans-review-card" style="border-color:${a.correct?'#9ae6b4':'#fca5a5'};">
+      <div class="quiz-q-num">${a.correct?'✅':'❌'} MCQ</div>
+      <div class="ans-review-q">${a.q}</div>
+      <div class="ans-review-a">Your answer: <strong>${a.answer||'No answer'}</strong></div>
+      ${!a.correct?`<div class="ans-review-a" style="background:#f0fff4;">Correct: <strong>${a.correctAnswer}</strong></div>`:''}
+      ${a.explanation?`<div style="font-size:0.73rem;color:var(--muted);margin-top:0.3rem;">💡 ${a.explanation}</div>`:''}
+    </div>`).join('');
+
+  const descCards = descAnswers.map(a=>`
+    <div class="ans-review-card" style="border-color:#e2e8f0;">
+      <div class="quiz-q-num">📝 ${a.type==='five'?'5-mark':'8-mark'} · Pending faculty review</div>
+      <div class="ans-review-q">${a.q}</div>
+      <div class="ans-review-a">${a.answer||'No answer written'}</div>
+    </div>`).join('');
+
+  document.getElementById('quizBody').innerHTML = `
+    <div class="quiz-result">
+      <div class="quiz-result-score" style="color:${color}">${pct}%</div>
+      <div class="quiz-result-label">MCQ Score (${passed?'PASSED':'FAILED'})</div>
+      <div class="quiz-result-badge" style="background:${passed?'#f0fff4':'#fff5f5'};color:${color};border:1.5px solid ${passed?'#9ae6b4':'#fca5a5'};">
+        ${passed?'🎉 Lesson marked as COMPLETE!':'❌ Need 90% to pass — You can retake'}
+      </div>
+      ${autoSubmit?'<div style="font-size:0.8rem;color:#c0392b;margin-bottom:1rem;">⚠️ Auto-submitted due to malpractice violations</div>':''}
+      ${descAnswers.length?`<div style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">📝 ${descAnswers.length} descriptive answer(s) saved for faculty review</div>`:''}
+      <div style="display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem;">
+        ${!passed?`<button onclick="retakeQuiz()" style="background:var(--navy);color:#fff;border:none;border-radius:8px;padding:0.7rem 1.8rem;font-size:0.85rem;font-weight:700;cursor:pointer;">🔄 Retake Quiz</button>`:''}
+        <button onclick="closeQuizOverlay()" style="background:#f7f8fa;color:var(--navy);border:1.5px solid var(--border);border-radius:8px;padding:0.7rem 1.8rem;font-size:0.85rem;font-weight:700;cursor:pointer;">Back to Syllabus</button>
+      </div>
+      <div style="text-align:left;">
+        <div style="font-size:0.82rem;font-weight:700;color:var(--navy);margin-bottom:0.6rem;">MCQ Review:</div>
+        ${reviewCards}
+        ${descCards?`<div style="font-size:0.82rem;font-weight:700;color:var(--navy);margin:0.8rem 0 0.6rem;">Descriptive Answers (submitted for review):</div>${descCards}`:''}
+      </div>
+    </div>`;
+}
+
+function retakeQuiz(){
+  const l = currentLesson; const t = currentQuizType;
+  closeQuizOverlay();
+  setTimeout(()=>{
+    if(t==='lesson') startLessonQuiz(l.si, l.ui, l.li);
+    else startUnitTest(l.si, l.ui);
+  }, 300);
+}
+
+function closeQuizOverlay(){
+  clearInterval(quizTimerInterval);
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
+  document.getElementById('quizOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  // Refresh syllabus to show updated progress
+  if(currentUserInfo) renderStudentSyllabus(currentUserInfo);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FACULTY PROGRESS VIEW
+// ═══════════════════════════════════════════════════════════════════
+function selectProgYear(yr, btn){
+  facProgYear = yr;
+  document.querySelectorAll('#ap-progress .year-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderProgressAdmin();
+}
+
+async function renderProgressAdmin(){
+  const el = document.getElementById('progAdminBody'); if(!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--muted);">Loading\u2026</div>';
+  const students = getStudentsByYear(facProgYear);
+  if(!students.length){ el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted);">No students for this year.</div>'; return; }
+  const subjs = sylData[facProgYear]||[];
+
+  // Load all students' progress in parallel
+  await Promise.all(students.map(async u=>{
+    const ek = eKey(u.email);
+    const d = await fbGet('/progress/'+ek);
+    progressCache[ek] = d&&typeof d==='object'?d:{};
+    const qa = await fbGet('/quizAnswers/'+ek);
+    quizAnswersCache[ek] = qa&&typeof qa==='object'?qa:{};
+  }));
+
+  el.innerHTML = students.map(u=>{
+    const info = parseProfile(u.email, u.displayName);
+    const ek = eKey(u.email);
+    const prog = progressCache[ek]||{};
+    const totalKeys = Object.keys(prog).length;
+    const doneKeys = Object.values(prog).filter(v=>v.done).length;
+    const overallPct = totalKeys>0?Math.round(doneKeys/totalKeys*100):0;
+    const color = overallPct>=75?'#38a169':overallPct>=40?'#c9882a':'#e53e3e';
+
+    return `<div>
+      <div class="prog-student-row" onclick="toggleProgDetail('pd_${ek}')">
+        <div>
+          <div style="font-size:0.84rem;font-weight:700;color:var(--navy);">🎓 ${info.name}</div>
+          <div style="font-size:0.73rem;color:var(--muted);">${info.reg} · ${doneKeys}/${totalKeys} completed</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.7rem;">
+          <div class="prog-overall-bar"><div class="prog-overall-fill" style="width:${overallPct}%;background:${color};"></div></div>
+          <span style="font-size:0.78rem;font-weight:700;color:${color};">${overallPct}%</span>
+          <span style="font-size:0.7rem;color:var(--muted);">▼</span>
+        </div>
+      </div>
+      <div class="prog-detail-wrap" id="pd_${ek}">
+        ${renderStudentProgressDetail(u, subjs, prog)}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleProgDetail(id){
+  const el = document.getElementById(id); if(!el) return;
+  el.classList.toggle('open');
+}
+
+function renderStudentProgressDetail(u, subjs, prog){
+  const ek = eKey(u.email);
+  if(!subjs.length) return '<p style="color:var(--muted);font-size:0.82rem;">No subjects for this year.</p>';
+  return subjs.map(s=>{
+    const units = s.units||[];
+    return `<div style="margin-bottom:0.8rem;">
+      <div style="font-size:0.78rem;font-weight:700;color:var(--navy);text-transform:uppercase;margin-bottom:0.4rem;">${s.name}</div>
+      ${units.map((unit,ui)=>{
+        const lessons = unit.lessons||[];
+        const lessonRows = lessons.map((l,li)=>{
+          const pk = progKey(s.id,ui,li);
+          const p = prog[pk];
+          const done = p&&p.done;
+          const score = p?p.score:null;
+          const hasDesc = p&&p.answers&&p.answers.some(a=>a.pendingReview);
+          return `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0.5rem;font-size:0.78rem;border-radius:4px;${done?'background:#f0fff4;':''}" >
+            <span>${done?'✅':'⬜'}</span>
+            <span style="flex:1;color:var(--navy);">${l}</span>
+            ${score!==null?`<span style="font-size:0.72rem;color:${score>=90?'#276749':score>=60?'#c9882a':'#e53e3e'};font-weight:700;">${score}%</span>`:''}
+            ${hasDesc?`<button onclick="viewAnswers('${ek}','${pk.replace(/'/g,"\\'")}')" style="font-size:0.68rem;padding:2px 7px;background:#f0f4ff;color:var(--navy);border:1px solid #c5d0e6;border-radius:4px;cursor:pointer;">View Answers</button>`:''}
+          </div>`;
+        }).join('');
+        const unitPk = progKey(s.id,ui,null);
+        const unitP = prog[unitPk];
+        return `<div style="margin-left:0.5rem;margin-bottom:0.5rem;">
+          <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.2rem;">${unit.name}</div>
+          ${lessonRows||'<div style="font-size:0.73rem;color:#aaa;padding:0.2rem 0.5rem;">No lessons yet</div>'}
+          ${unitP?`<div style="font-size:0.73rem;padding:0.25rem 0.5rem;background:${unitP.done?'#f0fff4':'#fff5f5'};border-radius:4px;margin-top:0.2rem;">Unit Test: ${unitP.done?'✅ Passed':'❌ Failed'} · ${unitP.score}%</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+function viewAnswers(ek, pk){
+  const qa = quizAnswersCache[ek];
+  const prog = progressCache[ek];
+  const entry = prog && prog[pk];
+  if(!entry || !entry.answers){ adminToast('No answers found.'); return; }
+  const answers = entry.answers;
+  const desc = answers.filter(a=>a.type!=='mcq');
+  if(!desc.length){ adminToast('No descriptive answers to review.'); return; }
+
+  // Show in a modal
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;';
+  const box = document.createElement('div');
+  box.style.cssText = 'background:#fff;border-radius:12px;padding:1.5rem;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;';
+  box.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+    <strong style="font-size:0.9rem;color:var(--navy);">📝 Descriptive Answers</strong>
+    <button onclick="this.closest('[style*=fixed]').remove()" style="border:none;background:none;font-size:1.2rem;cursor:pointer;">✕</button>
+  </div>`+
+  desc.map((a,i)=>`<div class="ans-review-card">
+    <div class="quiz-q-num">${a.type==='five'?'5-mark':'8-mark'} Question ${i+1}</div>
+    <div class="ans-review-q">${a.q}</div>
+    <div class="ans-review-a">${a.answer||'(No answer)'}</div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-top:0.3rem;">Status: Pending faculty review</div>
+  </div>`).join('');
+  modal.appendChild(box);
+  document.body.appendChild(modal);
+}
+
+window.openLesson=openLesson; window.closeLessonOverlay=closeLessonOverlay; window.closeLessonAndStartQuiz=closeLessonAndStartQuiz;
+window.startLessonQuiz=startLessonQuiz; window.startUnitTest=startUnitTest; window.submitQuiz=submitQuiz; window.retakeQuiz=retakeQuiz; window.closeQuizOverlay=closeQuizOverlay; window.selectMcq=selectMcq;
+window.selectProgYear=selectProgYear; window.renderProgressAdmin=renderProgressAdmin; window.toggleProgDetail=toggleProgDetail; window.viewAnswers=viewAnswers;
 window.selectTTYear=selectTTYear; window.saveTimetable=saveTimetable;
 window.selectFacYear=selectFacYear; window.editFac=editFac; window.deleteFac=deleteFac; window.addFac=addFac;
 window.selectMarksYear=selectMarksYear; window.saveStudentMarks=saveStudentMarks;
