@@ -2283,7 +2283,6 @@ let hpData = {
 
 // ── Load / Save homepage data from Firebase ──
 async function loadHpData(){
-  if(!FB_ONLINE) return;
   const d = await fbGet('/homepageContent');
   if(d && typeof d==='object'){
     // Deep merge — only overwrite keys that exist in Firebase
@@ -2291,8 +2290,8 @@ async function loadHpData(){
   }
 }
 async function saveHpData(){
-  if(!FB_ONLINE){ adminToast('Firebase offline — changes applied locally only.'); return; }
-  await fbSet('/homepageContent', hpData);
+  const ok=await fbSet('/homepageContent', hpData);
+  if(!ok) adminToast('⚠️ Homepage change saved locally only — check Firebase rules.');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2750,34 +2749,35 @@ async function testFbConnection(){
 }
 
 async function fbGet(path){
-  if(!FB_ONLINE && FB_CHECKED) return null;
   try{
     const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),6000);
+    const timer=setTimeout(()=>ctrl.abort(),7000);
     const r=await fetch(DB+path+'.json',{signal:ctrl.signal});
     clearTimeout(timer);
-    if(!r.ok){ if(r.status===401||r.status===403){ FB_ONLINE=false; showFbBanner('denied'); } return null; }
-    const d=await r.json();
-    return d;
-  } catch(e){ return null; }
+    if(!r.ok){
+      if(r.status===401||r.status===403) showFbBanner('denied');
+      return null;
+    }
+    return await r.json();
+  }catch(e){ return null; }
 }
 async function fbSet(path,data){
-  if(!FB_ONLINE) return;
   try{
     const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),6000);
-    await fetch(DB+path+'.json',{method:'PUT',body:JSON.stringify(data),headers:{'Content-Type':'application/json'},signal:ctrl.signal});
+    const timer=setTimeout(()=>ctrl.abort(),8000);
+    const r=await fetch(DB+path+'.json',{method:'PUT',body:JSON.stringify(data),headers:{'Content-Type':'application/json'},signal:ctrl.signal});
     clearTimeout(timer);
-  } catch(e){}
+    if(!r.ok){ const err=await r.json().catch(()=>({error:'HTTP '+r.status})); console.warn('fbSet failed',path,err.error); return false; }
+    return true;
+  }catch(e){ console.warn('fbSet error',path,e.message); return false; }
 }
 async function fbDel(path){
-  if(!FB_ONLINE) return;
   try{
     const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),6000);
+    const timer=setTimeout(()=>ctrl.abort(),8000);
     await fetch(DB+path+'.json',{method:'DELETE',signal:ctrl.signal});
     clearTimeout(timer);
-  } catch(e){}
+  }catch(e){}
 }
 
 // ── Show/hide saving indicator ──
@@ -2861,6 +2861,32 @@ async function loadCoreData(){
   if(fn&&typeof fn==='object') flashNewsData=Object.values(fn);
   const nt=await fbGet('/notifications');
   if(nt&&typeof nt==='object') notificationsData=Object.values(nt);
+
+  // Load timetable from Firebase (overrides DEFAULT_TT)
+  const tt=await fbGet('/timetable');
+  if(tt&&typeof tt==='object'){
+    // Firebase stores arrays as objects with numeric keys — convert back
+    [1,2,3].forEach(yr=>{
+      if(tt[yr]){
+        const rows=typeof tt[yr]==='object'?Object.values(tt[yr]):tt[yr];
+        ttData[yr]=rows.map(row=>({
+          day:row.day||'',
+          p:typeof row.p==='object'?Object.values(row.p):row.p
+        }));
+      }
+    });
+  }
+
+  // Load faculty assignments from Firebase (overrides DEFAULT_FAC)
+  const fa=await fbGet('/facAssignments');
+  if(fa&&typeof fa==='object'){
+    [1,2,3].forEach(yr=>{
+      if(fa[yr]){
+        const rows=typeof fa[yr]==='object'?Object.values(fa[yr]):fa[yr];
+        facData[yr]=rows;
+      }
+    });
+  }
 }
 
 // ── Helper: today's date string ──
@@ -2874,7 +2900,51 @@ function formatDateDisplay(str){ if(!str)return''; const [y,m,d]=str.split('-');
 const BASE_USERS=[
   {email:'24ubio008.deepak_m@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'student',isDev:true},
   {email:'24ubio008.deepak_m@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'faculty',isDev:true},
-  {email:'24ubio033.rohini_shree_m@nandhaarts.org',password:'24084c118c26ba4d3c3835e87dfef73ed677764ad00b4fb2dc277031ae213cfb',role:'student'}
+  {email:'24ubio001.abinaya_s@nandhaarts.org',password:'d2a7cdacbc20b8eaff29fb2456e133b2f6e1f50eec29398e4a210b4c554e3878',role:'student'},
+  {email:'24ubio002.ajay_s@nandhaarts.org',password:'bea6f0879f5a3b4401099c48b52bf02fa3ca1cdf5606c25b2abdd95415197cda',role:'student'},
+  {email:'24ubio003.angelin_kiruba_a@nandhaarts.org',password:'d457e66b60eb22b56426078d6ece2e6195210c705c2e379191dc3e7cc2a33845',role:'student'},
+  {email:'24ubio004.anusri_a@nandhaarts.org',password:'bcd19673b8e61365c70c2279ca9f40b31af1e4a562603a619db7cb8a028e2c73',role:'student'},
+  {email:'24ubio005.archanadevi_d@nandhaarts.org',password:'750498241de894ba8659674ba5ddc953fc47aaa5897301d71a5124273414c808',role:'student'},
+  {email:'24ubio006.ashin_r@nandhaarts.org',password:'18d7d3629c5305d10c11bc241108f7125b2f82f22d5ec6cb52804a4738d8313f',role:'student'},
+  {email:'24ubio007.boomiha_m@nandhaarts.org',password:'1b78bbc6630deaae6cb87781a8f93db937d5a04ead02f7d4bc0a964a913bd76a',role:'student'},
+  {email:'24ubio009.dharani_p@nandhaarts.org',password:'46d89bf6b2dfe83d7384e3c6d3910ac573239a0bff46ce47876997f1b10db350',role:'student'},
+  {email:'24ubio010.dharanya_st@nandhaarts.org',password:'270a38f818eba336b4620a0dfd41b676a03d4f8cfccef061105d6de87b2e1126',role:'student'},
+  {email:'24ubio011.dhinesh_s@nandhaarts.org',password:'c2580bb89c3cce46ca9d58726b97a27f4c7815ed6d25542953937547aa7f30b5',role:'student'},
+  {email:'24ubio012.dinesh_kumar_s@nandhaarts.org',password:'6c9da8d44da1544c162e1a0e6fcd621d88ebfbfd1f494a6d1d92288a7cc01352',role:'student'},
+  {email:'24ubio014.jeevitha_m@nandhaarts.org',password:'cb2e1b440f42a77b8671dda7d27a491f28c9a42dd9050cb315f9d3a40acca8f5',role:'student'},
+  {email:'24ubio016.jootheeswari_k@nandhaarts.org',password:'d457e66b60eb22b56426078d6ece2e6195210c705c2e379191dc3e7cc2a33845',role:'student'},
+  {email:'24ubio018.kavyadharshini@nandhaarts.org',password:'46ee84e02086badfaeae786e663a3fe100d1fa5badcc9577a4a6d9db5c98c7c5',role:'student'},
+  {email:'24ubio019.keerthika_m@nandhaarts.org',password:'952957cd67e20c467107f126a4c760937c516fe5d373eae39b6ea39bc16ae273',role:'student'},
+  {email:'24ubio020.lakshmi_m@nandhaarts.org',password:'d4e30ccdfccbdf181831b540e10711cb6abf860e28408301b5faf2a30c496067',role:'student'},
+  {email:'24ubio021.loganathan_m@nandhaarts.org',password:'725da1bcbdaeaddfd7bcb99a4edb2c5ffe3abb0224aa2e80a0f53dfc8db288c3',role:'student'},
+  {email:'24ubio022.manisha_sm@nandhaarts.org',password:'761be36d7d6a3347f3a1053ce72d8e90543e51d0ae1bd0ce5559848779db24b3',role:'student'},
+  {email:'24ubio023.mugesh_sudhan_k@nandhaarts.org',password:'5196c09293db59ebc675e385d62a34cd0bdde292d3ebc934eb7ad0b30a9b7108',role:'student'},
+  {email:'24ubio024.narmadha_g@nandhaarts.org',password:'63fce6aa42c7d594b1658b00413c371ddeba5ede7334af45735df42e45240323',role:'student'},
+  {email:'24ubio025.nathiya_r@nandhaarts.org',password:'2ab557fb0dd5d7c1eecad0b8f67bcd88f7921b4a02865808fa06b48ca21f0f17',role:'student'},
+  {email:'24ubio026.navitha_shree_s@nandhaarts.org',password:'d8386f41b71adf89c650cded3077ff3be1f9dec3bfab5ad7b796d6cf23483ae1',role:'student'},
+  {email:'24ubio027.negha_g@nandhaarts.org',password:'42e7adb27dfd780e972db1e9dc92e6f80a3aaf25c2c9291ba93a62cbb07dc9dd',role:'student'},
+  {email:'24ubio028.ponsankar_s@nandhaarts.org',password:'febd68e1455e321082d2324884c85fbd870091e5e158be58fff9571d7226853b',role:'student'},
+  {email:'24ubio029.poornasri_v@nandhaarts.org',password:'f85c65c3f59715ef828163e222fba245d3c787d7e620be62ee718c9e66703acd',role:'student'},
+  {email:'24ubio030.rajkumar_p@nandhaarts.org',password:'872954d29a6927a52e43f53bc4a26c47c26d6b5c06b85f127bf573f583e997dc',role:'student'},
+  {email:'24ubio031.rithika_s@nandhaarts.org',password:'55491d4f0b06f459b7de00511d66df6ea874fe3ad2e1a96eb842b379b286194f',role:'student'},
+  {email:'24ubio032.rithika_sri_b@nandhaarts.org',password:'18d7d3629c5305d10c11bc241108f7125b2f82f22d5ec6cb52804a4738d8313f',role:'student'},
+  {email:'24ubio033.rohini_shree_m@nandhaarts.org',password:'24084c118c26ba4d3c3835e87dfef73ed677764ad00b4fb2dc277031ae213cfb',role:'student'},
+  {email:'24ubio034.sabarivasan_m@nandhaarts.org',password:'8f93f12463507444a878507acab9ccc42f1d3d173008c3a96393c792bf8893f5',role:'student'},
+  {email:'24ubio035.sabarna_k@nandhaarts.org',password:'82ebe25aa9c6aa37960558d9e5cb31d37cec12c68155660af2520597f5d920e1',role:'student'},
+  {email:'24ubio036.sandhya_s@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'student'},
+  {email:'24ubio037.sarulatha_s@nandhaarts.org',password:'8e2939986f32a2a4e71bd8ff16bf21c49fd695ea761dcc9909a32e4da8d472cc',role:'student'},
+  {email:'24ubio038.shruthikaa_r@nandhaarts.org',password:'9c6eaa46bd57d662cc2af97cd2e9c77b51d7c36444c10e7fd62f319bb22f38c5',role:'student'},
+  {email:'24ubio039.sounderraj_r@nandhaarts.org',password:'bea6f0879f5a3b4401099c48b52bf02fa3ca1cdf5606c25b2abdd95415197cda',role:'student'},
+  {email:'24ubio040.sri_rithika_r@nandhaarts.org',password:'fc36113a81c1fb906dcdad201beae622ccb1f6ff067f8f6268f1b2c215ef063d',role:'student'},
+  {email:'24ubio041.sri_vidya_lakshimi_k@nandhaarts.org',password:'203f389039cbba1dcefc0d9d1701d08542f3a7ca0cef5a405cd7ad65235b74b1',role:'student'},
+  {email:'24ubio042.srimathi_k@nandhaarts.org',password:'0e294209e9f60d7ea7edac3bf84caf0ca7e6c018e6ddb2c95cdb30939e34b4b4',role:'student'},
+  {email:'24ubio043.srinithi_k@nandhaarts.org',password:'9dfaf56c1dece4a0b186498f47076d7ff088f7e4eb299414863766e619d9a15a',role:'student'},
+  {email:'24ubio044.srisakthi_e@nandhaarts.org',password:'f4f5f4f40dde2a459630c7255fddb4e90f69a96c7d41617dca85aebed785ca73',role:'student'},
+  {email:'24ubio045.sudharshana_vm@nandhaarts.org',password:'28b1b8d51889c98b401cf8820c8e2710e54f6b763fd3d8b0ab4da8c8aeab4817',role:'student'},
+  {email:'24ubio046.sujitha_s@nandhaarts.org',password:'555df3c529bd527e7cc406a6e43136b5e48fe79f933ba3f98a6dfa01ca4a5cc6',role:'student'},
+  {email:'24ubio048.thanasree_s@nandhaarts.org',password:'8b70fff084037583c5944f27087d58e54646dc02ad9c5f76645b9c51aa536d45',role:'student'},
+  {email:'24ubio049.varshini_s@nandhaarts.org',password:'91b28d13c326c23186404cc2efbb5b714f25e470b80fb216728f5af4f832b6d4',role:'student'},
+  {email:'24ubio050.varunapriya_s@nandhaarts.org',password:'b6db85f62521b9932bb9c6781ddc1099eb94aba62332668ad1293c00a02a86af',role:'student'},
 ];
 let extraUsers=[];
 let selectedRole='';
@@ -2888,6 +2958,11 @@ function getStudentsByYear(yr){
     const m=u.email.split('@')[0].split('.')[0].match(/^(\d+)/);
     if(!m)return false;
     return(2026-(parseInt(m[1])+2000))===yr;
+  }).sort((a,b)=>{
+    // Sort alphabetically by display name
+    const na=parseProfile(a.email,a.displayName).name.toLowerCase();
+    const nb=parseProfile(b.email,b.displayName).name.toLowerCase();
+    return na.localeCompare(nb);
   });
 }
 function getSubjectsForYear(yr){ return sylData[yr]||[]; }
@@ -3207,7 +3282,7 @@ async function openFacPortal(info,user){
   document.body.style.overflow='hidden'; window.scrollTo(0,0);
   // Notify dev of Firebase status
   setTimeout(()=>{
-    if(!FB_ONLINE) adminToast('⚠️ Firebase offline — users will NOT be permanent until reconnected.');
+    if(!FB_ONLINE) adminToast('⚠️ Firebase unreachable — saves will retry when reconnected. Check rules.');
   },600);
 }
 function doFacLogout(){ document.getElementById('facPortalOverlay').classList.remove('active'); document.body.style.overflow=''; }
@@ -3296,7 +3371,6 @@ function migrateSylData(){
 
 // ── Load syllabus from Firebase (merge lessons into sylData) ──
 async function loadSyllabusLessons(){
-  if(!FB_ONLINE) return;
   const data = await fbGet('/syllabusLessons');
   if(!data) return;
   [1,2,3].forEach(yr=>{
@@ -3313,7 +3387,6 @@ async function loadSyllabusLessons(){
 }
 
 async function saveSyllabusLessons(yr, si){
-  if(!FB_ONLINE) return;
   const subj = sylData[yr][si];
   const sk = sKey(subj.name);
   const payload = {};
@@ -3546,7 +3619,17 @@ function renderTTAdmin(){
   document.getElementById('ttAdminTitle').textContent=yname+' Year \u2014 Timetable Editor';
   document.getElementById('ttAdminBody').innerHTML=`<table class="tt-table" style="min-width:580px;"><thead><tr><th>Day</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th></tr></thead><tbody>${tt.map((row,ri)=>`<tr><td class="tt-dayorder">${row.day}</td>${row.p.map((cell,ci)=>`<td><input class="tt-edit-cell" id="tt_${ri}_${ci}" value="${cell}" placeholder="\u2014"></td>`).join('')}</tr>`).join('')}</tbody></table><p style="font-size:0.74rem;color:var(--muted);margin-top:0.7rem;">\u270f\ufe0f Click any cell to edit. Press Save when done.</p>`;
 }
-function saveTimetable(){ ttData[facTTYear].forEach((row,ri)=>{row.p=row.p.map((_,ci)=>{const el=document.getElementById('tt_'+ri+'_'+ci);return el?el.value.trim():'';});}); adminToast('Timetable saved! \u2705'); }
+async function saveTimetable(){
+  ttData[facTTYear].forEach((row,ri)=>{
+    row.p=row.p.map((_,ci)=>{
+      const el=document.getElementById('tt_'+ri+'_'+ci);
+      return el?el.value.trim():'';
+    });
+  });
+  adminToast('Saving timetable…');
+  const ok=await fbSet('/timetable',ttData);
+  adminToast(ok?'Timetable saved permanently! ✅':'Timetable saved locally (Firebase offline).');
+}
 
 // ── Faculty Subject Admin ──
 function selectFacYear(yr,btn){ facFacYear=yr; document.querySelectorAll('#ap-faculty .year-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); renderFacAdmin(); }
@@ -3556,9 +3639,9 @@ function renderFacAdmin(){
   document.getElementById('facAdminBody').innerHTML=data.map((row,i)=>`<div class="admin-list-row" style="margin-bottom:0.5rem;"><div style="flex:1;"><div style="font-size:0.82rem;font-weight:700;color:var(--navy);">${row.subject}</div><div style="font-size:0.76rem;color:var(--muted);">${row.faculty}</div></div><div class="admin-list-actions"><button class="btn-edit" onclick="editFac(${i})">&#9998; Edit</button><button class="btn-del" onclick="deleteFac(${i})">Delete</button></div></div>`).join('')
     +`<div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1rem;padding-top:0.8rem;border-top:1px solid var(--border);"><input class="admin-input" id="nfs" placeholder="Subject name" style="flex:1;min-width:140px;"><input class="admin-input" id="nff" placeholder="Faculty name" style="flex:1;min-width:140px;"><button class="btn-add" onclick="addFac()">+ Add</button></div>`;
 }
-function editFac(i){ const s=prompt('Subject:',facData[facFacYear][i].subject); if(s===null)return; const f=prompt('Faculty:',facData[facFacYear][i].faculty); if(f===null)return; facData[facFacYear][i].subject=s.trim(); facData[facFacYear][i].faculty=f.trim(); renderFacAdmin(); adminToast('Updated! \u2705'); }
-function deleteFac(i){ if(!confirm('Delete?'))return; facData[facFacYear].splice(i,1); renderFacAdmin(); adminToast('Deleted.'); }
-function addFac(){ const s=document.getElementById('nfs')?.value.trim(),f=document.getElementById('nff')?.value.trim(); if(!s||!f){adminToast('Enter subject and faculty name.');return;} facData[facFacYear].push({subject:s,faculty:f}); document.getElementById('nfs').value=''; document.getElementById('nff').value=''; renderFacAdmin(); adminToast('Added! \u2705'); }
+async function editFac(i){ const s=prompt('Subject:',facData[facFacYear][i].subject); if(s===null)return; const f=prompt('Faculty:',facData[facFacYear][i].faculty); if(f===null)return; facData[facFacYear][i].subject=s.trim(); facData[facFacYear][i].faculty=f.trim(); renderFacAdmin(); const ok=await fbSet('/facAssignments',facData); adminToast(ok?'Faculty updated permanently! ✅':'Updated locally (Firebase offline).'); }
+async function deleteFac(i){ if(!confirm('Delete?'))return; facData[facFacYear].splice(i,1); renderFacAdmin(); const ok=await fbSet('/facAssignments',facData); adminToast(ok?'Deleted permanently! ✅':'Deleted locally (Firebase offline).'); }
+async function addFac(){ const s=document.getElementById('nfs')?.value.trim(),f=document.getElementById('nff')?.value.trim(); if(!s||!f){adminToast('Enter subject and faculty name.');return;} facData[facFacYear].push({subject:s,faculty:f}); document.getElementById('nfs').value=''; document.getElementById('nff').value=''; renderFacAdmin(); const ok=await fbSet('/facAssignments',facData); adminToast(ok?'Faculty saved permanently! ✅':'Saved locally (Firebase offline).'); }
 
 // ═══════════════════════════════════════
 // INTERNAL MARKS — FACULTY PANEL
@@ -3808,18 +3891,16 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   migrateSylData();               // ensure unit objects have topics/lessons keys
   applyHpData();                  // apply default homepage content immediately
 
-  // Load users first (independent fetch) — so login works before full FB test
-  await loadExtraUsers();
+  // Load all Firebase data unconditionally — fbGet handles offline gracefully
+  await Promise.all([
+    loadExtraUsers(),             // users — needed before login
+    loadCoreData(),               // flash, notifications, timetable, faculty
+    loadSyllabusLessons(),        // faculty lessons
+    loadHpData(),                 // homepage content
+  ]);
+  applyHpData();                  // apply loaded homepage data
 
-  await testFbConnection();       // ping Firebase — sets FB_ONLINE flag
-  if(FB_ONLINE){
-    await loadHpData();           // pull saved homepage content from Firebase
-    applyHpData();                // re-apply with Firebase data
-    await loadSyllabusLessons();  // pull faculty-entered lessons from Firebase
-    await loadCoreData();
-    // Re-load users to catch any updates (already loaded above)
-    await loadExtraUsers();
-  }
+  await testFbConnection();       // ping to set status banner only
 });
 
 // ── EXPOSE TO WINDOW ──
