@@ -1772,14 +1772,11 @@ input.att-date-pick:focus{outline:none;border-color:var(--gold);}
         <p style="font-size:0.78rem;color:rgba(255,255,255,0.75);margin:0 0 0.6rem;">Copy and paste these rules in <strong>Firebase Console → Realtime Database → Rules</strong> tab, then click Publish. This restricts public access to sensitive data while keeping flash news &amp; notifications readable.</p>
         <div class="sec-rules-code">{
   "rules": {
-    "flashNews":     { ".read": true,  ".write": true  },
-    "notifications": { ".read": true,  ".write": true  },
-    "extraUsers":    { ".read": true,  ".write": true  },
-    "marks":         { ".read": false, ".write": false },
-    "attendance":    { ".read": false, ".write": false }
+    ".read": true,
+    ".write": true
   }
 }</div>
-        <p style="font-size:0.72rem;color:rgba(255,255,255,0.5);margin:0;">⚠️ With these rules the portal still works fully — data is fetched server-side via the embedded site key. Public read access is blocked for all student records.</p>
+        <p style="font-size:0.72rem;color:rgba(255,255,255,0.5);margin:0;">⚠️ These open rules allow marks, attendance, lessons and all data to save permanently — same pattern as the restaurant system. Paste this in <strong>Firebase Console → Realtime Database → Rules → Publish</strong>.</p>
       </div>
 
       <div class="admin-card">
@@ -3091,7 +3088,7 @@ async function openPortal(info,user){
 
   // Load attendance from Firebase then render
   const ek=eKey(info.email);
-  // Always fetch fresh — don't use stale cache from a previous session
+  // Always fetch fresh flat attendance { date: 'P'|'A' }
   attendanceCache[ek]={};
   const attData=await fbGet('/attendance/'+ek);
   if(attData&&typeof attData==='object') attendanceCache[ek]=attData;
@@ -3160,19 +3157,12 @@ async function renderStudentMarks(info){
 // ── Student Attendance Calendar ──
 function renderStudentAttendance(info){
   const el=document.getElementById('stdAttBody'); if(!el)return;
-  const subjs=getSubjectsForYear(info.yearOfStudy);
-  if(!subjs.length){ el.innerHTML='<div style="text-align:center;padding:2rem;">No subjects found.</div>'; return; }
-  if(!stdAttActiveSubj) stdAttActiveSubj=subjs[0].name;
-  const tabs=subjs.map(s=>`<button class="syl-tab${s.name===stdAttActiveSubj?' active':''}" onclick="stdAttTab('${s.name.replace(/'/g,"\\'")}')">${s.name}</button>`).join('');
-  const calHTML=buildStudentAttCal(info);
-  el.innerHTML=`<div class="syllabus-tabs" style="margin-bottom:1rem;">${tabs}</div>${calHTML}`;
-  // Update overall badge
+  el.innerHTML=buildStudentAttCal(info);
   updateStdAttBadge(info);
 }
 function buildStudentAttCal(info){
   const ek=eKey(info.email);
-  const sk=sKey(stdAttActiveSubj);
-  const monthData=(attendanceCache[ek]&&attendanceCache[ek][sk])||{};
+  const monthData=(attendanceCache[ek])||{};
   const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
   const DN=['Su','Mo','Tu','We','Th','Fr','Sa'];
   const daysInMonth=new Date(stdAttCalYear,stdAttCalMonth+1,0).getDate();
@@ -3195,8 +3185,8 @@ function buildStudentAttCal(info){
     if(isToday)cls+=' att-today';
     cells+=`<div class="${cls}" title="${ds}">${d}</div>`;
   }
-  // All-time stats for this subject
-  const allData=attendanceCache[ek]&&attendanceCache[ek][sk]?attendanceCache[ek][sk]:{};
+  // All-time stats
+  const allData=attendanceCache[ek]||{};
   const allDates=Object.keys(allData);
   const allP=allDates.filter(d=>allData[d]==='P').length;
   const allT=allDates.length;
@@ -3225,24 +3215,15 @@ function buildStudentAttCal(info){
 function updateStdAttBadge(info){
   const badge=document.getElementById('stdAttOverallBadge'); if(!badge)return;
   const ek=eKey(info.email);
-  const subjs=getSubjectsForYear(info.yearOfStudy);
-  let totP=0,totD=0;
-  subjs.forEach(s=>{
-    const sk2=sKey(s.name);
-    const md=attendanceCache[ek]&&attendanceCache[ek][sk2]?attendanceCache[ek][sk2]:{};
-    const dates=Object.keys(md);
-    totD+=dates.length;
-    totP+=dates.filter(d=>md[d]==='P').length;
-  });
-  if(totD===0){badge.textContent='No data yet';return;}
-  const p=Math.round(totP/totD*100);
-  badge.textContent=p+'% Overall';
+  const md=attendanceCache[ek]||{};
+  const dates=Object.keys(md);
+  if(!dates.length){badge.textContent='No data yet';return;}
+  const totP=dates.filter(d=>md[d]==='P').length;
+  const p=Math.round(totP/dates.length*100);
+  badge.textContent=p+'% Attendance';
   badge.style.background=p>=75?'var(--sky)':p>=60?'var(--gold)':'#e53e3e';
 }
-function stdAttTab(subjName){
-  stdAttActiveSubj=subjName;
-  if(currentUserInfo) renderStudentAttendance(currentUserInfo);
-}
+// stdAttTab removed — single P/A per student now
 function stdAttNavMonth(dir){
   stdAttCalMonth+=dir;
   if(stdAttCalMonth>11){stdAttCalMonth=0;stdAttCalYear++;}
@@ -3254,6 +3235,28 @@ function stdAttNavMonth(dir){
 // FACULTY PORTAL
 // ═══════════════════════════════════════
 let facSylYear=1,facTTYear=1,facFacYear=1,facMarksYear=1,facAttYear=1;
+
+// ── Firebase write access check ──
+async function checkFirebaseWriteAccess(){
+  const testPath='/writeTest/'+Date.now();
+  const ok=await fbSet(testPath,'ok');
+  if(ok){
+    await fbDel(testPath);
+    // Remove any existing warning
+    const w=document.getElementById('fbWriteWarn');
+    if(w) w.remove();
+  } else {
+    // Show persistent red warning if not already shown
+    if(!document.getElementById('fbWriteWarn')){
+      const bar=document.createElement('div');
+      bar.id='fbWriteWarn';
+      bar.style.cssText='background:#c0392b;color:#fff;padding:0.6rem 1rem;font-size:0.78rem;font-weight:600;text-align:center;position:sticky;top:0;z-index:100;';
+      bar.innerHTML='🔒 Firebase Rules are blocking saves! Go to <strong>Security tab</strong> in this portal → copy the rules → paste in Firebase Console → Publish. Marks and attendance will NOT save until fixed.';
+      const facPortal=document.getElementById('facPortalOverlay');
+      if(facPortal) facPortal.insertBefore(bar, facPortal.firstChild);
+    }
+  }
+}
 
 async function openFacPortal(info,user){
   currentIsDev = !!(user && user.isDev);
@@ -3270,6 +3273,8 @@ async function openFacPortal(info,user){
   if(hpTabEl) hpTabEl.classList.toggle('dev-visible', currentIsDev);
   document.getElementById('facAvatar').textContent=info.init;
   document.getElementById('facWelcome').textContent='Welcome, '+info.name;
+  // Check Firebase write access immediately on portal open
+  checkFirebaseWriteAccess();
   // Clear stale caches so every portal entry fetches fresh Firebase data
   marksCache={};
   attendanceCache={};
@@ -3386,10 +3391,20 @@ async function loadSyllabusLessons(){
   [1,2,3].forEach(yr=>{
     (sylData[yr]||[]).forEach((subj,si)=>{
       const sk = sKey(subj.name);
-      if(data[yr] && data[yr][sk]){
-        subj.units.forEach((u,ui)=>{
+      if(data[yr]&&data[yr][sk]){
+        const saved = data[yr][sk];
+        (subj.units||[]).forEach((u,ui)=>{
           const uk = 'u'+ui;
-          if(data[yr][sk][uk]) sylData[yr][si].units[ui].lessons = data[yr][sk][uk];
+          if(saved[uk]){
+            // Support both old format (array) and new format (object with lessons/topics/name)
+            if(Array.isArray(saved[uk])){
+              sylData[yr][si].units[ui].lessons = saved[uk];
+            } else {
+              if(saved[uk].lessons) sylData[yr][si].units[ui].lessons = Array.isArray(saved[uk].lessons)?saved[uk].lessons:Object.values(saved[uk].lessons);
+              if(saved[uk].topics)  sylData[yr][si].units[ui].topics  = Array.isArray(saved[uk].topics)?saved[uk].topics:Object.values(saved[uk].topics);
+              if(saved[uk].name)    sylData[yr][si].units[ui].name    = saved[uk].name;
+            }
+          }
         });
       }
     });
@@ -3400,8 +3415,11 @@ async function saveSyllabusLessons(yr, si){
   const subj = sylData[yr][si];
   const sk = sKey(subj.name);
   const payload = {};
-  subj.units.forEach((u,ui)=>{ payload['u'+ui] = u.lessons||[]; });
-  await fbSet('/syllabusLessons/'+yr+'/'+sk, payload);
+  subj.units.forEach((u,ui)=>{
+    payload['u'+ui] = { lessons:u.lessons||[], topics:u.topics||[], name:u.name||'' };
+  });
+  const ok=await fbSet('/syllabusLessons/'+yr+'/'+sk, payload);
+  if(!ok) adminToast('❌ Lesson not saved — update Firebase Rules to ".write":true (Security tab)');
 }
 
 // ─────────────────────────────────────
@@ -3695,9 +3713,14 @@ async function saveStudentMarks(email){
     data[sKey(s.name)]={ia1:document.getElementById(eid+'_1')?.value.trim()||'',ia2:document.getElementById(eid+'_2')?.value.trim()||'',ia3:document.getElementById(eid+'_3')?.value.trim()||''};
   });
   marksCache[ek]=data;
-  await fbSet('/marks/'+ek, data);
-  adminToast('Marks saved! \u2705');
-  if(currentUserInfo&&currentUserInfo.email===email) renderStudentMarks(currentUserInfo);
+  adminToast('Saving…');
+  const ok=await fbSet('/marks/'+ek, data);
+  if(ok){
+    adminToast('Marks saved permanently! ✅');
+    if(currentUserInfo&&currentUserInfo.email.toLowerCase()===email.toLowerCase()) renderStudentMarks(currentUserInfo);
+  } else {
+    adminToast('❌ Marks not saved — update Firebase Rules to ".write":true (Security tab)');
+  }
 }
 
 // ═══════════════════════════════════════
@@ -3730,68 +3753,80 @@ async function renderAttAdmin(){
   updateTodayLabel();
   const yr=facAttYear;
   const students=getStudentsByYear(yr);
-  const subjs=getSubjectsForYear(yr);
   const el=document.getElementById('attAdminBody'); if(!el)return;
   const dp=document.getElementById('attDatePicker');
   const selDate=dp?dp.value:todayStr();
   if(!students.length){
-    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;background:#f0fff4;border:2px dashed #38a169;border-radius:8px;"><div style="font-size:2rem;margin-bottom:0.5rem;">📅</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">No Students in Database</div><div style="font-size:0.8rem;color:var(--muted);">Add students via the <strong>Users</strong> tab.</div></div>';
+    el.innerHTML='<div style="text-align:center;padding:2rem 1rem;background:#f0fff4;border:2px dashed #38a169;border-radius:8px;"><div style="font-size:2rem;margin-bottom:0.5rem;">&#128197;</div><div style="font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">No Students in Database</div><div style="font-size:0.8rem;color:var(--muted);">Add students via the <strong>Users</strong> tab.</div></div>';
     return;
   }
-  // Always fetch fresh attendance from Firebase
   await Promise.all(students.map(async u=>{
     const ek=eKey(u.email);
     const d=await fbGet('/attendance/'+ek);
     attendanceCache[ek]=d||{};
   }));
-  el.innerHTML=students.map(u=>{
-    const info=parseProfile(u.email,u.displayName);
-    const ek=eKey(u.email);
-    const myAtt=attendanceCache[ek]||{};
-    const subjBtns=subjs.map(s=>{
-      const sk2=sKey(s.name);
-      const cur=(myAtt[sk2]&&myAtt[sk2][selDate])||'';
+  const marked=students.filter(u=>(attendanceCache[eKey(u.email)]||{})[selDate]).length;
+  el.innerHTML=
+    '<div style="display:flex;gap:0.6rem;margin-bottom:1rem;align-items:center;flex-wrap:wrap;">'+
+    '<span style="font-size:0.8rem;color:var(--muted);">Mark all:</span>'+
+    '<button class="btn-save" style="padding:0.35rem 1rem;font-size:0.8rem;" onclick="markAllAtt(\''+selDate+'\',\'P\')">&#10003; All Present</button>'+
+    '<button style="padding:0.35rem 1rem;font-size:0.8rem;background:#fef2f2;color:#e53e3e;border:1px solid #fca5a5;border-radius:6px;cursor:pointer;" onclick="markAllAtt(\''+selDate+'\',\'A\')">&#10005; All Absent</button>'+
+    '<span style="margin-left:auto;font-size:0.78rem;color:var(--muted);">'+marked+'/'+students.length+' marked</span>'+
+    '</div>'+
+    students.map(u=>{
+      const info=parseProfile(u.email,u.displayName);
+      const ek=eKey(u.email);
+      const cur=(attendanceCache[ek]||{})[selDate]||'';
       const pOn=cur==='P', aOn=cur==='A';
-      return`<div class="att-subj-item">
-        <span class="att-subj-name-sm" title="${s.name}">${s.name.split(' ').slice(0,3).join(' ')}</span>
-        <button class="att-tog-btn ${pOn?'on-p':'off'}" onclick="toggleAtt('${u.email}','${s.name}','${selDate}','P',this)">P</button>
-        <button class="att-tog-btn ${aOn?'on-a':'off'}" onclick="toggleAtt('${u.email}','${s.name}','${selDate}','A',this)">A</button>
-      </div>`;
+      const bg=pOn?'#f0fff4':aOn?'#fff5f5':'#fff';
+      const safeEmail=u.email.replace(/'/g,"\\'");
+      return '<div class="att-stu-card" style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 1rem;margin-bottom:0.5rem;border-radius:8px;border:1px solid var(--border);background:'+bg+';">'+
+        '<div>'+
+        '<div style="font-size:0.84rem;font-weight:700;color:var(--navy);">&#127891; '+info.name+'</div>'+
+        '<div style="font-size:0.74rem;color:var(--muted);">'+info.reg+'</div>'+
+        '</div>'+
+        '<div style="display:flex;gap:0.5rem;align-items:center;">'+
+        '<button class="att-tog-btn '+(pOn?'on-p':'off')+'" onclick="toggleAtt(\''+safeEmail+'\',\''+selDate+'\',\'P\',this)">P</button>'+
+        '<button class="att-tog-btn '+(aOn?'on-a':'off')+'" onclick="toggleAtt(\''+safeEmail+'\',\''+selDate+'\',\'A\',this)">A</button>'+
+        '</div></div>';
     }).join('');
-    // Quick stats for this student today summary
-    const markedToday=subjs.filter(s=>{const sk2=sKey(s.name);return myAtt[sk2]&&myAtt[sk2][selDate];}).length;
-    return`<div class="att-stu-card"><div class="att-stu-card-head"><span class="att-stu-card-name">\uD83C\uDF93 ${info.name}</span><span class="att-stu-card-reg">${info.reg} &nbsp;·&nbsp; <span style="color:${markedToday===subjs.length&&subjs.length>0?'#48bb78':markedToday>0?'var(--gold)':'#aaa'}">${markedToday}/${subjs.length} marked</span></span></div><div class="att-subj-grid">${subjBtns}</div></div>`;
-  }).join('');
 }
-async function toggleAtt(email,subjName,date,status,btn){
-  const ek=eKey(email), sk2=sKey(subjName);
+async function markAllAtt(date,status){
+  const students=getStudentsByYear(facAttYear);
+  adminToast('Saving…');
+  await Promise.all(students.map(async u=>{
+    const ek=eKey(u.email);
+    if(!attendanceCache[ek]) attendanceCache[ek]={};
+    attendanceCache[ek][date]=status;
+    await fbSet('/attendance/'+ek+'/'+date, status);
+  }));
+  adminToast('All marked '+status+' ✅');
+  renderAttAdmin();
+}
+async function toggleAtt(email,date,status,btn){
+  const ek=eKey(email);
   if(!attendanceCache[ek]) attendanceCache[ek]={};
-  if(!attendanceCache[ek][sk2]) attendanceCache[ek][sk2]={};
-  const cur=attendanceCache[ek][sk2][date];
-  const newVal=(cur===status)?null:status; // toggle off if same
-  // Update UI immediately
+  const cur=attendanceCache[ek][date];
+  const newVal=(cur===status)?null:status;
   const card=btn.closest('.att-stu-card');
   if(card){
-    const allBtns=btn.parentElement.querySelectorAll('.att-tog-btn');
-    allBtns.forEach(b=>b.className='att-tog-btn off');
+    btn.parentElement.querySelectorAll('.att-tog-btn').forEach(b=>b.className='att-tog-btn off');
     if(newVal) btn.className='att-tog-btn '+(newVal==='P'?'on-p':'on-a');
+    card.style.background=newVal==='P'?'#f0fff4':newVal==='A'?'#fff5f5':'#fff';
   }
-  // Save to Firebase
   fbSaving(true);
-  if(newVal){ attendanceCache[ek][sk2][date]=newVal; await fbSet('/attendance/'+ek+'/'+sk2+'/'+date, newVal); }
-  else { delete attendanceCache[ek][sk2][date]; await fbDel('/attendance/'+ek+'/'+sk2+'/'+date); }
-  fbSaving(false);
-  // Update marked count
-  const subjs=getSubjectsForYear(facAttYear);
-  const myAtt=attendanceCache[ek];
-  const markedToday=subjs.filter(s=>{const sk2b=sKey(s.name);return myAtt[sk2b]&&myAtt[sk2b][date];}).length;
-  const regEl=card?card.querySelector('.att-stu-card-reg'):null;
-  if(regEl){
-    const reg=regEl.textContent.split('·')[0].trim();
-    regEl.innerHTML=`${reg} &nbsp;·&nbsp; <span style="color:${markedToday===subjs.length&&subjs.length>0?'#48bb78':markedToday>0?'var(--gold)':'#aaa'}">${markedToday}/${subjs.length} marked</span>`;
+  let attOk;
+  if(newVal){
+    attendanceCache[ek][date]=newVal;
+    attOk=await fbSet('/attendance/'+ek+'/'+date, newVal);
+  } else {
+    delete attendanceCache[ek][date];
+    await fbDel('/attendance/'+ek+'/'+date);
+    attOk=true;
   }
-  // Live update student if they're viewing
-  if(currentUserInfo&&currentUserInfo.email===email.toLowerCase()) renderStudentAttendance(currentUserInfo);
+  fbSaving(false);
+  if(!attOk) adminToast('❌ Not saved — update Firebase Rules (Security tab)');
+  if(currentUserInfo&&currentUserInfo.email.toLowerCase()===email.toLowerCase()) renderStudentAttendance(currentUserInfo);
 }
 
 // ═══════════════════════════════════════
@@ -3944,7 +3979,7 @@ window.selectTTYear=selectTTYear; window.saveTimetable=saveTimetable;
 window.selectFacYear=selectFacYear; window.editFac=editFac; window.deleteFac=deleteFac; window.addFac=addFac;
 window.selectMarksYear=selectMarksYear; window.saveStudentMarks=saveStudentMarks;
 window.selectAttYear=selectAttYear; window.setAttToday=setAttToday; window.renderAttAdmin=renderAttAdmin; window.toggleAtt=toggleAtt;
-window.stdAttTab=stdAttTab; window.stdAttNavMonth=stdAttNavMonth;
+window.stdAttNavMonth=stdAttNavMonth;
 window.addNewUser=addNewUser; window.deleteUser=deleteUser;
 window.switchToDevPortal=switchToDevPortal; window.switchToStudentPortal=switchToStudentPortal;
 
