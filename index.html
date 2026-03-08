@@ -3083,12 +3083,16 @@ async function openPortal(info,user){
     const sl=document.getElementById('sylSoonLabel'); if(sl)sl.textContent=info.yearLabel;
   }
 
+  // Reload syllabus lessons so student sees latest faculty updates
+  await loadSyllabusLessons();
   renderStudentSyllabus(info);
   renderStudentFlash(); renderStudentNotifs();
-  renderStudentMarks(info);
+  renderStudentMarks(info);  // always does fresh fbGet internally
 
   // Load attendance from Firebase then render
   const ek=eKey(info.email);
+  // Always fetch fresh — don't use stale cache from a previous session
+  attendanceCache[ek]={};
   const attData=await fbGet('/attendance/'+ek);
   if(attData&&typeof attData==='object') attendanceCache[ek]=attData;
   stdAttCalMonth=new Date().getMonth();
@@ -3266,7 +3270,13 @@ async function openFacPortal(info,user){
   if(hpTabEl) hpTabEl.classList.toggle('dev-visible', currentIsDev);
   document.getElementById('facAvatar').textContent=info.init;
   document.getElementById('facWelcome').textContent='Welcome, '+info.name;
-  await loadCoreData();
+  // Clear stale caches so every portal entry fetches fresh Firebase data
+  marksCache={};
+  attendanceCache={};
+
+  await loadCoreData();               // flash, notifications, timetable, faculty
+  await loadSyllabusLessons();        // always reload lessons on portal entry
+
   renderFacFlash();
   if(currentIsDev) renderHpEditor(); renderFacFlashList(); renderFacNotifList();
   selectSylYear(1,document.querySelector('#ap-syllabus .year-btn'));
@@ -3657,11 +3667,12 @@ async function renderMarksAdmin(){
     return;
   }
   el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted);font-size:0.82rem;">Loading marks data…</div>';
-  // Load all marks for this year's students from Firebase
-  for(const u of students){
+  // Always fetch fresh marks from Firebase
+  await Promise.all(students.map(async u=>{
     const ek=eKey(u.email);
-    if(!marksCache[ek]){ const d=await fbGet('/marks/'+ek); marksCache[ek]=d||{}; }
-  }
+    const d=await fbGet('/marks/'+ek);
+    marksCache[ek]=d||{};
+  }));
   el.innerHTML=students.map(u=>{
     const info=parseProfile(u.email,u.displayName);
     const ek=eKey(u.email);
@@ -3727,11 +3738,12 @@ async function renderAttAdmin(){
     el.innerHTML='<div style="text-align:center;padding:2rem 1rem;background:#f0fff4;border:2px dashed #38a169;border-radius:8px;"><div style="font-size:2rem;margin-bottom:0.5rem;">📅</div><div style="font-family:\'Merriweather\',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">No Students in Database</div><div style="font-size:0.8rem;color:var(--muted);">Add students via the <strong>Users</strong> tab.</div></div>';
     return;
   }
-  // Load attendance cache for all students
-  for(const u of students){
+  // Always fetch fresh attendance from Firebase
+  await Promise.all(students.map(async u=>{
     const ek=eKey(u.email);
-    if(!attendanceCache[ek]){ const d=await fbGet('/attendance/'+ek); attendanceCache[ek]=d||{}; }
-  }
+    const d=await fbGet('/attendance/'+ek);
+    attendanceCache[ek]=d||{};
+  }));
   el.innerHTML=students.map(u=>{
     const info=parseProfile(u.email,u.displayName);
     const ek=eKey(u.email);
