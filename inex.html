@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-W8NNBBH2');</script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TQPF3VTP');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Department of Bio-Technology | Nandha Arts & Science College (Autonomous)</title>
@@ -1327,7 +1327,7 @@ img{max-width:100%;}
 </head>
 <body>
 <!-- GTM noscript -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W8NNBBH2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TQPF3VTP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- ══ TOPBAR ══ -->
 <div class="topbar">
@@ -2006,7 +2006,7 @@ img{max-width:100%;}
       <button class="admin-tab" onclick="showAdminTab('marks',this)">📊 Int. Marks</button>
       <button class="admin-tab" onclick="showAdminTab('attendance',this)">✅ Attendance</button>
       <button class="admin-tab" onclick="showAdminTab('users',this)">👤 Users</button>
-      <button class="admin-tab" onclick="showAdminTab('progress',this)">📈 Progress</button>
+      <button class="admin-tab" id="progressTabBtn" onclick="showAdminTab('progress',this)">📈 Progress</button>
       <button class="admin-tab hp-dev-tab" id="hpTab" onclick="showAdminTab('homepage',this)">🏠 Homepage</button>
       <button class="admin-tab hp-dev-tab" id="staffTab" onclick="showAdminTab('staffmgmt',this)">👨‍💼 Staff</button>
       <button class="admin-tab" id="calTab" onclick="showAdminTab('calendar',this)">📆 Calendar</button>
@@ -2257,6 +2257,9 @@ img{max-width:100%;}
           <span style="font-size:0.72rem;color:var(--muted);">Lesson completion · Quiz scores · Answers</span>
         </div>
         <div class="admin-card-body">
+          <div id="progHodBanner" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:0.5rem 0.9rem;font-size:0.78rem;color:#1e40af;margin-bottom:0.7rem;">
+            👑 HOD / Developer View — You can see all students across all years.
+          </div>
           <div style="display:flex;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
             <button class="year-btn active" onclick="selectProgYear(1,this)">I Year</button>
             <button class="year-btn" onclick="selectProgYear(2,this)">II Year</button>
@@ -3361,9 +3364,14 @@ async function testFbConnection(){
   FB_ONLINE=false; showFbBanner('offline');
 }
 
+// ── Firebase path encoder: encodes each segment for safe URLs ──
+function fbPath(path){
+  // path like "/syllabusLessons/2/Tamil" → each segment URL-encoded
+  return path.split('/').map(seg => seg==='' ? '' : encodeURIComponent(seg)).join('/');
+}
 async function fbGet(path){
   try{
-    const r=await fetch(DB+path+'.json?ts='+Date.now());
+    const r=await fetch(DB+fbPath(path)+'.json?ts='+Date.now());
     if(!r.ok) return null;
     const data=await r.json();
     if(!FB_ONLINE){FB_ONLINE=true;showFbBanner('online');}
@@ -3377,7 +3385,7 @@ async function fbGet(path){
 
 async function fbPush(path,data){
   try{
-    const r=await fetch(DB+path+'.json',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json'}});
+    const r=await fetch(DB+fbPath(path)+'.json',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json'}});
     if(!r.ok) return null;
     return await r.json();
   }catch(e){ return null; }
@@ -3385,7 +3393,7 @@ async function fbPush(path,data){
 
 async function fbSet(path,data){
   try{
-    const r=await fetch(DB+path+'.json',{method:'PUT',body:JSON.stringify(data),headers:{'Content-Type':'application/json'}});
+    const r=await fetch(DB+fbPath(path)+'.json',{method:'PUT',body:JSON.stringify(data),headers:{'Content-Type':'application/json'}});
     if(!r.ok){ console.warn('[fbSet fail]',path,r.status); return null; }
     if(!FB_ONLINE){ FB_ONLINE=true; showFbBanner('online'); }
     return await r.json();
@@ -3394,7 +3402,7 @@ async function fbSet(path,data){
 
 async function fbDel(path){
   try{
-    const r=await fetch(DB+path+'.json',{method:'DELETE'});
+    const r=await fetch(DB+fbPath(path)+'.json',{method:'DELETE'});
     if(!r.ok) return null;
     if(!FB_ONLINE){ FB_ONLINE=true; showFbBanner('online'); }
     return true;
@@ -3994,6 +4002,30 @@ async function openFacPortal(info,user){
   selectMarksYear(1,document.querySelector('#ap-marks .year-btn'));
   selectAttYear(1,document.querySelector('#ap-attendance .year-btn'));
   renderUserList();
+  // Ensure staffRoles loaded for HOD detection
+  await loadStaffRoles();
+
+  // Auto-set year tabs to faculty's assigned year (unless HOD/dev)
+  if(!canViewAllProgress()){
+    const assignedYr = getFacAssignedYear();
+    if(assignedYr){
+      facProgYear = assignedYr;
+      facMarksYear = assignedYr;
+      facAttYear = assignedYr;
+      facSylYear = assignedYr;
+      // Sync year-btn active states across all panels
+      ['#ap-progress','#ap-marks','#ap-attendance','#ap-syllabus'].forEach(panel=>{
+        document.querySelectorAll(panel+' .year-btn').forEach((b,i)=>{
+          b.classList.toggle('active', i+1===assignedYr);
+        });
+      });
+    }
+  }
+
+  // HOD banner
+  const progBannerEl = document.getElementById('progHodBanner');
+  if(progBannerEl) progBannerEl.style.display = canViewAllProgress() ? 'block' : 'none';
+
   // Notify dev of Firebase status
   setTimeout(()=>{
     if(!FB_ONLINE) adminToast('⚠️ Firebase unreachable — saves will retry when reconnected. Check rules.');
@@ -4159,7 +4191,10 @@ function renderSylAdmin(){
   const addBtn = document.getElementById('sylAddSubjectBtn');
   if(addBtn) addBtn.style.display = currentIsDev ? '' : 'none';
 
+  // Filter subjects — regular faculty only sees assigned subjects
+  const _facSubjIds = (!currentIsDev && !isHod()) ? new Set(getFacSubjectsForYear(yr).map(s=>s.id)) : null;
   document.getElementById('sylAdminBody').innerHTML = syl.map((s,si)=>{
+    if(_facSubjIds && !_facSubjIds.has(s.id)) return ''; // skip unassigned
     const typeBadge = `<span class="subj-type-badge subj-type-${s.type||'theory'}">${(s.type||'theory').toUpperCase()}</span>`;
 
     const unitsHTML = s.units.map((u,ui)=>{
@@ -4357,14 +4392,105 @@ async function saveTimetable(){
 // ── Faculty Subject Admin ──
 function selectFacYear(yr,btn){ facFacYear=yr; document.querySelectorAll('#ap-faculty .year-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); renderFacAdmin(); }
 function renderFacAdmin(){
-  const yr=facFacYear,data=facData[yr],yname=['I','II','III'][yr-1];
-  document.getElementById('facAdminTitle').textContent=yname+' Year \u2014 Subject Faculty';
-  document.getElementById('facAdminBody').innerHTML=data.map((row,i)=>`<div class="admin-list-row" style="margin-bottom:0.5rem;"><div style="flex:1;"><div style="font-size:0.82rem;font-weight:700;color:var(--navy);">${row.subject}</div><div style="font-size:0.76rem;color:var(--muted);">${row.faculty}</div></div><div class="admin-list-actions"><button class="btn-edit" onclick="editFac(${i})">&#9998; Edit</button><button class="btn-del" onclick="deleteFac(${i})">Delete</button></div></div>`).join('')
-    +`<div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1rem;padding-top:0.8rem;border-top:1px solid var(--border);"><input class="admin-input" id="nfs" placeholder="Subject name" style="flex:1;min-width:140px;"><input class="admin-input" id="nff" placeholder="Faculty name" style="flex:1;min-width:140px;"><button class="btn-add" onclick="addFac()">+ Add</button></div>`;
+  const yr=facFacYear, data=facData[yr], yname=["I","II","III"][yr-1];
+  const canEdit = currentIsDev || isHod();
+  document.getElementById("facAdminTitle").textContent = yname+" Year — Subject Faculty Assignments";
+  const facUsers = getAllUsers().filter(u=>u.role==="faculty"||u.isDev);
+
+  const rows = data.map((row,i)=>{
+    const nameDisp = row.facultyName||row.faculty||"—";
+    const emailDisp = row.facultyEmail ? `<span style="margin-left:5px;color:#9ca3af;">(${row.facultyEmail})</span>` : "";
+    const actions = canEdit
+      ? `<div class="admin-list-actions"><button class="btn-edit" onclick="editFac(${i})">&#9998;</button><button class="btn-del" onclick="deleteFac(${i})">&#10005;</button></div>`
+      : "";
+    return `<div class="admin-list-row" style="margin-bottom:0.6rem;align-items:flex-start;">
+      <div style="flex:1;">
+        <div style="font-size:0.84rem;font-weight:700;color:var(--navy);">${row.subject}</div>
+        <div style="font-size:0.75rem;color:#6b7280;margin-top:2px;">&#128100; ${nameDisp}${emailDisp}</div>
+      </div>${actions}</div>`;
+  }).join("");
+
+  const opts = facUsers.map(u=>{
+    const label = (u.displayName||(u.email.split(".")[1]||"").split("@")[0]||u.email)+" ("+u.email+")";
+    return `<option value="${u.email}">${label}</option>`;
+  }).join("");
+
+  const addForm = canEdit
+    ? `<div style="border-top:2px solid var(--border);margin-top:1rem;padding-top:1rem;">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--navy);margin-bottom:0.6rem;">&#10133; Assign Subject to Faculty</div>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+          <input class="admin-input" id="nfs" placeholder="Subject name" style="flex:2;min-width:160px;">
+          <select id="nff" class="admin-input" style="flex:2;min-width:200px;cursor:pointer;">
+            <option value="">— Select Faculty —</option>${opts}
+          </select>
+          <button class="btn-add" onclick="addFac()" style="white-space:nowrap;">+ Assign</button>
+        </div>
+      </div>`
+    : `<div style="margin-top:0.8rem;padding:0.5rem 0.9rem;background:#fffbf0;border:1px solid #fde68a;border-radius:7px;font-size:0.76rem;color:#92400e;">
+        &#128081; Only the HOD or Developer can modify faculty subject assignments.
+      </div>`;
+
+  document.getElementById("facAdminBody").innerHTML =
+    (data.length ? rows : "<div style=\"color:var(--muted);font-size:0.82rem;padding:0.5rem 0;\">No assignments yet.</div>")
+    + addForm;
 }
-async function editFac(i){ const s=prompt('Subject:',facData[facFacYear][i].subject); if(s===null)return; const f=prompt('Faculty:',facData[facFacYear][i].faculty); if(f===null)return; facData[facFacYear][i].subject=s.trim(); facData[facFacYear][i].faculty=f.trim(); renderFacAdmin(); const ok=await fbSet('/facAssignments',facData); adminToast(ok?'Faculty updated permanently! ✅':'Updated locally (Firebase offline).'); }
+async function editFac(i){
+  if(!(currentIsDev||isHod())){adminToast('Only HOD or Developer can edit assignments.');return;}
+  const row=facData[facFacYear][i];
+  const facUsers=getAllUsers().filter(u=>u.role==='faculty'||u.isDev);
+  const opts=facUsers.map(u=>{
+    const lbl=(u.displayName||(u.email.split('.')[1]||'').split('@')[0]||u.email)+' ('+u.email+')';
+    const sel=(u.email===(row.facultyEmail||''))?'selected':'';
+    return `<option value="${u.email}" ${sel}>${lbl}</option>`;
+  }).join('');
+  const el=document.createElement('div');
+  el.innerHTML=`<div style="position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;padding:1rem;">
+    <div style="background:#fff;border-radius:12px;padding:1.5rem;width:100%;max-width:440px;box-shadow:0 16px 48px rgba(0,0,0,0.3);">
+      <div style="font-family:'Merriweather',serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:1rem;">&#9998; Edit Assignment</div>
+      <label style="font-size:0.78rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Subject</label>
+      <input id="_editFacSubj" class="admin-input" value="${row.subject}" style="width:100%;box-sizing:border-box;margin-bottom:0.8rem;">
+      <label style="font-size:0.78rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Faculty</label>
+      <select id="_editFacEmail" class="admin-input" style="width:100%;box-sizing:border-box;cursor:pointer;">
+        <option value="">— Select Faculty —</option>${opts}
+      </select>
+      <div style="display:flex;gap:0.6rem;justify-content:flex-end;margin-top:1.2rem;">
+        <button onclick="this.closest('div[style*=fixed]').remove()" style="background:#e8edf2;border:none;border-radius:7px;padding:0.45rem 1.2rem;cursor:pointer;font-size:0.85rem;">Cancel</button>
+        <button id="_editFacSaveBtn" style="background:var(--gold);color:#fff;border:none;border-radius:7px;padding:0.45rem 1.4rem;cursor:pointer;font-size:0.85rem;font-weight:700;">Save</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(el);
+  document.getElementById('_editFacSaveBtn').onclick=async function(){
+    const ns=document.getElementById('_editFacSubj').value.trim();
+    const selEl=document.getElementById('_editFacEmail');
+    const ne=selEl.value.trim();
+    if(!ns||!ne){adminToast('Fill in all fields.');return;}
+    const nn=selEl.options[selEl.selectedIndex].text.split(' (')[0].trim();
+    facData[facFacYear][i]={subject:ns,facultyEmail:ne,facultyName:nn,faculty:nn};
+    el.remove();
+    renderFacAdmin();
+    const ok=await fbSet('/facAssignments',facData);
+    adminToast(ok?'Assignment updated! ✅':'Updated locally (Firebase offline).');
+  };
+}
 async function deleteFac(i){ if(!confirm('Delete?'))return; facData[facFacYear].splice(i,1); renderFacAdmin(); const ok=await fbSet('/facAssignments',facData); adminToast(ok?'Deleted permanently! ✅':'Deleted locally (Firebase offline).'); }
-async function addFac(){ const s=document.getElementById('nfs')?.value.trim(),f=document.getElementById('nff')?.value.trim(); if(!s||!f){adminToast('Enter subject and faculty name.');return;} facData[facFacYear].push({subject:s,faculty:f}); document.getElementById('nfs').value=''; document.getElementById('nff').value=''; renderFacAdmin(); const ok=await fbSet('/facAssignments',facData); adminToast(ok?'Faculty saved permanently! ✅':'Saved locally (Firebase offline).'); }
+
+async function addFac(){
+  if(!(currentIsDev||isHod())){adminToast('Only HOD or Developer can assign subjects.');return;}
+  const s=document.getElementById('nfs')?.value.trim();
+  const selEl=document.getElementById('nff');
+  const email=selEl?.value?.trim();
+  if(!s||!email){adminToast('Enter subject name and select a faculty member.');return;}
+  const selText=selEl.options[selEl.selectedIndex]?.text||'';
+  const facultyName=selText.split(' (')[0].trim();
+  facData[facFacYear].push({subject:s, facultyEmail:email, facultyName:facultyName, faculty:facultyName});
+  document.getElementById('nfs').value='';
+  selEl.value='';
+  renderFacAdmin();
+  const ok=await fbSet('/facAssignments',facData);
+  adminToast(ok?'Assignment saved! ✅':'Saved locally (Firebase offline).');
+}
+
 
 // ═══════════════════════════════════════
 // INTERNAL MARKS — FACULTY PANEL
@@ -4373,18 +4499,30 @@ async function addFac(){ const s=document.getElementById('nfs')?.value.trim(),f=
 function selectMarksYear(yr,btn){ facMarksYear=yr; document.querySelectorAll('#ap-marks .year-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); document.getElementById('marksAdminTitle').textContent=['I','II','III'][yr-1]+' Year \u2014 Internal Marks'; renderMarksAdmin(); }
 
 function getFacSubjectsForYear(yr){
-  // Returns subjects filtered to only those assigned to the current faculty.
-  // Developer always sees all subjects.
+  // Developer or HOD sees everything
   const allSubjs = getSubjectsForYear(yr);
-  if(currentIsDev || !currentFacEmail) return allSubjs;
+  if(currentIsDev || isHod() || !currentFacEmail) return allSubjs;
   const assignments = facData[yr]||[];
-  const myAssignments = assignments
-    .filter(a=>a.faculty && a.faculty.toLowerCase().includes(
-      currentFacEmail.split('.')[1]?.split('@')[0]||''
-    ))
-    .map(a=>a.subject.trim().toLowerCase());
-  if(!myAssignments.length) return allSubjs; // fallback: show all if no mapping found
-  return allSubjs.filter(s=>myAssignments.some(m=>s.name.toLowerCase().includes(m)||m.includes(s.name.toLowerCase().substring(0,8))));
+  // Primary: match by stored facultyEmail (new format)
+  const byEmail = assignments.filter(a=>
+    a.facultyEmail && a.facultyEmail.toLowerCase()===currentFacEmail.toLowerCase()
+  ).map(a=>a.subject.trim().toLowerCase());
+  if(byEmail.length){
+    return allSubjs.filter(s=>byEmail.some(m=>
+      s.name.toLowerCase().includes(m)||m.includes(s.name.toLowerCase().substring(0,6))
+    ));
+  }
+  // Fallback: old name-based matching (legacy data)
+  const namePart = (currentFacEmail.split('.')[1]||'').split('@')[0].toLowerCase();
+  const byName = assignments.filter(a=>a.faculty && namePart &&
+    a.faculty.toLowerCase().includes(namePart)
+  ).map(a=>a.subject.trim().toLowerCase());
+  if(byName.length){
+    return allSubjs.filter(s=>byName.some(m=>
+      s.name.toLowerCase().includes(m)||m.includes(s.name.toLowerCase().substring(0,6))
+    ));
+  }
+  return allSubjs; // no assignment found — show all as safe fallback
 }
 
 async function renderMarksAdmin(){
@@ -4398,9 +4536,10 @@ async function renderMarksAdmin(){
     return;
   }
   // Show filter banner
-  const filterNote = !currentIsDev
-    ? `<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:0.55rem 0.9rem;font-size:0.78rem;color:#1e40af;margin-bottom:0.9rem;">📌 Showing subjects assigned to you. <button onclick="renderMarksAdminAll()" style="background:none;border:none;color:var(--sky);font-size:0.78rem;cursor:pointer;text-decoration:underline;">View all subjects</button></div>`
-    : `<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:0.55rem 0.9rem;font-size:0.78rem;color:#166534;margin-bottom:0.9rem;">🛠 Developer view — all subjects visible.</div>`;
+  const isPrivMarks = currentIsDev || isHod();
+  const filterNote = !isPrivMarks
+    ? `<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:0.55rem 0.9rem;font-size:0.78rem;color:#1e40af;margin-bottom:0.9rem;">&#128204; Showing only your assigned subjects: <strong>${mySubjs.map(s=>s.name).join(', ')||'All'}</strong></div>`
+    : `<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:0.55rem 0.9rem;font-size:0.78rem;color:#166534;margin-bottom:0.9rem;">&#128736; ${isHod()?'HOD':'Developer'} view — all subjects visible.</div>`;
   el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted);font-size:0.82rem;">Loading marks data…</div>';
   await Promise.all(students.map(async u=>{
     const ek=eKey(u.email);
@@ -4409,7 +4548,7 @@ async function renderMarksAdmin(){
       marksCache[ek]=d||{};
     }
   }));
-  const useSubjs = mySubjs.length ? mySubjs : allSubjs;
+  const useSubjs = mySubjs; // getFacSubjectsForYear already returns all for HOD/Dev
   el.innerHTML= filterNote + students.map(u=>{
     const info=parseProfile(u.email,u.displayName);
     const ek=eKey(u.email);
@@ -4644,26 +4783,62 @@ async function deleteUser(i){
   renderUserList(); renderMarksAdmin(); renderAttAdmin(); adminToast('User removed.');
 }
 function renderUserList(){
-  const all=getAllUsers();
-  const el=document.getElementById('userListBody'); if(!el)return;
-  const lbl=document.getElementById('userCountLabel'); if(lbl)lbl.textContent=all.length+' user'+(all.length!==1?'s':'');
-  el.innerHTML=all.map((u,i)=>{
-    const info=parseProfile(u.email,u.displayName);
-    const yr=['I','II','III'][info.yearOfStudy-1]||'';
-    return`<div class="admin-list-row" style="flex-wrap:wrap;gap:0.3rem;">
+  const all = getAllUsers();
+  const el = document.getElementById('userListBody'); if(!el) return;
+  const lbl = document.getElementById('userCountLabel');
+  if(lbl) lbl.textContent = all.length + ' user' + (all.length!==1?'s':'');
+
+  // Separate into groups
+  const faculty  = all.filter(u=>u.role==='faculty'||u.isDev);
+  const yr1      = all.filter(u=>u.role==='student' && parseProfile(u.email,u.displayName).yearOfStudy===1);
+  const yr2      = all.filter(u=>u.role==='student' && parseProfile(u.email,u.displayName).yearOfStudy===2);
+  const yr3      = all.filter(u=>u.role==='student' && parseProfile(u.email,u.displayName).yearOfStudy===3);
+
+  function userRow(u){
+    const info = parseProfile(u.email, u.displayName);
+    const globalIdx = all.indexOf(u);
+    const isBuiltIn = globalIdx < BASE_USERS.length;
+    const extraIdx  = globalIdx - BASE_USERS.length;
+    const yrColors  = ['#3b82f6','#0ea5e9','#06b6d4'];
+    const yrColor   = yrColors[(info.yearOfStudy||1)-1];
+    return `<div class="admin-list-row" style="flex-wrap:wrap;gap:0.3rem;padding:0.55rem 0.7rem;">
       <span class="admin-list-text" style="flex:1;min-width:200px;">
-        <strong>${u.role==='faculty'?'\uD83D\uDC68\u200D\uD83C\uDFEB':'\uD83C\uDF93'} ${info.name}</strong>
-        <span style="font-size:0.72rem;color:var(--muted);"> — ${u.email}</span><br>
-        <code style="font-size:0.68rem;">${u.role}</code>
-        ${u.role==='student'&&yr?`<span style="font-size:0.68rem;color:var(--sky);margin-left:0.3rem;">${yr} Year</span>`:''}
-        ${u.isDev?'<span style="font-size:0.68rem;color:var(--gold);margin-left:0.3rem;">⭐ Developer</span>':''}
-        <span style="font-size:0.68rem;color:#68d391;margin-left:0.3rem;">🔒 hashed</span>
-        ${i<BASE_USERS.length?'<span style="font-size:0.67rem;color:var(--muted);margin-left:0.3rem;">(built-in)</span>':''}
-        <span style="font-size:0.67rem;color:#48bb78;margin-left:0.3rem;">✓ permanent</span>
+        <span style="font-size:0.84rem;font-weight:700;color:var(--navy);">${u.role==='faculty'?'&#128104;&#8205;&#127979;':'&#127891;'} ${info.name}</span>
+        ${u.isDev?'<span style="font-size:0.67rem;background:#fef3c7;color:#92400e;border-radius:3px;padding:1px 5px;margin-left:4px;font-weight:700;">&#11088; Dev</span>':''}
+        <br>
+        <span style="font-size:0.73rem;color:var(--muted);">${u.email}</span>
+        <span style="font-size:0.67rem;background:#e0f2fe;color:var(--sky);border-radius:3px;padding:1px 5px;margin-left:5px;">${u.role==='faculty'?'Faculty':'Student'}</span>
+        ${u.role==='student'?`<span style="font-size:0.67rem;background:${yrColor}22;color:${yrColor};border-radius:3px;padding:1px 5px;margin-left:3px;font-weight:700;">${['I','II','III'][(info.yearOfStudy||1)-1]} Year</span>`:''}
+        ${isBuiltIn?'<span style="font-size:0.66rem;color:#aaa;margin-left:4px;">(built-in)</span>':'<span style="font-size:0.66rem;color:#48bb78;margin-left:4px;">&#10003; saved</span>'}
       </span>
-      ${i>=BASE_USERS.length?`<div class="admin-list-actions"><button class="btn-del" onclick="deleteUser(${i-BASE_USERS.length})">Remove</button></div>`:''}
+      ${!isBuiltIn?`<div class="admin-list-actions"><button class="btn-del" onclick="deleteUser(${extraIdx})">Remove</button></div>`:''}
     </div>`;
-  }).join('');
+  }
+
+  function section(title, color, icon, users){
+    if(!users.length) return `<div style="margin-bottom:1.2rem;">
+      <div style="display:flex;align-items:center;gap:0.5rem;padding:0.45rem 0.7rem;background:${color}18;border-left:3px solid ${color};border-radius:0 6px 6px 0;margin-bottom:0.5rem;">
+        <span style="font-size:0.8rem;font-weight:700;color:${color};">${icon} ${title}</span>
+        <span style="font-size:0.7rem;color:var(--muted);margin-left:auto;">0 users</span>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);padding:0.4rem 0.7rem;">No users in this group yet.</div>
+    </div>`;
+    return `<div style="margin-bottom:1.4rem;">
+      <div style="display:flex;align-items:center;gap:0.5rem;padding:0.45rem 0.7rem;background:${color}18;border-left:3px solid ${color};border-radius:0 6px 6px 0;margin-bottom:0.5rem;">
+        <span style="font-size:0.8rem;font-weight:700;color:${color};">${icon} ${title}</span>
+        <span style="font-size:0.7rem;background:${color}22;color:${color};border-radius:10px;padding:1px 8px;margin-left:auto;font-weight:700;">${users.length}</span>
+      </div>
+      <div style="border:1px solid #e8edf2;border-radius:8px;overflow:hidden;">
+        ${users.map(u=>userRow(u)).join('<div style="height:1px;background:#f1f5f9;"></div>')}
+      </div>
+    </div>`;
+  }
+
+  el.innerHTML =
+    section('Faculty & Staff', '#c9882a', '&#128104;&#8205;&#127979;', faculty) +
+    section('I Year Students', '#3b82f6', '&#127891;', yr1) +
+    section('II Year Students', '#0ea5e9', '&#127891;', yr2) +
+    section('III Year Students', '#06b6d4', '&#127891;', yr3);
 }
 
 // ── Admin Toast ──
@@ -5197,6 +5372,26 @@ async function loadLessonQuestions(yr, si, ui, ti, li, type){
   questionsCache[path] = qs;
   return qs.length ? qs : null;
 }
+
+// ── HOD Permission ──
+
+// Returns array of years [1,2,3] where current faculty has subject assignments
+function getAssignedYearsForFaculty(){
+  if(currentIsDev || isHod()) return [1,2,3];
+  const assigned = [];
+  [1,2,3].forEach(yr=>{
+    const rows = facData[yr]||[];
+    const namePart = (currentFacEmail.split('.')[1]||'').split('@')[0].toLowerCase();
+    const found = rows.some(a=>a.faculty && namePart && a.faculty.toLowerCase().includes(namePart));
+    if(found) assigned.push(yr);
+  });
+  return assigned.length ? assigned : [1,2,3]; // fallback all years if no match
+}
+
+function isHod(){
+  return !!(staffRoles.hod && staffRoles.hod.toLowerCase()===currentFacEmail.toLowerCase());
+}
+function canViewAllProgress(){ return currentIsDev || isHod(); }
 
 // ── EXPOSE TO WINDOW ──
 window.toggleNav=toggleNav; window.openLogin=openLogin; window.closeLogin=closeLogin;
@@ -6250,70 +6445,9 @@ Keep it concise (about 300-400 words). Do not use markdown, only HTML tags liste
 // GENERATE QUIZ QUESTIONS via Claude API
 // ═══════════════════════════════════════════════════════════════════
 async function generateQuizQuestions(lessonName, unitName, subjectName, topics, quizType, lessonContent){
-  const isUnit = quizType === 'unit';
-
-  // Strip HTML tags from lesson content to get plain text
-  let contentContext = '';
-  if (lessonContent && !isUnit) {
-    const tmp = document.createElement('div');
-    tmp.innerHTML = lessonContent;
-    const plain = (tmp.textContent || tmp.innerText || '').replace(/\s+/g,' ').trim();
-    contentContext = plain.length > 3000 ? plain.slice(0,3000) + '…' : plain;
-  }
-
-  const prompt = `You are a Biotechnology professor at an Indian college. Create a ${isUnit?'unit test':'lesson quiz'} for undergraduate students.
-
-Subject: ${subjectName}
-Unit: ${unitName}
-${isUnit ? 'Topics covered: '+topics.join(', ') : 'Lesson: '+lessonName}
-${contentContext ? '\nLesson content to base questions on:\n"""\n'+contentContext+'\n"""' : ''}
-
-Generate EXACTLY this structure as JSON (no markdown, just raw JSON):
-{
-  "questions": [
-    {"type":"mcq","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"..."},
-    {"type":"mcq","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":2,"explanation":"..."},
-    {"type":"mcq","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":1,"explanation":"..."},
-    {"type":"mcq","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":3,"explanation":"..."},
-    {"type":"mcq","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"..."},
-    {"type":"five","question":"Write a short note on: ...","maxMarks":5},
-    {"type":"eight","question":"Explain in detail: ...","maxMarks":8}
-  ]
-}
-
-${contentContext ? 'IMPORTANT: All MCQ questions and answers MUST come directly from the lesson content provided above.' : (isUnit?'Make questions comprehensive covering all topics.':'Focus specifically on '+lessonName+'.')}
-Rules: MCQ options must start with A./B./C./D., correct is 0-3 index. Return ONLY the JSON object, nothing else.`;
-
-  try{
-    const res = await fetch(CLAUDE_API, {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1500,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    const data = await res.json();
-    const text = (data.content?.[0]?.text||'').replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(text);
-    // Shuffle MCQ options randomly
-    return parsed.questions.map(q=>{
-      if(q.type==='mcq'){
-        const shuffled = q.options.map((o,i)=>({o,i})).sort(()=>Math.random()-0.5);
-        const newCorrect = shuffled.findIndex(x=>x.i===q.correct);
-        return {...q, options:shuffled.map(x=>x.o), correct:newCorrect};
-      }
-      return q;
-    });
-  } catch(e){
-    console.error('Quiz generation error:',e);
-    return null;
-  }
+  // AI quiz generation removed — questions are now set by faculty via the Question Editor
+  // This function is kept as a stub for backward compatibility
+  return null;
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -6575,7 +6709,32 @@ function closeQuizOverlay(){
 // ═══════════════════════════════════════════════════════════════════
 // FACULTY PROGRESS VIEW
 // ═══════════════════════════════════════════════════════════════════
+function getFacAssignedYear(){
+  // Returns the year(s) a regular faculty is assigned to (class incharge or subject teacher)
+  if(canViewAllProgress()) return null; // HOD/dev sees all
+  // Check class incharge
+  for(const [yr, email] of Object.entries(staffRoles.classIncharge||{})){
+    if(email && email.toLowerCase()===currentFacEmail.toLowerCase()) return parseInt(yr);
+  }
+  // Check subject assignments across years
+  for(const yr of [1,2,3]){
+    const mySubjs = getFacSubjectsForYear(yr);
+    if(mySubjs.length > 0 && mySubjs.length < (getSubjectsForYear(yr).length)){
+      return yr; // has specific assignments in this year
+    }
+  }
+  return null; // fallback — no restriction
+}
+
 function selectProgYear(yr, btn){
+  // Block regular faculty from selecting unassigned years
+  if(!canViewAllProgress()){
+    const assignedYrs = getAssignedYearsForFaculty();
+    if(!assignedYrs.includes(yr)){
+      adminToast('You are not assigned to ' + ['I','II','III'][yr-1] + ' Year.');
+      return;
+    }
+  }
   facProgYear = yr;
   document.querySelectorAll('#ap-progress .year-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -6585,25 +6744,82 @@ function selectProgYear(yr, btn){
 async function renderProgressAdmin(){
   const el = document.getElementById('progAdminBody'); if(!el) return;
   el.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--muted);">Loading\u2026</div>';
-  const students = getStudentsByYear(facProgYear);
-  if(!students.length){ el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted);">No students for this year.</div>'; return; }
-  const subjs = sylData[facProgYear]||[];
 
-  // Load all students' progress in parallel
+  const isPrivileged = canViewAllProgress();
+
+  // Show/hide HOD banner
+  const progBanner = document.getElementById('progHodBanner');
+  if(progBanner) progBanner.style.display = isPrivileged ? 'block' : 'none';
+
+  // Lock year tabs for regular faculty to only their assigned years
+  const assignedYrs = getAssignedYearsForFaculty();
+  const yrMap = {'I Year':1,'II Year':2,'III Year':3};
+  document.querySelectorAll('#ap-progress .year-btn').forEach(btn=>{
+    const btnYr = yrMap[btn.textContent.trim()];
+    if(!isPrivileged && btnYr && !assignedYrs.includes(btnYr)){
+      btn.style.opacity='0.35'; btn.style.pointerEvents='none'; btn.title='You are not assigned to this year';
+    } else {
+      btn.style.opacity=''; btn.style.pointerEvents=''; btn.title='';
+    }
+  });
+
+  // Auto-correct to assigned year if not in assigned list
+  if(!isPrivileged && !assignedYrs.includes(facProgYear)){
+    facProgYear = assignedYrs[0]||1;
+    document.querySelectorAll('#ap-progress .year-btn').forEach(btn=>{
+      const btnYr = yrMap[btn.textContent.trim()];
+      btn.classList.toggle('active', btnYr===facProgYear);
+    });
+  }
+
+  const students = getStudentsByYear(facProgYear);
+  if(!students.length){
+    el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted);">No students for this year.</div>';
+    return;
+  }
+
+  // Filter subjects: regular faculty only sees assigned subjects
+  const visibleSubjs = getFacSubjectsForYear(facProgYear);
+
+  // Load progress & quiz answers from Firebase
   await Promise.all(students.map(async u=>{
     const ek = eKey(u.email);
-    const d = await fbGet('/progress/'+ek);
-    progressCache[ek] = d&&typeof d==='object'?d:{};
-    const qa = await fbGet('/quizAnswers/'+ek);
-    quizAnswersCache[ek] = qa&&typeof qa==='object'?qa:{};
+    if(!progressCache[ek]){
+      const d = await fbGet('/progress/'+ek);
+      progressCache[ek] = d&&typeof d==='object'?d:{};
+    }
+    if(!quizAnswersCache[ek]){
+      const qa = await fbGet('/quizAnswers/'+ek);
+      quizAnswersCache[ek] = qa&&typeof qa==='object'?qa:{};
+    }
   }));
 
-  el.innerHTML = students.map(u=>{
+  // Scope banner
+  const scopeNote = !isPrivileged
+    ? `<div style="background:#fffbf0;border:1px solid #fde68a;border-radius:8px;padding:0.5rem 0.9rem;font-size:0.77rem;color:#92400e;margin-bottom:0.9rem;">
+        📌 Showing progress for your assigned subject(s) only: <strong>${visibleSubjs.map(s=>s.name).join(', ')||'—'}</strong>
+       </div>`
+    : '';
+
+  const studentCards = students.map(u=>{
     const info = parseProfile(u.email, u.displayName);
     const ek = eKey(u.email);
     const prog = progressCache[ek]||{};
-    const totalKeys = Object.keys(prog).length;
-    const doneKeys = Object.values(prog).filter(v=>v.done).length;
+
+    // Count totals scoped to visible subjects only
+    let totalKeys=0, doneKeys=0;
+    visibleSubjs.forEach(s=>{
+      (s.units||[]).forEach((unit,ui)=>{
+        (unit.lessons||[]).forEach((l,li)=>{ totalKeys++; if(prog[progKey(s.id,ui,li)]?.done) doneKeys++; });
+        Object.entries(unit.topicLessons||{}).forEach(([ti,lessons])=>{
+          (lessons||[]).forEach((l,li)=>{
+            const glIdx=(unit.lessons||[]).length+parseInt(ti)*100+li;
+            totalKeys++; if(prog[progKey(s.id,ui,glIdx)]?.done) doneKeys++;
+          });
+        });
+      });
+    });
+
     const overallPct = totalKeys>0?Math.round(doneKeys/totalKeys*100):0;
     const color = overallPct>=75?'#38a169':overallPct>=40?'#c9882a':'#e53e3e';
 
@@ -6611,7 +6827,7 @@ async function renderProgressAdmin(){
       <div class="prog-student-row" onclick="toggleProgDetail('pd_${ek}')">
         <div>
           <div style="font-size:0.84rem;font-weight:700;color:var(--navy);">🎓 ${info.name}</div>
-          <div style="font-size:0.73rem;color:var(--muted);">${info.reg} · ${doneKeys}/${totalKeys} completed</div>
+          <div style="font-size:0.73rem;color:var(--muted);">${info.reg} &middot; ${doneKeys}/${totalKeys} lessons done</div>
         </div>
         <div style="display:flex;align-items:center;gap:0.7rem;">
           <div class="prog-overall-bar"><div class="prog-overall-fill" style="width:${overallPct}%;background:${color};"></div></div>
@@ -6620,10 +6836,12 @@ async function renderProgressAdmin(){
         </div>
       </div>
       <div class="prog-detail-wrap" id="pd_${ek}">
-        ${renderStudentProgressDetail(u, subjs, prog)}
+        ${renderStudentProgressDetail(u, visibleSubjs, prog)}
       </div>
     </div>`;
   }).join('');
+
+  el.innerHTML = scopeNote + studentCards;
 }
 
 function toggleProgDetail(id){
