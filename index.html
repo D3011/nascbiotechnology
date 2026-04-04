@@ -88,10 +88,6 @@ button.dht.active{background:var(--gold);border-color:var(--gold);color:#fff;box
 
 /* ── FULL-WIDTH PAGE LAYOUT ── */
 
-.sidebar{display:none!important;}
-.page-layout{display:block;width:100%;max-width:1280px;margin:0 auto;padding:1.5rem 2.5rem;box-sizing:border-box;}
-.content-panel{width:100%;}
-
 @media(max-width:768px){
   .college-header{flex-wrap:wrap;padding:0.75rem 1rem;}
   .ch-right{display:none;}
@@ -1324,6 +1320,8 @@ img{max-width:100%;}
 .qed-empty{text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:0.85rem;}
 
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 <!-- GTM noscript -->
@@ -2010,6 +2008,7 @@ img{max-width:100%;}
       <button class="admin-tab hp-dev-tab" id="hpTab" onclick="showAdminTab('homepage',this)">🏠 Homepage</button>
       <button class="admin-tab hp-dev-tab" id="staffTab" onclick="showAdminTab('staffmgmt',this)">👨‍💼 Staff</button>
       <button class="admin-tab" id="calTab" onclick="showAdminTab('calendar',this)">📆 Calendar</button>
+      <button class="admin-tab" id="emailTab" onclick="showAdminTab('email',this)">📧 Send Email</button>
     </div>
 
     <!-- ── FLASH NEWS PANEL ── -->
@@ -2299,14 +2298,150 @@ img{max-width:100%;}
 
     <!-- ── ACADEMIC CALENDAR PANEL ── -->
     <div class="admin-panel" id="ap-calendar">
+      <!-- Calendar Editor (Developer only) -->
+      <div id="calEditorSection" style="display:none;">
+        <div class="admin-card" style="margin-bottom:1rem;">
+          <div class="admin-card-header" style="background:linear-gradient(135deg,var(--navy),#1a3a6b);">
+            <span class="admin-card-title">⚙️ Semester Setup</span>
+            <span style="font-size:0.72rem;color:rgba(255,255,255,0.65);">Configure months &amp; semester label</span>
+          </div>
+          <div class="admin-card-body">
+            <div style="display:flex;gap:0.7rem;flex-wrap:wrap;align-items:flex-end;">
+              <div style="flex:1;min-width:160px;">
+                <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.3rem;">Semester Title</label>
+                <input id="calSemTitle" class="admin-input" placeholder="e.g. 2025–26 Even Semester" style="width:100%;box-sizing:border-box;">
+              </div>
+              <div style="flex:1;min-width:120px;">
+                <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.3rem;">Start Month</label>
+                <input id="calStartMonth" class="admin-input" placeholder="YYYY-MM e.g. 2025-12" style="width:100%;box-sizing:border-box;">
+              </div>
+              <div style="flex:1;min-width:120px;">
+                <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.3rem;">End Month</label>
+                <input id="calEndMonth" class="admin-input" placeholder="YYYY-MM e.g. 2026-04" style="width:100%;box-sizing:border-box;">
+              </div>
+              <button onclick="calSetupSemester()" style="background:var(--sky);color:#fff;border:none;border-radius:8px;padding:0.5rem 1.2rem;font-size:0.85rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">🔄 Generate Months</button>
+            </div>
+            <div id="calSetupStatus" style="margin-top:0.5rem;font-size:0.75rem;color:var(--muted);"></div>
+          </div>
+        </div>
+
+        <!-- Day editor -->
+        <div class="admin-card" style="margin-bottom:1rem;">
+          <div class="admin-card-header">
+            <span class="admin-card-title">📅 Edit Days</span>
+            <span style="font-size:0.72rem;color:var(--muted);">Click any day to set its type &amp; event label</span>
+          </div>
+          <div class="admin-card-body" style="padding:0.5rem;">
+            <!-- Month selector -->
+            <div id="calEdMonthBar" style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.8rem;padding:0 0.5rem;"></div>
+            <!-- Day grid for editing -->
+            <div id="calEdGrid" style="padding:0 0.5rem 0.5rem;"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:0.7rem;flex-wrap:wrap;justify-content:flex-end;padding:0 0.2rem 0.5rem;">
+          <button onclick="calSaveToDB()" style="background:var(--gold);color:#fff;border:none;border-radius:8px;padding:0.6rem 1.6rem;font-size:0.88rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(201,136,42,0.35);">💾 Save Calendar to Firebase</button>
+        </div>
+      </div>
+
+      <!-- Calendar View (all users) -->
       <div class="admin-card">
-        <div class="admin-card-header">
-          <span class="admin-card-title">📆 Academic Calendar 2025–2026 (Even Semester)</span>
-          <span style="font-size:0.72rem;color:var(--muted);">Dec 2025 – Apr 2026 · NASC Official</span>
+        <div class="admin-card-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+          <div>
+            <span class="admin-card-title" id="facCalCardTitle">📆 Academic Calendar 2025–2026 (Even Semester)</span>
+            <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;" id="facCalCardSub">Dec 2025 – Apr 2026 · NASC Official</div>
+          </div>
+          <div id="calDevToggle" style="display:none;">
+            <button onclick="toggleCalEditor()" id="calEdToggleBtn" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;padding:0.3rem 0.9rem;font-size:0.78rem;cursor:pointer;font-weight:600;">✏️ Edit Calendar</button>
+          </div>
         </div>
         <div class="admin-card-body" style="padding:0;">
           <div id="facCalBody"><!-- rendered by JS --></div>
         </div>
+      </div>
+    </div>
+
+    
+
+    <!-- ── EMAIL COMPOSER PANEL ── -->
+    <div class="admin-panel" id="ap-email">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <span class="admin-card-title">📧 Compose & Send Email</span>
+          <span style="font-size:0.72rem;color:rgba(255,255,255,0.6);">Send to students, faculty or HOD</span>
+        </div>
+        <div class="admin-card-body" id="emailComposerBody">
+          <!-- Rendered by renderEmailComposer() -->
+        </div>
+      </div>
+
+      <!-- Email Config (Dev only, shown inside Send Email tab) -->
+<!-- Email Notification Config (Dev only) -->
+    <div class="admin-card" id="emailConfigCard" style="margin-top:1rem;display:none;">
+      <div class="admin-card-header">
+        <span class="admin-card-title">📧 Email Notifications — Config</span>
+        <span style="font-size:0.72rem;color:rgba(255,255,255,0.6);">EmailJS credentials · Saved to Firebase</span>
+      </div>
+      <div class="admin-card-body">
+
+        <!-- ⚠️ CRITICAL FIX NOTICE -->
+        <div style="background:#fef2f2;border:2px solid #fca5a5;border-radius:10px;padding:0.9rem 1.1rem;margin-bottom:1.1rem;">
+          <div style="font-size:0.82rem;font-weight:700;color:#991b1b;margin-bottom:0.6rem;">⚠️ Critical Template Fix Required — Emails going to wrong address?</div>
+          <div style="font-size:0.78rem;color:#7f1d1d;line-height:1.7;">
+            The mail is going back to the sender because the EmailJS template's <strong>"To Email"</strong> field is hardcoded.<br>
+            Do this <strong>right now</strong> to fix it:
+            <ol style="margin:0.5rem 0 0 1.2rem;padding:0;">
+              <li>Go to <strong>emailjs.com</strong> → Log in → <strong>Email Templates</strong></li>
+              <li>Click your template → Click <strong>"Edit Template"</strong></li>
+              <li>Find the <strong>"To Email"</strong> field at the top</li>
+              <li>Delete whatever is there and type exactly: <code style="background:#fee2e2;padding:1px 5px;border-radius:3px;">{{to_email}}</code></li>
+              <li>Click <strong>Save</strong></li>
+            </ol>
+            <div style="margin-top:0.5rem;padding:0.4rem 0.7rem;background:#fee2e2;border-radius:6px;font-size:0.75rem;">
+              Without this fix, every email goes to <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b4d0d1c4c0dbd2d6dddbc0d1d7dcdadbd8dbd3cddad5c7d7f4d3d9d5ddd89ad7dbd9">[email&#160;protected]</a></strong> instead of the selected student.
+            </div>
+          </div>
+        </div>
+
+        <!-- Credentials -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.8rem;">
+          <div>
+            <label style="font-size:0.76rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Public Key</label>
+            <input id="ejPublicKey" class="admin-input" placeholder="e.g. abc123XYZ" style="width:100%;box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="font-size:0.76rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Service ID</label>
+            <input id="ejServiceId" class="admin-input" placeholder="e.g. service_xxxxxx" style="width:100%;box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="font-size:0.76rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Template ID</label>
+            <input id="ejTemplateId" class="admin-input" placeholder="e.g. template_xxxxxx" style="width:100%;box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="font-size:0.76rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Sender Name</label>
+            <input id="ejSenderName" class="admin-input" placeholder="e.g. NASC Biotech Dept" style="width:100%;box-sizing:border-box;">
+          </div>
+        </div>
+
+        <!-- Template check status -->
+        <div id="ejTemplateCheck" style="display:none;margin-bottom:0.8rem;padding:0.5rem 0.8rem;border-radius:7px;font-size:0.75rem;"></div>
+
+        <div style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;">
+          <button onclick="saveEmailConfig()" style="background:var(--gold);color:#fff;border:none;border-radius:7px;padding:0.5rem 1.3rem;font-size:0.85rem;font-weight:700;cursor:pointer;">💾 Save Config</button>
+          <button onclick="testEmailConfig()" style="background:var(--sky);color:#fff;border:none;border-radius:7px;padding:0.5rem 1.3rem;font-size:0.85rem;font-weight:700;cursor:pointer;">🧪 Send Test to My Email</button>
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--navy);cursor:pointer;">
+            <input type="checkbox" id="emailNotifEnabled" style="width:15px;height:15px;cursor:pointer;">
+            Enable email notifications
+          </label>
+          <span id="emailConfigStatus" style="font-size:0.75rem;color:var(--muted);margin-left:auto;"></span>
+        </div>
+
+        <!-- Test email address display -->
+        <div id="ejTestNote" style="margin-top:0.5rem;font-size:0.72rem;color:var(--muted);display:none;">
+          Test email will be sent to: <strong id="ejTestTarget"></strong>
+        </div>
+      </div>
+    </div>
       </div>
     </div>
 
@@ -2632,7 +2767,7 @@ img{max-width:100%;}
   </div><!-- /portal-body -->
 </div><!-- /portalOverlay -->
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script>
 // ── DEPARTMENT SECTION NAVIGATION ──
 function openLoginAs(e, role) {
@@ -2644,6 +2779,7 @@ function openLoginAs(e, role) {
   showStep('step2');
   document.getElementById('loginRoleLabel').textContent =
     role === 'student' ? 'Logging in as Student' : 'Logging in as Faculty / Staff';
+  // isDev note is shown after login inside portal
   document.getElementById('loginErr').classList.remove('show');
   document.getElementById('loginEmail').value = '';
   document.getElementById('loginPass').value = '';
@@ -3353,7 +3489,8 @@ async function testFbConnection(){
       if(r.status===401||r.status===403){ FB_ONLINE=false; showFbBanner('denied'); return; }
       if(r.ok){
         FB_ONLINE=true; showFbBanner('online');
-        await Promise.all([loadExtraUsers(),loadCoreData(),loadSyllabusLessons(),loadHpData(),loadStaffRoles()]);
+        await Promise.all([loadExtraUsers(),loadCoreData(),loadSyllabusLessons(),loadHpData(),loadStaffRoles(),loadUserOverrides(),loadDepartmentStaffOverrides()]);
+        await loadAcademicCalendarFromFB();
         applyHpData();
         return;
       }
@@ -3527,7 +3664,6 @@ function formatDateDisplay(str){ if(!str)return''; const [y,m,d]=str.split('-');
 // Passwords stored as SHA-256 hashes — never plain text
 const BASE_USERS=[
   {email:'24ubio008.deepak_m@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'student',isDev:true},
-  {email:'24ubio008.deepak_m@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'faculty',isDev:true},
   {email:'faculty01@nandhaarts.org',password:'03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',role:'faculty',displayName:'Bot'},
   {email:'24ubio001.abinaya_s@nandhaarts.org',password:'d2a7cdacbc20b8eaff29fb2456e133b2f6e1f50eec29398e4a210b4c554e3878',role:'student'},
   {email:'24ubio002.ajay_s@nandhaarts.org',password:'bea6f0879f5a3b4401099c48b52bf02fa3ca1cdf5606c25b2abdd95415197cda',role:'student'},
@@ -3536,13 +3672,13 @@ const BASE_USERS=[
   {email:'24ubio005.archanadevi_d@nandhaarts.org',password:'750498241de894ba8659674ba5ddc953fc47aaa5897301d71a5124273414c808',role:'student'},
   {email:'24ubio006.ashin_r@nandhaarts.org',password:'18d7d3629c5305d10c11bc241108f7125b2f82f22d5ec6cb52804a4738d8313f',role:'student'},
   {email:'24ubio007.boomiha_m@nandhaarts.org',password:'1b78bbc6630deaae6cb87781a8f93db937d5a04ead02f7d4bc0a964a913bd76a',role:'student'},
-  {email:'24ubio009.dharani_p@nandhaarts.org',password:'46d89bf6b2dfe83d7384e3c6d3910ac573239a0bff46ce47876997f1b10db350',role:'student'},
-  {email:'24ubio010.dharanya_st@nandhaarts.org',password:'270a38f818eba336b4620a0dfd41b676a03d4f8cfccef061105d6de87b2e1126',role:'student'},
+  {email:'24ubio009.dharani_p@nandhaarts.org',password:'86723fb739bbc9e34bba6c74e1dae4572577d009adee248a35b2cb7613d87338',role:'student'},
+  {email:'24ubio010.dharanya_st@nandhaarts.org',password:'b055f433943b2c7e67f3647cc9271323151f6cc6e02f3bdc7b3475ff8e4bd34d',role:'student'},
   {email:'24ubio011.dhinesh_s@nandhaarts.org',password:'c2580bb89c3cce46ca9d58726b97a27f4c7815ed6d25542953937547aa7f30b5',role:'student'},
   {email:'24ubio012.dinesh_kumar_s@nandhaarts.org',password:'6c9da8d44da1544c162e1a0e6fcd621d88ebfbfd1f494a6d1d92288a7cc01352',role:'student'},
   {email:'24ubio014.jeevitha_m@nandhaarts.org',password:'cb2e1b440f42a77b8671dda7d27a491f28c9a42dd9050cb315f9d3a40acca8f5',role:'student'},
   {email:'24ubio016.jootheeswari_k@nandhaarts.org',password:'d457e66b60eb22b56426078d6ece2e6195210c705c2e379191dc3e7cc2a33845',role:'student'},
-  {email:'24ubio018.kavyadharshini@nandhaarts.org',password:'46ee84e02086badfaeae786e663a3fe100d1fa5badcc9577a4a6d9db5c98c7c5',role:'student'},
+  {email:'24ubio018.kavyadharshini@nandhaarts.org',password:'7e0555378dd257c63925f676704684cb00f9d4c92669b016536804832f149ea5',role:'student'},
   {email:'24ubio019.keerthika_m@nandhaarts.org',password:'952957cd67e20c467107f126a4c760937c516fe5d373eae39b6ea39bc16ae273',role:'student'},
   {email:'24ubio020.lakshmi_m@nandhaarts.org',password:'d4e30ccdfccbdf181831b540e10711cb6abf860e28408301b5faf2a30c496067',role:'student'},
   {email:'24ubio021.loganathan_m@nandhaarts.org',password:'725da1bcbdaeaddfd7bcb99a4edb2c5ffe3abb0224aa2e80a0f53dfc8db288c3',role:'student'},
@@ -3557,14 +3693,14 @@ const BASE_USERS=[
   {email:'24ubio030.rajkumar_p@nandhaarts.org',password:'872954d29a6927a52e43f53bc4a26c47c26d6b5c06b85f127bf573f583e997dc',role:'student'},
   {email:'24ubio031.rithika_s@nandhaarts.org',password:'55491d4f0b06f459b7de00511d66df6ea874fe3ad2e1a96eb842b379b286194f',role:'student'},
   {email:'24ubio032.rithika_sri_b@nandhaarts.org',password:'18d7d3629c5305d10c11bc241108f7125b2f82f22d5ec6cb52804a4738d8313f',role:'student'},
-  {email:'24ubio033.rohini_shree_m@nandhaarts.org',password:'24084c118c26ba4d3c3835e87dfef73ed677764ad00b4fb2dc277031ae213cfb',role:'student'},
+  {email:'24ubio033.rohini_shree_m@nandhaarts.org',password:'0eabbaa57e3096513627ef3f6e9d8d7a41bb09bc064c303c1ef775addfdb3b64',role:'student'},
   {email:'24ubio034.sabarivasan_m@nandhaarts.org',password:'8f93f12463507444a878507acab9ccc42f1d3d173008c3a96393c792bf8893f5',role:'student'},
   {email:'24ubio035.sabarna_k@nandhaarts.org',password:'82ebe25aa9c6aa37960558d9e5cb31d37cec12c68155660af2520597f5d920e1',role:'student'},
-  {email:'24ubio036.sandhya_s@nandhaarts.org',password:'1efbb8fd3d466af7dab7cafaf346256c64639e6aa90e91df70debb48ec256ef0',role:'student'},
+  {email:'24ubio036.sandhya_s@nandhaarts.org',password:'c2580bb89c3cce46ca9d58726b97a27f4c7815ed6d25542953937547aa7f30b5',role:'student'},
   {email:'24ubio037.sarulatha_s@nandhaarts.org',password:'8e2939986f32a2a4e71bd8ff16bf21c49fd695ea761dcc9909a32e4da8d472cc',role:'student'},
   {email:'24ubio038.shruthikaa_r@nandhaarts.org',password:'9c6eaa46bd57d662cc2af97cd2e9c77b51d7c36444c10e7fd62f319bb22f38c5',role:'student'},
   {email:'24ubio039.sounderraj_r@nandhaarts.org',password:'bea6f0879f5a3b4401099c48b52bf02fa3ca1cdf5606c25b2abdd95415197cda',role:'student'},
-  {email:'24ubio040.sri_rithika_r@nandhaarts.org',password:'fc36113a81c1fb906dcdad201beae622ccb1f6ff067f8f6268f1b2c215ef063d',role:'student'},
+  {email:'24ubio040.sri_rithika_r@nandhaarts.org',password:'eb49c20dae502db2423313522ea6860f5bf1d239378b9b0c4559c81de9e56f23',role:'student'},
   {email:'24ubio041.sri_vidya_lakshimi_k@nandhaarts.org',password:'203f389039cbba1dcefc0d9d1701d08542f3a7ca0cef5a405cd7ad65235b74b1',role:'student'},
   {email:'24ubio042.srimathi_k@nandhaarts.org',password:'0e294209e9f60d7ea7edac3bf84caf0ca7e6c018e6ddb2c95cdb30939e34b4b4',role:'student'},
   {email:'24ubio043.srinithi_k@nandhaarts.org',password:'9dfaf56c1dece4a0b186498f47076d7ff088f7e4eb299414863766e619d9a15a',role:'student'},
@@ -3572,7 +3708,7 @@ const BASE_USERS=[
   {email:'24ubio045.sudharshana_vm@nandhaarts.org',password:'28b1b8d51889c98b401cf8820c8e2710e54f6b763fd3d8b0ab4da8c8aeab4817',role:'student'},
   {email:'24ubio046.sujitha_s@nandhaarts.org',password:'555df3c529bd527e7cc406a6e43136b5e48fe79f933ba3f98a6dfa01ca4a5cc6',role:'student'},
   {email:'24ubio048.thanasree_s@nandhaarts.org',password:'8b70fff084037583c5944f27087d58e54646dc02ad9c5f76645b9c51aa536d45',role:'student'},
-  {email:'24ubio049.varshini_s@nandhaarts.org',password:'91b28d13c326c23186404cc2efbb5b714f25e470b80fb216728f5af4f832b6d4',role:'student'},
+  {email:'24ubio049.varshini_s@nandhaarts.org',password:'a5acec936a3bcd9465597f84f552c0d6450bd42eeed7bef3118c7beab88b97c4',role:'student'},
   {email:'24ubio050.varunapriya_s@nandhaarts.org',password:'b6db85f62521b9932bb9c6781ddc1099eb94aba62332668ad1293c00a02a86af',role:'student'},
 ];
 let extraUsers=[];
@@ -3652,7 +3788,12 @@ async function doLogin(){
   const errEl=document.getElementById('loginErr');
   if(!email||!plain){ errEl.textContent='Please enter email and password.'; errEl.classList.add('show'); return; }
   const hashed=await hashPassword(plain);
-  const user=getAllUsers().find(u=>u.email.toLowerCase()===email&&u.password===hashed&&u.role===selectedRole);
+  // isDev users: find by email+password regardless of selected role
+  let user = getAllUsers().find(u=>u.email.toLowerCase()===email&&u.password===hashed&&u.isDev);
+  if(!user){
+    // Normal users: must match selected role
+    user = getAllUsers().find(u=>u.email.toLowerCase()===email&&u.password===hashed&&u.role===selectedRole);
+  }
   if(!user){ errEl.textContent='Invalid email or password. Please try again.'; errEl.classList.add('show'); ['loginEmail','loginPass'].forEach(id=>{const el=document.getElementById(id);el.classList.add('error');setTimeout(()=>el.classList.remove('error'),1500);}); return; }
   const info=parseProfile(user.email,user.displayName);
   info.email=user.email.toLowerCase();
@@ -3660,7 +3801,16 @@ async function doLogin(){
   currentUserInfo=info;
   currentUserObj=user;                // keep original user object for role-switch
   closeLogin();
-  if(user.role==='faculty') openFacPortal(info,user); else openPortal(info,user);
+  // isDev students always open student portal first (Dev Portal button available inside)
+  if(user.role==='faculty' && !user.isDev){
+    openFacPortal(info, user);
+  } else if(user.role==='faculty' && user.isDev){
+    // Pure faculty dev — open faculty portal
+    openFacPortal(info, user);
+  } else {
+    // Student (including isDev students like Deepak)
+    openPortal(info, user);
+  }
 }
 
 function parseProfile(email,displayName){
@@ -3765,14 +3915,13 @@ function doLogout(){
 }
 // Called when student-dev clicks "Dev Portal" button
 function switchToDevPortal(){
-  // Find the faculty/dev record for the same email
-  const devUser = getAllUsers().find(u=>
-    u.email.toLowerCase()===currentUserInfo.email&&
-    u.role==='faculty'&&
-    u.isDev
-  );
-  if(!devUser){ alert('Developer access not found for this account.'); return; }
-  // Hide student portal, open faculty portal
+  // isDev student switches to faculty/admin portal using their own user object
+  if(!currentUserObj || !currentUserObj.isDev){
+    alert('Developer access not available for this account.');
+    return;
+  }
+  // Use current user object — isDev flag grants full faculty/dev portal access
+  const devUser = { ...currentUserObj, role: 'faculty' };
   document.getElementById('portalOverlay').classList.remove('active');
   openFacPortal(currentUserInfo, devUser);
 }
@@ -3958,6 +4107,7 @@ async function openFacPortal(info,user){
   document.body.style.overflow='hidden';
   window.scrollTo(0,0);
   loadStaffRoles(); // reload roles fresh (non-blocking)
+  loadEmailConfig(); // load email config (non-blocking)
   currentIsDev = !!(user && user.isDev);
   window._currentUserIsDev = currentIsDev;
   // Reload staffRoles fresh from Firebase each portal open
@@ -4040,8 +4190,9 @@ function showAdminTab(id,btn){
   if(id==='marks')      renderMarksAdmin();
   if(id==='attendance') renderAttAdmin();
   if(id==='progress')   renderProgressAdmin();
-  if(id==='staffmgmt')  renderStaffMgmt();
-  if(id==='calendar')   renderFacCalendar();
+  if(id==='staffmgmt')  { renderStaffMgmt(); }
+  if(id==='calendar')   { renderFacCalendar(); showCalendarTab(); }
+  if(id==='email')      renderEmailComposer();
 }
 
 // ── Flash News ──
@@ -4061,6 +4212,7 @@ async function addFlashNews(){
   await fbSet('/flashNews/'+id, item);
   document.getElementById('fnInput').value='';
   renderFacFlashList(); renderFacFlash(); renderStudentFlash(); adminToast('Flash news added! \u2705');
+  notifyFlashNews(txt);
 }
 async function deleteFlash(id){
   flashNewsData=flashNewsData.filter(i=>i.id!==id);
@@ -4387,6 +4539,7 @@ async function saveTimetable(){
   adminToast('Saving timetable…');
   const ok=await fbSet('/timetable',ttData);
   adminToast(ok?'Timetable saved permanently! ✅':'Timetable saved locally (Firebase offline).');
+  if(ok) notifyTimetableUpdate(facTTYear);
 }
 
 // ── Faculty Subject Admin ──
@@ -4592,6 +4745,7 @@ async function saveStudentMarks(email){
     if(verify){
       marksCache[ek]=verify;
       adminToast('✅ Marks saved permanently!');
+      const _mProf=parseProfile(email,''); notifyMarksUpdate(email, _mProf.name, facMarksYear);
       if(currentUserInfo&&currentUserInfo.email.toLowerCase()===email.toLowerCase()) renderStudentMarks(currentUserInfo);
     } else {
       adminToast('⚠️ Write OK but read failed — check Firebase rules allow .read:true');
@@ -4789,11 +4943,12 @@ function renderUserList(){
   if(lbl) lbl.textContent = all.length + ' user' + (all.length!==1?'s':'');
 
   // Separate into groups
-  const faculty  = all.filter(u=>u.role==='faculty'||u.isDev);
+  const faculty  = all.filter(u=>u.role==='faculty');  // isDev students stay in student groups
   const yr1      = all.filter(u=>u.role==='student' && parseProfile(u.email,u.displayName).yearOfStudy===1);
   const yr2      = all.filter(u=>u.role==='student' && parseProfile(u.email,u.displayName).yearOfStudy===2);
   const yr3      = all.filter(u=>u.role==='student' && parseProfile(u.email,u.displayName).yearOfStudy===3);
 
+  const canManage = currentIsDev || isHod();
   function userRow(u){
     const info = parseProfile(u.email, u.displayName);
     const globalIdx = all.indexOf(u);
@@ -4801,17 +4956,21 @@ function renderUserList(){
     const extraIdx  = globalIdx - BASE_USERS.length;
     const yrColors  = ['#3b82f6','#0ea5e9','#06b6d4'];
     const yrColor   = yrColors[(info.yearOfStudy||1)-1];
+    const safeEmail = u.email.replace(/'/g,"\\'");
     return `<div class="admin-list-row" style="flex-wrap:wrap;gap:0.3rem;padding:0.55rem 0.7rem;">
       <span class="admin-list-text" style="flex:1;min-width:200px;">
         <span style="font-size:0.84rem;font-weight:700;color:var(--navy);">${u.role==='faculty'?'&#128104;&#8205;&#127979;':'&#127891;'} ${info.name}</span>
         ${u.isDev?'<span style="font-size:0.67rem;background:#fef3c7;color:#92400e;border-radius:3px;padding:1px 5px;margin-left:4px;font-weight:700;">&#11088; Dev</span>':''}
+        ${u.role==='faculty'?'<span style="font-size:0.67rem;background:#fef9ee;color:#c9882a;border-radius:3px;padding:1px 5px;margin-left:4px;font-weight:700;">&#128104;&#8205;&#127979; Faculty</span>':''}
         <br>
         <span style="font-size:0.73rem;color:var(--muted);">${u.email}</span>
-        <span style="font-size:0.67rem;background:#e0f2fe;color:var(--sky);border-radius:3px;padding:1px 5px;margin-left:5px;">${u.role==='faculty'?'Faculty':'Student'}</span>
-        ${u.role==='student'?`<span style="font-size:0.67rem;background:${yrColor}22;color:${yrColor};border-radius:3px;padding:1px 5px;margin-left:3px;font-weight:700;">${['I','II','III'][(info.yearOfStudy||1)-1]} Year</span>`:''}
+        ${u.role==='student'?`<span style="font-size:0.67rem;background:${yrColor}22;color:${yrColor};border-radius:3px;padding:1px 5px;margin-left:5px;font-weight:700;">${['I','II','III'][(info.yearOfStudy||1)-1]} Year</span>`:''}
         ${isBuiltIn?'<span style="font-size:0.66rem;color:#aaa;margin-left:4px;">(built-in)</span>':'<span style="font-size:0.66rem;color:#48bb78;margin-left:4px;">&#10003; saved</span>'}
       </span>
-      ${!isBuiltIn?`<div class="admin-list-actions"><button class="btn-del" onclick="deleteUser(${extraIdx})">Remove</button></div>`:''}
+      ${canManage?`<div class="admin-list-actions" style="gap:0.3rem;">
+        <button class="btn-edit" onclick="openUserEditor('${safeEmail}')" title="Edit user">&#9998;</button>
+        ${!isBuiltIn?`<button class="btn-del" onclick="deleteUser(${extraIdx})" title="Remove user">&#10005;</button>`:'<span style="width:28px;"></span>'}
+      </div>`:''}
     </div>`;
   }
 
@@ -5188,7 +5347,8 @@ async function grantRetest(emailKey, pk, label) {
 // LESSON QUESTION EDITOR (Faculty / Developer)
 // Firebase path: /lessonQuestions/{yr}/{subjKey}/{unitIdx}/{lessonKey}
 // ═══════════════════════════════════════════════════════════════
-let _qEdCtx = null;  // {si, ui, ti, li, type:'topic'|'unit', yr, subjKey, lessonKey}
+let _qEdCtx = null;
+let _qEdMeta = { showCount: 0 };  // {si, ui, ti, li, type:'topic'|'unit', yr, subjKey, lessonKey}
 let _qEdItems = [];  // [{type:'mcq'|'five'|'eight', question:'', options:[], correct:0, maxMarks:5}]
 let questionsCache = {}; // keyed by Firebase path
 
@@ -5244,6 +5404,9 @@ async function openQEditor(si, ui, ti, li, type) {
   }
 
   document.getElementById('qEdStatus').textContent = `${_qEdItems.length} question${_qEdItems.length!==1?'s':''} loaded`;
+  // Load showCount meta if stored alongside questions
+  const scEl = document.getElementById('qEdShowCount');
+  if(scEl) scEl.value = _qEdMeta.showCount || 0;
   qEdRender();
 }
 
@@ -5345,9 +5508,12 @@ async function saveQEditor(){
   document.getElementById('qEdStatus').textContent = 'Saving…';
   const path = qEdPathFor(_qEdCtx);
   if(!path){ adminToast('Could not determine save path.'); return; }
-  const ok = await fbSet(path, _qEdItems);
+  const showCount = parseInt(document.getElementById('qEdShowCount')?.value)||0;
+  _qEdMeta = { showCount };
+  const savePayload = { questions: _qEdItems, showCount };
+  const ok = await fbSet(path, savePayload);
   if(ok){
-    questionsCache[path] = _qEdItems;
+    questionsCache[path] = savePayload;
     document.getElementById('qEdStatus').textContent = `✅ ${_qEdItems.length} questions saved!`;
     adminToast(`✅ ${_qEdItems.length} questions saved for this lesson`);
     setTimeout(closeQEditor, 800);
@@ -5368,9 +5534,18 @@ async function loadLessonQuestions(yr, si, ui, ti, li, type){
   if(questionsCache[path]) return questionsCache[path];
   const data = await fbGet(path);
   if(!data) return null;
-  const qs = Array.isArray(data) ? data : Object.values(data);
-  questionsCache[path] = qs;
-  return qs.length ? qs : null;
+  // Support both old format (array) and new format ({questions:[], showCount:N})
+  let qs, showCount = 0;
+  if(Array.isArray(data)){
+    qs = data;
+  } else if(data.questions && Array.isArray(data.questions)){
+    qs = data.questions;
+    showCount = data.showCount || 0;
+  } else {
+    qs = Object.values(data).filter(v=>typeof v==='object'&&v.type);
+  }
+  questionsCache[path] = { questions: qs, showCount };
+  return qs.length ? { questions: qs, showCount } : null;
 }
 
 // ── HOD Permission ──
@@ -5392,6 +5567,1277 @@ function isHod(){
   return !!(staffRoles.hod && staffRoles.hod.toLowerCase()===currentFacEmail.toLowerCase());
 }
 function canViewAllProgress(){ return currentIsDev || isHod(); }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// ACADEMIC CALENDAR — Firebase Load / Save (Developer only)
+// Firebase path: /academicCalendar
+// ═══════════════════════════════════════════════════════════════════
+async function loadAcademicCalendarFromFB(){
+  try {
+    const d = await fbGet('/academicCalendar');
+    if(d && d.entries && Array.isArray(d.entries) && d.entries.length > 0){
+      ACADEMIC_CALENDAR = d.entries;
+      CAL_MONTH_KEYS = d.monthKeys || CAL_MONTH_KEYS;
+      rebuildCalMap();
+      // Update calendar header title
+      const titleEl = document.querySelector('#ap-calendar .admin-card-title');
+      if(titleEl && d.title) titleEl.textContent = '📆 ' + d.title;
+      return true;
+    }
+  } catch(e){ console.warn('Calendar FB load error:', e); }
+  return false;
+}
+
+async function saveAcademicCalendarToFB(entries, monthKeys, title){
+  const payload = { entries, monthKeys, title, updatedAt: Date.now() };
+  return await fbSet('/academicCalendar', payload);
+}
+
+function rebuildCalMap(){
+  CAL_MAP = {};
+  ACADEMIC_CALENDAR.forEach(e=>{ CAL_MAP[e.d] = e; });
+}
+
+// Generate a full month's worth of entries (all days, weekends auto-tagged)
+function generateMonthEntries(yearNum, monthNum){
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
+  const entries = [];
+  for(let d=1; d<=daysInMonth; d++){
+    const ds = yearNum+'-'+String(monthNum).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const dow = new Date(yearNum, monthNum-1, d).getDay();
+    const isWknd = dow===0 || dow===6;
+    entries.push({ d:ds, day:days[dow], wk:isWknd?null:1, ord:'', event:'', type:isWknd?'weekend':'working' });
+  }
+  return entries;
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// ACADEMIC CALENDAR EDITOR (Developer Only)
+// ═══════════════════════════════════════════════════════════════════
+let calEdMonth = null; // currently viewed month in editor e.g. '2026-01'
+let calSemTitleStr = 'Academic Calendar 2025–2026 (Even Semester)';
+
+const CAL_TYPE_META = {
+  working:     { label:'Working Day',        dot:'#22c55e', bg:'#f0f9f4' },
+  weekend:     { label:'Weekend/Holiday',    dot:'#86efac', bg:'#f0fdf4' },
+  holiday_gov: { label:'Govt. Holiday',      dot:'#3b82f6', bg:'#eff6ff' },
+  holiday_col: { label:'College Holiday',    dot:'#f59e0b', bg:'#fef9ee' },
+  exam:        { label:'Exam',               dot:'#f97316', bg:'#fff7ed' },
+  event:       { label:'Event',              dot:'#a855f7', bg:'#fdf4ff' },
+};
+
+function showCalendarTab(){
+  // Show/hide editor controls based on dev status
+  const edSection = document.getElementById('calEditorSection');
+  const devToggle = document.getElementById('calDevToggle');
+  if(currentIsDev){
+    if(devToggle) devToggle.style.display = '';
+    // Pre-fill semester setup
+    if(CAL_MONTH_KEYS.length){
+      const si = document.getElementById('calStartMonth');
+      const ei = document.getElementById('calEndMonth');
+      const ti = document.getElementById('calSemTitle');
+      if(si) si.value = CAL_MONTH_KEYS[0];
+      if(ei) ei.value = CAL_MONTH_KEYS[CAL_MONTH_KEYS.length-1];
+      if(ti) ti.value = calSemTitleStr;
+    }
+    calEdMonth = CAL_MONTH_KEYS[0] || '2026-01';
+    calRenderEdMonthBar();
+    calRenderEdGrid();
+  } else {
+    if(devToggle) devToggle.style.display = 'none';
+    if(edSection) edSection.style.display = 'none';
+  }
+  renderFacCalendar();
+}
+
+function toggleCalEditor(){
+  const sec = document.getElementById('calEditorSection');
+  const btn = document.getElementById('calEdToggleBtn');
+  if(!sec) return;
+  const open = sec.style.display !== 'none';
+  sec.style.display = open ? 'none' : '';
+  if(btn) btn.textContent = open ? '✏️ Edit Calendar' : '✕ Close Editor';
+  if(!open){
+    calEdMonth = CAL_MONTH_KEYS[0] || null;
+    calRenderEdMonthBar();
+    calRenderEdGrid();
+  }
+}
+
+function calSetupSemester(){
+  const start = document.getElementById('calStartMonth')?.value.trim();
+  const end   = document.getElementById('calEndMonth')?.value.trim();
+  const title = document.getElementById('calSemTitle')?.value.trim() || 'Academic Calendar';
+  const status = document.getElementById('calSetupStatus');
+
+  if(!/^\d{4}-\d{2}$/.test(start) || !/^\d{4}-\d{2}$/.test(end)){
+    if(status) status.textContent = '❌ Use YYYY-MM format for both months.';
+    return;
+  }
+  const [sy,sm] = start.split('-').map(Number);
+  const [ey,em] = end.split('-').map(Number);
+  if(sy*12+sm > ey*12+em){ if(status) status.textContent = '❌ Start must be before end.'; return; }
+
+  // Build month keys
+  const keys = [];
+  let y=sy, m=sm;
+  while(y*12+m <= ey*12+em){ keys.push(y+'-'+String(m).padStart(2,'0')); if(++m>12){m=1;y++;} }
+
+  // Generate entries for any NEW months (keep existing data)
+  const existingMap = {};
+  ACADEMIC_CALENDAR.forEach(e=>{ existingMap[e.d]=e; });
+
+  const newEntries = [];
+  keys.forEach(mk=>{
+    const [yr2,mo2] = mk.split('-').map(Number);
+    const gen = generateMonthEntries(yr2, mo2);
+    gen.forEach(e=>{ newEntries.push(existingMap[e.d] || e); });
+  });
+
+  ACADEMIC_CALENDAR = newEntries;
+  CAL_MONTH_KEYS = keys;
+  calSemTitleStr = title;
+  rebuildCalMap();
+  calEdMonth = keys[0];
+
+  // Update UI title
+  const titleEl = document.getElementById('facCalCardTitle');
+  if(titleEl) titleEl.textContent = '📆 ' + title;
+
+  calRenderEdMonthBar();
+  calRenderEdGrid();
+  renderFacCalendar();
+  if(status) status.textContent = `✅ ${keys.length} months generated (${newEntries.length} days). Click Save when done.`;
+}
+
+function calRenderEdMonthBar(){
+  const bar = document.getElementById('calEdMonthBar'); if(!bar) return;
+  bar.innerHTML = CAL_MONTH_KEYS.map(mk=>{
+    const [y,m] = mk.split('-').map(Number);
+    const label = new Date(y,m-1,1).toLocaleString('en-IN',{month:'short',year:'2-digit'});
+    const active = mk === calEdMonth;
+    return `<button onclick="calEdSelectMonth('${mk}')" style="padding:0.3rem 0.7rem;border-radius:6px;font-size:0.78rem;font-weight:${active?'700':'500'};cursor:pointer;border:${active?'2px solid var(--navy)':'1px solid #e2e8f0'};background:${active?'var(--navy)':'#f8faff'};color:${active?'#fff':'var(--navy)'};">${label}</button>`;
+  }).join('');
+}
+
+function calEdSelectMonth(mk){
+  calEdMonth = mk;
+  calRenderEdMonthBar();
+  calRenderEdGrid();
+}
+
+function calRenderEdGrid(){
+  const el = document.getElementById('calEdGrid'); if(!el || !calEdMonth) return;
+  const [yr, mo] = calEdMonth.split('-').map(Number);
+  const daysInMonth = new Date(yr, mo, 0).getDate();
+  const firstDay = new Date(yr, mo-1, 1).getDay();
+  const monthName = new Date(yr,mo-1,1).toLocaleString('en-IN',{month:'long',year:'numeric'});
+  const DN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  let grid = `<div style="font-family:'Merriweather',serif;font-size:0.9rem;font-weight:700;color:var(--navy);margin-bottom:0.6rem;">${monthName}</div>`;
+  grid += `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">`;
+  DN.forEach(d=>{ grid += `<div style="text-align:center;font-size:0.65rem;font-weight:700;color:var(--muted);padding:0.2rem;">${d}</div>`; });
+  for(let i=0;i<firstDay;i++) grid += `<div></div>`;
+
+  for(let d=1; d<=daysInMonth; d++){
+    const ds = yr+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const entry = CAL_MAP[ds] || { d:ds, type:'working', event:'' };
+    const meta = CAL_TYPE_META[entry.type] || CAL_TYPE_META.working;
+    const evt = entry.event || '';
+    grid += `<div onclick="calEdClickDay('${ds}')" title="${ds}${evt?' — '+evt:''}"
+      style="background:${meta.bg};border:2px solid ${meta.dot}33;border-radius:7px;
+             padding:0.3rem 0.2rem;text-align:center;cursor:pointer;min-height:52px;
+             display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;
+             transition:transform 0.1s;position:relative;"
+      onmouseenter="this.style.transform='scale(1.06)'" onmouseleave="this.style.transform=''">
+      <div style="font-size:0.75rem;font-weight:700;color:#374151;">${d}</div>
+      <div style="width:7px;height:7px;border-radius:50%;background:${meta.dot};"></div>
+      ${evt?`<div style="font-size:0.52rem;color:${meta.dot};line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;padding:0 2px;">${evt.length>14?evt.slice(0,13)+'…':evt}</div>`:''}
+    </div>`;
+  }
+  grid += '</div>';
+
+  // Type legend
+  const legend = Object.entries(CAL_TYPE_META).map(([k,v])=>
+    `<span style="display:inline-flex;align-items:center;gap:4px;font-size:0.68rem;color:#555;cursor:default;" title="${v.label}">
+      <span style="width:9px;height:9px;border-radius:50%;background:${v.dot};display:inline-block;"></span>${v.label}
+    </span>`
+  ).join('');
+  el.innerHTML = grid + `<div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:0.8rem;">${legend}</div>`;
+}
+
+function calEdClickDay(ds){
+  const entry = CAL_MAP[ds] || { d:ds, type:'working', event:'' };
+  const [yr,mo,dy] = ds.split('-');
+  const dateLabel = new Date(parseInt(yr),parseInt(mo)-1,parseInt(dy))
+    .toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  // Build modal
+  const optHtml = Object.entries(CAL_TYPE_META).map(([k,v])=>
+    `<option value="${k}" ${entry.type===k?'selected':''}>${v.label}</option>`
+  ).join('');
+
+  const modal = document.createElement('div');
+  modal.innerHTML = `
+    <div style="position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;padding:1rem;">
+      <div style="background:#fff;border-radius:14px;padding:1.5rem;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="font-family:'Merriweather',serif;font-size:0.95rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem;">📅 ${dateLabel}</div>
+        <div style="font-size:0.73rem;color:var(--muted);margin-bottom:1rem;">${ds}</div>
+        <label style="font-size:0.78rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Day Type</label>
+        <select id="_calDayType" class="admin-input" style="width:100%;box-sizing:border-box;margin-bottom:0.8rem;cursor:pointer;">${optHtml}</select>
+        <label style="font-size:0.78rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Event / Note <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+        <input id="_calDayEvent" class="admin-input" value="${(entry.event||'').replace(/"/g,'&quot;')}" placeholder="e.g. Pongal, IA Exam, Sports Day…" style="width:100%;box-sizing:border-box;margin-bottom:1rem;">
+        <div style="display:flex;gap:0.6rem;justify-content:flex-end;">
+          <button onclick="this.closest('div[style*=fixed]').remove()" style="background:#e8edf2;border:none;border-radius:7px;padding:0.45rem 1.1rem;cursor:pointer;font-size:0.85rem;">Cancel</button>
+          <button id="_calDaySaveBtn" style="background:var(--gold);color:#fff;border:none;border-radius:7px;padding:0.45rem 1.4rem;cursor:pointer;font-size:0.85rem;font-weight:700;">Save Day</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+
+  document.getElementById('_calDaySaveBtn').onclick = function(){
+    const type = document.getElementById('_calDayType').value;
+    const evt  = document.getElementById('_calDayEvent').value.trim();
+    // Update or insert entry
+    const dow = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(parseInt(yr),parseInt(mo)-1,parseInt(dy)).getDay()];
+    const updated = { d:ds, day:dow, wk:(type==='working'?1:null), ord:'', event:evt, type };
+    CAL_MAP[ds] = updated;
+    // Update ACADEMIC_CALENDAR array
+    const idx = ACADEMIC_CALENDAR.findIndex(e=>e.d===ds);
+    if(idx>=0) ACADEMIC_CALENDAR[idx] = updated;
+    else ACADEMIC_CALENDAR.push(updated);
+    ACADEMIC_CALENDAR.sort((a,b)=>a.d.localeCompare(b.d));
+    modal.remove();
+    calRenderEdGrid();
+    renderFacCalendar();
+  };
+}
+
+async function calSaveToDB(){
+  const title = document.getElementById('calSemTitle')?.value.trim() || calSemTitleStr;
+  calSemTitleStr = title;
+  adminToast('Saving calendar to Firebase…');
+  const ok = await saveAcademicCalendarToFB(ACADEMIC_CALENDAR, CAL_MONTH_KEYS, title);
+  if(ok){
+    adminToast(`✅ Calendar saved! ${ACADEMIC_CALENDAR.length} days across ${CAL_MONTH_KEYS.length} months.`);
+    // Refresh student calendar too
+    renderStudentCalendar();
+    const titleEl = document.getElementById('facCalCardTitle');
+    if(titleEl) titleEl.textContent = '📆 ' + title;
+  } else {
+    adminToast('❌ Save failed — check Firebase connection.');
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// ONE-BY-ONE QUIZ RENDERER — Anti-cheat
+// ═══════════════════════════════════════════════════════════════════
+let _quizCurrent = 0;        // current question index
+let _quizAnswers = [];        // stored answers [{qIdx, answer, type}]
+let _quizQuestions = [];      // questions for this attempt
+
+function renderQuizOneByOne(questions){
+  _quizQuestions = questions;
+  _quizCurrent = 0;
+  _quizAnswers = new Array(questions.length).fill(null);
+  renderCurrentQuestion();
+}
+
+function renderCurrentQuestion(){
+  const questions = _quizQuestions;
+  const i = _quizCurrent;
+  const q = questions[i];
+  const info = currentUserInfo;
+  const studentLabel = info ? `${info.name} · ${info.reg}` : 'Student';
+  const total = questions.length;
+  const answered = _quizAnswers.filter(a=>a!==null).length;
+
+  // Watermark — student identity burned into question UI
+  const watermark = `<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);
+    font-size:clamp(0.7rem,2.5vw,1rem);font-weight:700;color:rgba(11,37,69,0.06);
+    white-space:nowrap;pointer-events:none;user-select:none;letter-spacing:0.05em;z-index:0;
+    text-transform:uppercase;">${studentLabel}</div>`;
+
+  // Progress bar
+  const pct = Math.round((i/(total))*100);
+  const progressBar = `<div style="height:4px;background:#e2e8f0;border-radius:2px;margin-bottom:1.2rem;">
+    <div style="height:100%;width:${pct}%;background:var(--sky);border-radius:2px;transition:width 0.3s;"></div>
+  </div>`;
+
+  // Question number & type badge
+  const typeColor = q.type==='mcq'?'var(--sky)':q.type==='five'?'#c9882a':'#2d6a4f';
+  const typeLabel = q.type==='mcq'?'MCQ · 2 marks':q.type==='five'?'5-Mark Question':'8-Mark Question';
+  const qHeader = `<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem;">
+    <span style="font-size:0.72rem;font-weight:700;color:var(--muted);">Question ${i+1} of ${total}</span>
+    <span style="background:${typeColor};color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:10px;">${typeLabel}</span>
+    <span style="margin-left:auto;font-size:0.7rem;color:var(--muted);">${answered}/${total} answered</span>
+  </div>`;
+
+  // Anti-screenshot note (subtle, not paranoid)
+  const antiNote = `<div style="font-size:0.65rem;color:rgba(107,114,128,0.8);text-align:right;margin-bottom:0.5rem;user-select:none;">
+    🔒 ${studentLabel}
+  </div>`;
+
+  let bodyHtml = '';
+  const savedAns = _quizAnswers[i];
+
+  if(q.type==='mcq'){
+    const opts = q.options.map((o,oi)=>{
+      const sel = savedAns !== null && savedAns == oi;
+      return `<div class="quiz-mcq-opt${sel?' selected':''}" onclick="_quizSelectMcq(${oi},this)"
+        style="position:relative;z-index:1;">${o}</div>`;
+    }).join('');
+    bodyHtml = `<div style="position:relative;overflow:hidden;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:1.4rem 1.2rem;">
+      ${watermark}
+      ${antiNote}
+      ${qHeader}
+      <div class="quiz-q-text" style="position:relative;z-index:1;margin-bottom:1rem;">${q.question}</div>
+      <div id="_quizOptContainer">${opts}</div>
+      <input type="hidden" id="_quizAnsField" value="${savedAns!==null?savedAns:''}">
+    </div>`;
+  } else {
+    const savedText = (savedAns !== null && typeof savedAns === 'string') ? savedAns : '';
+    bodyHtml = `<div style="position:relative;overflow:hidden;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:1.4rem 1.2rem;">
+      ${watermark}
+      ${antiNote}
+      ${qHeader}
+      <div class="quiz-q-text" style="position:relative;z-index:1;margin-bottom:0.5rem;">${q.question}</div>
+      <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.6rem;position:relative;z-index:1;">${q.type==='five'?'~150 words expected':'~300 words expected'}</div>
+      <textarea id="_quizAnsField" class="quiz-textarea" placeholder="Type your answer here…"
+        style="position:relative;z-index:1;"
+        onpaste="return false;" oncopy="return false;">${savedText}</textarea>
+    </div>`;
+  }
+
+  // Navigation buttons
+  const isLast = i === total - 1;
+  const navHtml = `<div style="display:flex;gap:0.7rem;align-items:center;justify-content:space-between;margin-top:1rem;flex-wrap:wrap;">
+    <div style="font-size:0.72rem;color:var(--muted);">Questions are in random order for integrity.</div>
+    <div style="display:flex;gap:0.6rem;">
+      ${isLast
+        ? `<button onclick="_quizSaveCurrent(true)" style="background:var(--navy);color:#fff;border:none;border-radius:8px;padding:0.7rem 2rem;font-size:0.88rem;font-weight:700;cursor:pointer;">✅ Submit Quiz</button>`
+        : `<button onclick="_quizSaveCurrent(false)" style="background:var(--sky);color:#fff;border:none;border-radius:8px;padding:0.7rem 2rem;font-size:0.88rem;font-weight:700;cursor:pointer;">Next Question →</button>`
+      }
+    </div>
+  </div>`;
+
+  document.getElementById('quizBody').innerHTML =
+    progressBar + bodyHtml + navHtml;
+
+  // Scroll to top of quiz body
+  document.getElementById('quizBody').scrollTop = 0;
+}
+
+function _quizSelectMcq(optIdx, el){
+  document.querySelectorAll('#_quizOptContainer .quiz-mcq-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  const f = document.getElementById('_quizAnsField');
+  if(f) f.value = optIdx;
+}
+
+function _quizSaveCurrent(isSubmit){
+  const q = _quizQuestions[_quizCurrent];
+  const field = document.getElementById('_quizAnsField');
+  const val = field ? field.value.trim() : '';
+
+  if(q.type === 'mcq'){
+    if(val === ''){
+      if(!confirm('You haven\'t selected an answer for this MCQ. Skip it?')) return;
+      _quizAnswers[_quizCurrent] = null;
+    } else {
+      _quizAnswers[_quizCurrent] = parseInt(val);
+    }
+  } else {
+    _quizAnswers[_quizCurrent] = val || null;
+  }
+
+  if(isSubmit){
+    const unanswered = _quizAnswers.filter(a=>a===null).length;
+    if(unanswered > 0){
+      if(!confirm(`You have ${unanswered} unanswered question${unanswered>1?'s':''}. Submit anyway?`)) return;
+    }
+    // Build currentQuizQuestions answers for submitQuiz compatibility
+    // Map _quizAnswers back into format submitQuiz expects (ans_N fields)
+    // We'll call a modified submitQuiz directly
+    _quizFinalSubmit();
+  } else {
+    _quizCurrent++;
+    renderCurrentQuestion();
+  }
+}
+
+async function _quizFinalSubmit(){
+  clearInterval(quizTimerInterval);
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
+  const info = currentUserInfo; if(!info) return;
+  const questions = _quizQuestions;
+  let totalMarks=0, earnedMarks=0;
+  const answers = [];
+
+  questions.forEach((q,i)=>{
+    const rawAns = _quizAnswers[i];
+    if(q.type==='mcq'){
+      const chosen = rawAns !== null ? rawAns : -1;
+      const correct = chosen === q.correct;
+      const pts = correct ? 2 : 0;
+      earnedMarks += pts;
+      totalMarks += 2;
+      answers.push({ q:q.question, type:'mcq', ans:chosen, correct:q.correct, pts });
+    } else {
+      const text = rawAns || '';
+      totalMarks += q.maxMarks;
+      answers.push({ q:q.question, type:q.type, ans:text, pts:0, pendingReview:text.length>5 });
+    }
+  });
+
+  const score = totalMarks > 0 ? Math.round(earnedMarks/totalMarks*100) : 0;
+  const ek = eKey(info.email);
+  const cl = currentLesson;
+  const pk = progKey(cl.subjectId, cl.ui, cl._localLi!==undefined?cl._localLi:cl.li);
+
+  const prog = { done:true, score, totalMarks, earnedMarks, violations:quizViolations, autoSubmit:false,
+    ts:Date.now(), type:currentQuizType||'lesson', answers };
+
+  if(!progressCache[ek]) progressCache[ek]={};
+  progressCache[ek][pk] = prog;
+
+  await fbSet('/progress/'+ek+'/'+pk, prog);
+  await fbSet('/quizAnswers/'+ek+'/'+pk, answers);
+
+  // Show result screen
+  const mcqCorrect = answers.filter(a=>a.type==='mcq'&&a.pts>0).length;
+  const mcqTotal   = answers.filter(a=>a.type==='mcq').length;
+  const descPending= answers.filter(a=>a.pendingReview).length;
+  const color = score>=75?'#22c55e':score>=50?'#f59e0b':'#ef4444';
+
+  document.getElementById('quizBody').innerHTML = `
+    <div style="text-align:center;padding:2rem 1rem;">
+      <div style="font-size:3rem;margin-bottom:0.6rem;">${score>=75?'🎉':score>=50?'👍':'📚'}</div>
+      <div style="font-family:'Merriweather',serif;font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;">Quiz Submitted!</div>
+      <div style="font-size:2.2rem;font-weight:700;color:${color};margin:0.5rem 0;">${score}%</div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;">
+        MCQ: ${mcqCorrect}/${mcqTotal} correct · Marks: ${earnedMarks}/${totalMarks}
+        ${descPending?`<br>📝 ${descPending} descriptive answer${descPending>1?'s':''} pending faculty review`:''}
+        ${quizViolations?`<br>⚠️ ${quizViolations} violation${quizViolations>1?'s':''} recorded`:''}
+      </div>
+      <button onclick="closeQuizOverlay()" style="background:var(--navy);color:#fff;border:none;border-radius:8px;padding:0.7rem 2rem;font-size:0.88rem;font-weight:700;cursor:pointer;">✅ Done</button>
+    </div>`;
+
+  // Refresh student syllabus to show updated progress
+  if(currentUserInfo) renderStudentSyllabus(currentUserInfo);
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// EMAIL NOTIFICATION ENGINE — EmailJS
+// Config stored in Firebase at /emailConfig
+// ═══════════════════════════════════════════════════════════════════
+let emailCfg = { publicKey:'', serviceId:'', templateId:'', senderName:'NASC Biotech Dept', enabled:false };
+let _ejInited = false;
+
+async function loadEmailConfig(){
+  const d = await fbGet('/emailConfig');
+  if(d && typeof d === 'object'){
+    emailCfg = { ...emailCfg, ...d };
+    _applyEmailCfgToUI();
+    _initEmailJS();
+  }
+}
+
+function _applyEmailCfgToUI(){
+  const f = (id,v)=>{ const el=document.getElementById(id); if(el) el.value=v||''; };
+  f('ejPublicKey',   emailCfg.publicKey);
+  f('ejServiceId',   emailCfg.serviceId);
+  f('ejTemplateId',  emailCfg.templateId);
+  f('ejSenderName',  emailCfg.senderName);
+  const cb = document.getElementById('emailNotifEnabled');
+  if(cb) cb.checked = !!emailCfg.enabled;
+}
+
+function _initEmailJS(){
+  if(!emailCfg.publicKey || _ejInited) return;
+  try { emailjs.init({ publicKey: emailCfg.publicKey }); _ejInited=true; } catch(e){}
+}
+
+async function saveEmailConfig(){
+  const cfg = {
+    publicKey:  document.getElementById('ejPublicKey')?.value.trim()||'',
+    serviceId:  document.getElementById('ejServiceId')?.value.trim()||'',
+    templateId: document.getElementById('ejTemplateId')?.value.trim()||'',
+    senderName: document.getElementById('ejSenderName')?.value.trim()||'NASC Biotech Dept',
+    enabled:    document.getElementById('emailNotifEnabled')?.checked||false,
+  };
+  if(!cfg.publicKey||!cfg.serviceId||!cfg.templateId){ adminToast('Fill in all EmailJS fields.'); return; }
+  document.getElementById('emailConfigStatus').textContent = 'Saving…';
+  const ok = await fbSet('/emailConfig', cfg);
+  if(ok){
+    emailCfg = cfg; _ejInited = false; _initEmailJS();
+    document.getElementById('emailConfigStatus').textContent = '✅ Saved';
+    adminToast('Email config saved ✅');
+  } else {
+    document.getElementById('emailConfigStatus').textContent = '❌ Save failed';
+  }
+}
+
+async function testEmailConfig(){
+  if(!emailCfg.enabled){ adminToast('Enable email notifications first.'); return; }
+  const me = currentFacEmail || currentUserInfo?.email;
+  if(!me){ adminToast('No logged-in email found.'); return; }
+
+  // Show test target
+  const noteEl = document.getElementById('ejTestNote');
+  const targetEl = document.getElementById('ejTestTarget');
+  if(noteEl){ noteEl.style.display='block'; }
+  if(targetEl){ targetEl.textContent = me; }
+
+  adminToast('Sending test to ' + me + '…');
+  const statusEl = document.getElementById('emailConfigStatus');
+  if(statusEl) statusEl.textContent = 'Sending test…';
+
+  const ok = await _sendEmail(
+    me,
+    currentUserInfo?.name || 'Developer',
+    '✅ Test — NASC Biotech Portal Email Working',
+    'This is a test from the NASC Biotech Portal. If you received this at ' + me + ', your EmailJS setup is correct. If emails still go to dept Gmail instead, update your EmailJS template To Email field to {{to_email}} and save the template.'
+  );
+
+  if(ok){
+    if(statusEl) statusEl.textContent = '✅ Test sent to ' + me;
+    adminToast('✅ Test sent to ' + me + ' — check inbox!');
+    const checkEl = document.getElementById('ejTemplateCheck');
+    if(checkEl){
+      checkEl.style.display='block';
+      checkEl.style.background='#f0fdf4'; checkEl.style.border='1px solid #86efac'; checkEl.style.color='#166534';
+      checkEl.innerHTML='✅ Credentials are valid. If email did not arrive at your inbox (arrived at dept Gmail instead), fix the EmailJS template "To Email" field — set it to <code style="background:#dcfce7;padding:1px 4px;border-radius:3px;">{{to_email}}</code>';
+    }
+  } else {
+    if(statusEl) statusEl.textContent = '❌ Test failed';
+    adminToast('❌ Test failed — check Public Key, Service ID and Template ID.');
+    const checkEl = document.getElementById('ejTemplateCheck');
+    if(checkEl){
+      checkEl.style.display='block';
+      checkEl.style.background='#fef2f2'; checkEl.style.border='1px solid #fca5a5'; checkEl.style.color='#991b1b';
+      checkEl.innerHTML='❌ Send failed. Verify your Public Key, Service ID, and Template ID are correct.';
+    }
+  }
+}
+
+// Core send function — sends ONE email
+async function _sendEmail(toEmail, toName, subject, message){
+  if(!emailCfg.enabled || !emailCfg.serviceId || !emailCfg.templateId || !emailCfg.publicKey) return false;
+  try {
+    // Use EmailJS REST API directly — allows dynamic To address regardless of template settings
+    const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        service_id:  emailCfg.serviceId,
+        template_id: emailCfg.templateId,
+        user_id:     emailCfg.publicKey,
+        accessToken: emailCfg.publicKey,
+        template_params: {
+          to_email:  toEmail,
+          to_name:   toName,
+          subject:   subject,
+          message:   message,
+          dept_name: emailCfg.senderName || 'NASC Biotech Dept',
+          reply_to:  currentFacEmail || '',
+        },
+      }),
+    });
+    if(res.ok || res.status === 200){ return true; }
+    const errText = await res.text().catch(()=>'');
+    console.error('EmailJS REST error', res.status, errText);
+    return false;
+  } catch(e){
+    console.error('EmailJS error:', e);
+    return false;
+  }
+}
+
+// Send to multiple recipients (sequential to respect rate limits)
+async function _sendBulkEmail(recipients, subject, message, toastPrefix){
+  if(!emailCfg.enabled) return;
+  if(!recipients.length) return;
+  adminToast(`${toastPrefix} Sending ${recipients.length} email${recipients.length>1?'s':''}…`);
+  let sent=0, failed=0;
+  for(const {email, name} of recipients){
+    const ok = await _sendEmail(email, name, subject, message);
+    if(ok) sent++; else failed++;
+    await new Promise(r=>setTimeout(r,300)); // rate limit gap
+  }
+  adminToast(`📧 Emails: ${sent} sent${failed?', '+failed+' failed':' ✅'}`);
+}
+
+// ── Get student recipients for a year ──
+function _studentsForYear(yr){
+  return getStudentsByYear(yr).map(u=>{
+    const info = parseProfile(u.email, u.displayName);
+    return { email: u.email, name: info.name };
+  });
+}
+
+// ── Get ALL students ──
+function _allStudents(){
+  return [1,2,3].flatMap(yr=>_studentsForYear(yr));
+}
+
+// ══ TRIGGER FUNCTIONS (called from save actions) ══
+
+// Syllabus updated → notify year students
+async function notifysyllabusUpdate(yr, subjName){
+  const students = _studentsForYear(yr);
+  if(!students.length) return;
+  const yrLabel = ['I','II','III'][yr-1] || yr;
+  await _sendBulkEmail(
+    students,
+    `Syllabus Updated — ${subjName}`,
+    `Dear Student,\n\nThe syllabus for "${subjName}" has been updated by your faculty in the NASC Biotech Portal.\n\nPlease log in to your portal to view the latest lessons and study materials.\n\nPortal: ${location.origin}\n\nRegards,\n${emailCfg.senderName}`,
+    '📚 Syllabus:'
+  );
+}
+
+// Internal marks updated → notify that specific student
+async function notifyMarksUpdate(studentEmail, studentName, yr){
+  const subjNames = getFacSubjectsForYear(yr).map(s=>s.name).join(', ');
+  await _sendBulkEmail(
+    [{ email: studentEmail, name: studentName }],
+    'Internal Assessment Marks Updated',
+    `Dear ${studentName},\n\nYour Internal Assessment (IA) marks have been updated for the following subject(s):\n${subjNames}\n\nPlease log in to your student portal to view your marks.\n\nPortal: ${location.origin}\n\nRegards,\n${emailCfg.senderName}`,
+    '📊 Marks:'
+  );
+}
+
+// Timetable updated → notify year students
+async function notifyTimetableUpdate(yr){
+  const students = _studentsForYear(yr);
+  if(!students.length) return;
+  const yrLabel = ['I','II','III'][yr-1] || yr;
+  await _sendBulkEmail(
+    students,
+    `Timetable Updated — ${yrLabel} Year`,
+    `Dear Student,\n\nThe class timetable for ${yrLabel} Year B.Sc. Biotechnology has been updated.\n\nPlease log in to your student portal to view the updated timetable.\n\nPortal: ${location.origin}\n\nRegards,\n${emailCfg.senderName}`,
+    '📅 Timetable:'
+  );
+}
+
+// Flash news added → notify ALL students
+async function notifyFlashNews(newsText){
+  const students = _allStudents();
+  await _sendBulkEmail(
+    students,
+    'Flash News — NASC Biotech Department',
+    `Dear Student,\n\nNew flash news from the Department of Biotechnology:\n\n"${newsText}"\n\nFor more details, log in to your student portal.\n\nPortal: ${location.origin}\n\nRegards,\n${emailCfg.senderName}`,
+    '📣 Flash:'
+  );
+}
+
+// Notification added → notify ALL students
+async function notifyNotification(title, desc, type){
+  const students = _allStudents();
+  const typeLabels = {exam:'📝 Exam',event:'📅 Event',notice:'📌 Notice',holiday:'🎉 Holiday'};
+  const typeLabel = typeLabels[type]||'🔔 Notification';
+  await _sendBulkEmail(
+    students,
+    `${typeLabel}: ${title}`,
+    `Dear Student,\n\n${typeLabel} from the Department of Biotechnology:\n\n${title}${desc?'\n\n'+desc:''}\n\nFor more details, log in to your student portal.\n\nPortal: ${location.origin}\n\nRegards,\n${emailCfg.senderName}`,
+    '🔔 Notif:'
+  );
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// EMAIL COMPOSER — Manual send to any recipients
+// ═══════════════════════════════════════════════════════════════════
+let _emailSelectedRecipients = new Set(); // set of emails
+
+function renderEmailComposer(){
+  const el = document.getElementById('emailComposerBody');
+  if(!el) return;
+
+  // Show/hide email config card (dev only, only on this tab)
+  const ecc = document.getElementById('emailConfigCard');
+  if(ecc){
+    ecc.style.display = currentIsDev ? '' : 'none';
+    if(currentIsDev) _applyEmailCfgToUI();
+  }
+
+  const allStudents = getAllUsers().filter(u=>u.role==='student');
+  const allFaculty  = getAllUsers().filter(u=>u.role==='faculty'||u.isDev);
+
+  // Quick-select group buttons
+  const quickBtns = `
+    <div style="margin-bottom:1rem;">
+      <div style="font-size:0.78rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;">Quick Select</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.45rem;">
+        <button class="ec-quick-btn" onclick="ecQuickSelect('all')">🎓 All Students</button>
+        <button class="ec-quick-btn" onclick="ecQuickSelect('yr1')">📘 I Year</button>
+        <button class="ec-quick-btn" onclick="ecQuickSelect('yr2')">📗 II Year</button>
+        <button class="ec-quick-btn" onclick="ecQuickSelect('yr3')">📙 III Year</button>
+        <button class="ec-quick-btn" onclick="ecQuickSelect('faculty')">👨‍🏫 All Faculty</button>
+        <button class="ec-quick-btn" onclick="ecQuickSelect('hod')">👑 HOD</button>
+        <button class="ec-quick-btn" onclick="ecQuickSelect('none')" style="background:#e8edf2;color:var(--navy);">✕ Clear</button>
+      </div>
+    </div>`;
+
+  // Student checkboxes grouped by year
+  const studentsHtml = [1,2,3].map(yr=>{
+    const yStudents = getStudentsByYear(yr);
+    if(!yStudents.length) return '';
+    const yrLabel = ['I','II','III'][yr-1];
+    const yrColor = ['#3b82f6','#0ea5e9','#06b6d4'][yr-1];
+    return `<div style="margin-bottom:0.9rem;">
+      <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;">
+        <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+          <input type="checkbox" class="ec-yr-check" data-yr="${yr}" onchange="ecToggleYear(${yr},this.checked)"
+            style="width:15px;height:15px;accent-color:${yrColor};cursor:pointer;">
+          <span style="font-size:0.78rem;font-weight:700;color:${yrColor};">🎓 ${yrLabel} Year (${yStudents.length})</span>
+        </label>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.3rem;padding-left:1.2rem;">
+        ${yStudents.map(u=>{
+          const info = parseProfile(u.email, u.displayName);
+          return `<label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;padding:0.25rem 0.4rem;border-radius:5px;transition:background 0.1s;" onmouseenter="this.style.background='#f0f9ff'" onmouseleave="this.style.background=''">
+            <input type="checkbox" class="ec-student-check ec-yr-${yr}" value="${u.email}" onchange="ecToggleRecipient('${u.email}',this.checked)"
+              style="width:14px;height:14px;accent-color:${yrColor};cursor:pointer;">
+            <span style="font-size:0.78rem;color:var(--navy);">${info.name}</span>
+            <span style="font-size:0.65rem;color:var(--muted);margin-left:auto;">${info.reg}</span>
+          </label>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Faculty checkboxes
+  const facHtml = `<div style="margin-bottom:0.9rem;">
+    <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;">
+      <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+        <input type="checkbox" id="ec-fac-all" onchange="ecToggleFaculty(this.checked)"
+          style="width:15px;height:15px;accent-color:#c9882a;cursor:pointer;">
+        <span style="font-size:0.78rem;font-weight:700;color:#c9882a;">👨‍🏫 Faculty & Staff (${allFaculty.length})</span>
+      </label>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.3rem;padding-left:1.2rem;">
+      ${allFaculty.map(u=>{
+        const info = parseProfile(u.email, u.displayName);
+        return `<label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;padding:0.25rem 0.4rem;border-radius:5px;" onmouseenter="this.style.background='#fffbf0'" onmouseleave="this.style.background=''">
+          <input type="checkbox" class="ec-fac-check" value="${u.email}" onchange="ecToggleRecipient('${u.email}',this.checked)"
+            style="width:14px;height:14px;accent-color:#c9882a;cursor:pointer;">
+          <span style="font-size:0.78rem;color:var(--navy);">${info.name||u.displayName||u.email.split('@')[0]}${u.isDev?' ⭐':''}</span>
+        </label>`;
+      }).join('')}
+    </div>
+  </div>`;
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:start;" class="ec-grid">
+      <!-- LEFT: Recipients -->
+      <div>
+        <div style="font-size:0.8rem;font-weight:700;color:var(--navy);margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem;">
+          Recipients
+          <span id="ecRecipCount" style="background:var(--sky);color:#fff;border-radius:10px;padding:1px 8px;font-size:0.68rem;font-weight:700;">0</span>
+        </div>
+        ${quickBtns}
+        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:0.8rem;max-height:380px;overflow-y:auto;background:#fafbff;">
+          ${studentsHtml}
+          ${facHtml}
+        </div>
+      </div>
+
+      <!-- RIGHT: Compose -->
+      <div>
+        <div style="font-size:0.8rem;font-weight:700;color:var(--navy);margin-bottom:0.6rem;">Message</div>
+        <!-- Selected recipients pill list (above subject) -->
+        <div style="margin-bottom:0.7rem;">
+          <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">
+            To <span id="ecPillCount" style="font-weight:400;color:var(--muted);"></span>
+          </label>
+          <div id="ecRecipPills" style="min-height:36px;border:1px solid #e2e8f0;border-radius:7px;padding:0.4rem 0.5rem;background:#f8faff;display:flex;flex-wrap:wrap;gap:0.3rem;max-height:120px;overflow-y:auto;">
+            <span style="font-size:0.73rem;color:#aaa;align-self:center;">No recipients selected yet — use the checkboxes on the left.</span>
+          </div>
+        </div>
+        <div style="margin-bottom:0.7rem;">
+          <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Subject</label>
+          <input id="ecSubject" class="admin-input" placeholder="e.g. Important Notice — Biotech Dept" style="width:100%;box-sizing:border-box;">
+        </div>
+        <div style="margin-bottom:0.7rem;">
+          <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Message</label>
+          <textarea id="ecMessage" class="admin-input" rows="8" placeholder="Type your message here…" style="width:100%;box-sizing:border-box;resize:vertical;font-family:inherit;line-height:1.6;"></textarea>
+        </div>
+        <!-- Recipient email list below message -->
+        <div style="margin-bottom:0.7rem;">
+          <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">
+            Selected Recipient Emails
+          </label>
+          <div id="ecEmailListBox" style="min-height:32px;border:1px dashed #cbd5e1;border-radius:7px;padding:0.4rem 0.6rem;background:#f8faff;max-height:110px;overflow-y:auto;font-size:0.72rem;color:#374151;line-height:1.7;word-break:break-all;">
+            <span style="color:#aaa;">—</span>
+          </div>
+        </div>
+        <div style="background:#fffbf0;border:1px solid #fde68a;border-radius:7px;padding:0.5rem 0.8rem;font-size:0.72rem;color:#92400e;margin-bottom:0.9rem;">
+          ⚠️ Emails will be sent to <strong><span id="ecRecipCountMsg">0</span> recipient(s)</strong>. This cannot be undone. Verify recipients before sending.
+        </div>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;">
+          <button onclick="ecSendEmails()" style="background:var(--gold);color:#fff;border:none;border-radius:8px;padding:0.6rem 1.8rem;font-size:0.88rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(201,136,42,0.3);">📧 Send Email</button>
+          <button onclick="ecClearComposer()" style="background:#e8edf2;color:var(--navy);border:none;border-radius:7px;padding:0.6rem 1.2rem;font-size:0.85rem;cursor:pointer;">🗑 Clear</button>
+          <span id="ecSendStatus" style="font-size:0.75rem;color:var(--muted);margin-left:auto;"></span>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .ec-quick-btn{background:var(--sky);color:#fff;border:none;border-radius:6px;padding:0.32rem 0.85rem;font-size:0.76rem;font-weight:600;cursor:pointer;transition:opacity 0.15s;}
+      .ec-quick-btn:hover{opacity:0.85;}
+      @media(max-width:700px){.ec-grid{grid-template-columns:1fr!important;}}
+    </style>`;
+
+  _emailSelectedRecipients = new Set();
+  ecUpdateCount();
+}
+
+function ecToggleRecipient(email, checked){
+  if(checked) _emailSelectedRecipients.add(email);
+  else _emailSelectedRecipients.delete(email);
+  ecUpdateCount();
+  ecSyncYearCheckboxes();
+  ecSyncFacultyCheckbox();
+}
+
+function ecToggleYear(yr, checked){
+  document.querySelectorAll(`.ec-yr-${yr}`).forEach(cb=>{
+    cb.checked = checked;
+    if(checked) _emailSelectedRecipients.add(cb.value);
+    else _emailSelectedRecipients.delete(cb.value);
+  });
+  ecUpdateCount();
+}
+
+function ecToggleFaculty(checked){
+  document.querySelectorAll('.ec-fac-check').forEach(cb=>{
+    cb.checked = checked;
+    if(checked) _emailSelectedRecipients.add(cb.value);
+    else _emailSelectedRecipients.delete(cb.value);
+  });
+  ecUpdateCount();
+}
+
+function ecSyncYearCheckboxes(){
+  [1,2,3].forEach(yr=>{
+    const all = document.querySelectorAll(`.ec-yr-${yr}`);
+    const checked = document.querySelectorAll(`.ec-yr-${yr}:checked`);
+    const yrCb = document.querySelector(`.ec-yr-check[data-yr="${yr}"]`);
+    if(yrCb){
+      yrCb.checked = all.length > 0 && checked.length === all.length;
+      yrCb.indeterminate = checked.length > 0 && checked.length < all.length;
+    }
+  });
+}
+
+function ecSyncFacultyCheckbox(){
+  const all = document.querySelectorAll('.ec-fac-check');
+  const checked = document.querySelectorAll('.ec-fac-check:checked');
+  const cb = document.getElementById('ec-fac-all');
+  if(cb){
+    cb.checked = all.length > 0 && checked.length === all.length;
+    cb.indeterminate = checked.length > 0 && checked.length < all.length;
+  }
+}
+
+function ecUpdateCount(){
+  const n = _emailSelectedRecipients.size;
+  // Update badges
+  const c1 = document.getElementById('ecRecipCount');
+  const c2 = document.getElementById('ecRecipCountMsg');
+  if(c1) c1.textContent = n;
+  if(c2) c2.textContent = n;
+
+  // Update pills (above subject)
+  const pillBox = document.getElementById('ecRecipPills');
+  const pillCount = document.getElementById('ecPillCount');
+  if(pillBox){
+    if(n === 0){
+      pillBox.innerHTML = '<span style="font-size:0.73rem;color:#aaa;align-self:center;">No recipients selected yet — use the checkboxes on the left.</span>';
+    } else {
+      const allUsers = getAllUsers();
+      const pills = [..._emailSelectedRecipients].map(email=>{
+        const u = allUsers.find(u=>u.email.toLowerCase()===email.toLowerCase());
+        const info = parseProfile(email, u?.displayName);
+        const name = info.name || email.split('@')[0];
+        return `<span style="display:inline-flex;align-items:center;gap:4px;background:#e0f2fe;color:#0369a1;border-radius:12px;padding:2px 9px;font-size:0.72rem;font-weight:600;white-space:nowrap;">
+          ${name}
+          <span onclick="ecRemovePill('${email}')" title="Remove" style="cursor:pointer;color:#0369a1;opacity:0.6;font-size:0.8rem;line-height:1;margin-left:1px;">×</span>
+        </span>`;
+      }).join('');
+      pillBox.innerHTML = pills;
+    }
+    if(pillCount) pillCount.textContent = n > 0 ? `(${n})` : '';
+  }
+
+  // Update email list (below message)
+  const emailListBox = document.getElementById('ecEmailListBox');
+  if(emailListBox){
+    if(n === 0){
+      emailListBox.innerHTML = '<span style="color:#aaa;">\u2014</span>';
+    } else {
+      emailListBox.innerHTML = [..._emailSelectedRecipients].join(' &nbsp;·&nbsp; ');
+    }
+  }
+}
+
+function ecRemovePill(email){
+  _emailSelectedRecipients.delete(email);
+  // Uncheck the corresponding checkbox
+  const cb = document.querySelector(`.ec-student-check[value="${email}"], .ec-fac-check[value="${email}"]`);
+  if(cb) cb.checked = false;
+  ecSyncYearCheckboxes();
+  ecSyncFacultyCheckbox();
+  ecUpdateCount();
+}
+
+function ecQuickSelect(group){
+  // Clear all first
+  document.querySelectorAll('.ec-student-check, .ec-fac-check').forEach(cb=>{ cb.checked=false; });
+  _emailSelectedRecipients = new Set();
+  document.querySelectorAll('.ec-yr-check').forEach(cb=>{ cb.checked=false; cb.indeterminate=false; });
+  const facAllCb = document.getElementById('ec-fac-all');
+  if(facAllCb){ facAllCb.checked=false; facAllCb.indeterminate=false; }
+
+  if(group === 'none'){ ecUpdateCount(); return; }
+
+  if(group === 'all' || group.startsWith('yr')){
+    const targetYr = group==='all' ? null : parseInt(group.replace('yr',''));
+    document.querySelectorAll('.ec-student-check').forEach(cb=>{
+      const yr = parseInt(cb.className.match(/ec-yr-(\d)/)?.[1]);
+      if(!targetYr || yr===targetYr){
+        cb.checked = true;
+        _emailSelectedRecipients.add(cb.value);
+      }
+    });
+    ecSyncYearCheckboxes();
+  }
+
+  if(group === 'faculty'){
+    ecToggleFaculty(true);
+  }
+
+  if(group === 'hod'){
+    const hodEmail = staffRoles.hod;
+    if(hodEmail){
+      const cb = document.querySelector(`.ec-fac-check[value="${hodEmail}"]`);
+      if(cb){ cb.checked=true; }
+      _emailSelectedRecipients.add(hodEmail);
+    } else {
+      adminToast('No HOD assigned yet. Assign HOD in Staff Management first.');
+    }
+    ecSyncFacultyCheckbox();
+  }
+
+  ecUpdateCount();
+}
+
+async function ecSendEmails(){
+  if(!emailCfg.enabled){
+    adminToast('Email notifications are not enabled. Configure EmailJS in the Staff tab first.');
+    return;
+  }
+  const recipients = [..._emailSelectedRecipients];
+  if(!recipients.length){ adminToast('Select at least one recipient.'); return; }
+  const subject = document.getElementById('ecSubject')?.value.trim();
+  const message = document.getElementById('ecMessage')?.value.trim();
+  if(!subject){ adminToast('Enter a subject.'); return; }
+  if(!message){ adminToast('Enter a message.'); return; }
+
+  const status = document.getElementById('ecSendStatus');
+  if(status) status.textContent = `Sending to ${recipients.length} recipient(s)…`;
+
+  // Build recipient list with names
+  const allUsers = getAllUsers();
+  const recipList = recipients.map(email=>{
+    const u = allUsers.find(u=>u.email.toLowerCase()===email.toLowerCase());
+    const info = parseProfile(email, u?.displayName);
+    return { email, name: info.name || email.split('@')[0] };
+  });
+
+  let sent=0, failed=0;
+  for(const {email, name} of recipList){
+    const ok = await _sendEmail(email, name, subject, message);
+    if(ok) sent++; else failed++;
+    if(status) status.textContent = `Sending… ${sent+failed}/${recipList.length}`;
+    await new Promise(r=>setTimeout(r,300));
+  }
+
+  const result = `✅ ${sent} sent${failed?', ❌ '+failed+' failed':''}`;
+  if(status) status.textContent = result;
+  adminToast(`📧 ${result}`);
+}
+
+function ecClearComposer(){
+  document.querySelectorAll('.ec-student-check,.ec-fac-check,.ec-yr-check').forEach(cb=>{
+    cb.checked=false; cb.indeterminate=false;
+  });
+  const facAllCb=document.getElementById('ec-fac-all');
+  if(facAllCb){ facAllCb.checked=false; facAllCb.indeterminate=false; }
+  _emailSelectedRecipients = new Set();
+  ecUpdateCount();
+  const s=document.getElementById('ecSubject'); if(s) s.value='';
+  const m=document.getElementById('ecMessage'); if(m) m.value='';
+  const st=document.getElementById('ecSendStatus'); if(st) st.textContent='';
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// USER EDITOR — Dev & HOD only
+// Edits: name, password, role, isDev, faculty permissions
+// ═══════════════════════════════════════════════════════════════════
+let _ueTargetEmail = null;
+
+function openUserEditor(email){
+  if(!(currentIsDev || isHod())){ adminToast('Only Developer or HOD can edit users.'); return; }
+  _ueTargetEmail = email.toLowerCase();
+
+  const all = getAllUsers();
+  const u = all.find(u=>u.email.toLowerCase()===_ueTargetEmail);
+  if(!u){ adminToast('User not found.'); return; }
+
+  const info = parseProfile(u.email, u.displayName);
+  const isBuiltIn = BASE_USERS.some(b=>b.email.toLowerCase()===_ueTargetEmail);
+  const isFaculty = u.role === 'faculty';
+
+  document.getElementById('ueModalTitle').textContent = 'Edit — ' + info.name;
+  document.getElementById('ueModalSub').textContent   = u.email + (isBuiltIn?' · Built-in user':'');
+
+  // Faculty permissions checkboxes
+  const facPerms = u.permissions || {};
+  const facPermsHtml = isFaculty ? `
+    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #e8edf2;">
+      <div style="font-size:0.78rem;font-weight:700;color:var(--navy);margin-bottom:0.6rem;">🔐 Faculty Permissions</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.35rem;">
+        ${[
+          ['canViewMarks',    '📊 View Internal Marks'],
+          ['canEditMarks',    '✏️ Edit Internal Marks'],
+          ['canViewAttendance','✅ View Attendance'],
+          ['canEditAttendance','✏️ Edit Attendance'],
+          ['canEditSyllabus', '📚 Edit Syllabus/Lessons'],
+          ['canViewProgress', '📈 View Student Progress'],
+          ['canEditTimetable','📅 Edit Timetable'],
+          ['canSendEmail',    '📧 Send Emails'],
+          ['canAddQuestions', '📝 Add Quiz Questions'],
+          ['canManageFlash',  '📣 Manage Flash News'],
+        ].map(([key,label])=>`
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--navy);cursor:pointer;padding:0.2rem 0;">
+            <input type="checkbox" id="ueperm_${key}" ${facPerms[key]!==false?'checked':''} style="width:14px;height:14px;accent-color:var(--sky);cursor:pointer;">
+            ${label}
+          </label>`).join('')}
+      </div>
+      <div style="margin-top:0.5rem;font-size:0.7rem;color:var(--muted);">Unchecked = permission denied for this faculty member.</div>
+    </div>` : '';
+
+  document.getElementById('ueModalBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.7rem;">
+      <div>
+        <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Full Name</label>
+        <input id="ueDisplayName" class="admin-input" value="${(u.displayName||info.name||'').replace(/"/g,'&quot;')}" placeholder="Display name" style="width:100%;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Email (read-only)</label>
+        <input class="admin-input" value="${u.email}" disabled style="width:100%;box-sizing:border-box;background:#f1f5f9;color:#64748b;">
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.7rem;">
+      <div>
+        <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">New Password <span style="font-weight:400;color:var(--muted);">(leave blank to keep)</span></label>
+        <input id="uePassword" class="admin-input" type="text" placeholder="Enter new password" style="width:100%;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Role</label>
+        <select id="ueRole" class="admin-input" style="width:100%;box-sizing:border-box;cursor:pointer;" ${isBuiltIn?'disabled':''}>
+          <option value="student" ${u.role==='student'?'selected':''}>🎓 Student</option>
+          <option value="faculty" ${u.role==='faculty'?'selected':''}>👨‍🏫 Faculty</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:1.2rem;margin-bottom:0.8rem;flex-wrap:wrap;">
+      <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--navy);cursor:pointer;">
+        <input type="checkbox" id="ueIsDev" ${u.isDev?'checked':''} style="width:15px;height:15px;accent-color:#c9882a;cursor:pointer;" ${isBuiltIn&&!currentIsDev?'disabled':''}>
+        ⭐ Developer Access
+      </label>
+      ${isBuiltIn?'<span style="font-size:0.72rem;color:var(--muted);align-self:center;">(Built-in: role &amp; permissions are editable, password changes saved to Firebase)</span>':''}
+    </div>
+
+    ${facPermsHtml}
+
+    <div style="display:flex;gap:0.6rem;justify-content:flex-end;margin-top:1.2rem;padding-top:1rem;border-top:1px solid #e8edf2;">
+      <button onclick="closeUserEditor()" style="background:#e8edf2;border:none;border-radius:7px;padding:0.5rem 1.2rem;cursor:pointer;font-size:0.85rem;">Cancel</button>
+      <button onclick="saveUserEdit()" style="background:var(--gold);color:#fff;border:none;border-radius:7px;padding:0.5rem 1.4rem;cursor:pointer;font-size:0.85rem;font-weight:700;">💾 Save Changes</button>
+    </div>`;
+
+  const modal = document.getElementById('userEditorModal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeUserEditor(){
+  const m = document.getElementById('userEditorModal');
+  m.style.display = 'none';
+  document.body.style.overflow = '';
+  _ueTargetEmail = null;
+}
+
+async function saveUserEdit(){
+  if(!_ueTargetEmail) return;
+
+  const all = getAllUsers();
+  const u = all.find(u=>u.email.toLowerCase()===_ueTargetEmail);
+  if(!u){ adminToast('User not found.'); return; }
+
+  const isBuiltIn = BASE_USERS.findIndex(b=>b.email.toLowerCase()===_ueTargetEmail);
+  const newName  = document.getElementById('ueDisplayName')?.value.trim() || '';
+  const newPwd   = document.getElementById('uePassword')?.value.trim() || '';
+  const newRole  = document.getElementById('ueRole')?.value || u.role;
+  const newIsDev = document.getElementById('ueIsDev')?.checked || false;
+
+  // Faculty permissions
+  const permKeys = ['canViewMarks','canEditMarks','canViewAttendance','canEditAttendance',
+    'canEditSyllabus','canViewProgress','canEditTimetable','canSendEmail','canAddQuestions','canManageFlash'];
+  const permissions = {};
+  permKeys.forEach(k=>{
+    const el = document.getElementById('ueperm_'+k);
+    if(el) permissions[k] = el.checked;
+  });
+
+  // Hash new password if provided
+  let newHash = u.password;
+  if(newPwd) newHash = await hashPassword(newPwd);
+
+  // Build updated user object
+  const updated = {
+    ...u,
+    displayName: newName || u.displayName,
+    password: newHash,
+    role: isBuiltIn >= 0 ? u.role : newRole,  // built-in role can't change
+    isDev: newIsDev,
+    permissions: (newRole==='faculty'||u.role==='faculty') ? permissions : undefined,
+  };
+  if(!updated.isDev) delete updated.isDev;
+  if(!updated.permissions || Object.keys(updated.permissions).length===0) delete updated.permissions;
+
+  // Update in BASE_USERS (in-memory) or extraUsers + Firebase
+  if(isBuiltIn >= 0){
+    BASE_USERS[isBuiltIn] = updated;
+    // Save override to Firebase for persistence across deploys
+    await fbSet('/userOverrides/'+eKey(updated.email), updated);
+    adminToast('✅ Changes saved (built-in user overrides in Firebase).');
+  } else {
+    const extraIdx = extraUsers.findIndex(eu=>eu.email.toLowerCase()===_ueTargetEmail);
+    if(extraIdx >= 0){
+      extraUsers[extraIdx] = updated;
+      const k = eKey(updated.email)+'_'+updated.role;
+      await fbSet('/extraUsers/'+k, updated);
+      adminToast('✅ User updated permanently.');
+    }
+  }
+
+  closeUserEditor();
+  renderUserList();
+}
+
+
+// ── Load user overrides (edits to built-in users) from Firebase ──
+async function loadUserOverrides(){
+  try {
+    const d = await fbGet('/userOverrides');
+    if(!d || typeof d !== 'object') return;
+    Object.values(d).forEach(override => {
+      const idx = BASE_USERS.findIndex(u=>u.email.toLowerCase()===override.email.toLowerCase());
+      if(idx >= 0){
+        BASE_USERS[idx] = { ...BASE_USERS[idx], ...override };
+      }
+    });
+  } catch(e){ console.warn('userOverrides load error:', e); }
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// STAFF EDITOR — Edit department faculty profile (name, degree, role)
+// ═══════════════════════════════════════════════════════════════════
+function openStaffEditor(staffId){
+  if(!(currentIsDev || isHod())){ adminToast('Only Developer or HOD can edit staff.'); return; }
+  const s = DEPARTMENT_STAFF.find(s=>s.id===staffId);
+  if(!s){ adminToast('Staff not found.'); return; }
+
+  const modal = document.createElement('div');
+  modal.id = '_staffEdModal';
+  modal.innerHTML = `
+    <div style="position:fixed;inset:0;z-index:100003;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:1rem;">
+      <div style="background:#fff;border-radius:14px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.3);overflow:hidden;">
+        <div style="background:var(--navy);color:#fff;padding:0.9rem 1.3rem;display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-family:'Merriweather',serif;font-size:0.95rem;font-weight:700;">&#9998; Edit Staff Profile</span>
+          <button onclick="document.getElementById('_staffEdModal').remove();document.body.style.overflow='';" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:5px;padding:3px 10px;cursor:pointer;">&#10005;</button>
+        </div>
+        <div style="padding:1.3rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.7rem;">
+            <div style="grid-column:1/-1;">
+              <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Full Name</label>
+              <input id="_seName" class="admin-input" value="${s.name.replace(/"/g,'&quot;')}" style="width:100%;box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Degree / Qualification</label>
+              <input id="_seDeg" class="admin-input" value="${(s.deg||'').replace(/"/g,'&quot;')}" style="width:100%;box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Designation</label>
+              <input id="_seRole" class="admin-input" value="${(s.role||'').replace(/"/g,'&quot;')}" style="width:100%;box-sizing:border-box;">
+            </div>
+          </div>
+          <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--navy);cursor:pointer;margin-bottom:1rem;">
+            <input type="checkbox" id="_sePhd" ${s.phd?'checked':''} style="width:14px;height:14px;accent-color:var(--sky);">
+            Ph.D Holder
+          </label>
+          <div style="display:flex;gap:0.6rem;justify-content:flex-end;padding-top:0.8rem;border-top:1px solid #e8edf2;">
+            <button onclick="document.getElementById('_staffEdModal').remove();document.body.style.overflow='';" style="background:#e8edf2;border:none;border-radius:7px;padding:0.45rem 1.1rem;cursor:pointer;font-size:0.85rem;">Cancel</button>
+            <button onclick="_saveStaffEdit('${staffId}')" style="background:var(--gold);color:#fff;border:none;border-radius:7px;padding:0.45rem 1.3rem;cursor:pointer;font-size:0.85rem;font-weight:700;">&#128190; Save</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  document.body.style.overflow = 'hidden';
+}
+
+async function _saveStaffEdit(staffId){
+  const idx = DEPARTMENT_STAFF.findIndex(s=>s.id===staffId);
+  if(idx<0) return;
+  const name = document.getElementById('_seName')?.value.trim();
+  const deg  = document.getElementById('_seDeg')?.value.trim();
+  const role = document.getElementById('_seRole')?.value.trim();
+  const phd  = document.getElementById('_sePhd')?.checked||false;
+  if(!name){ adminToast('Name cannot be empty.'); return; }
+  DEPARTMENT_STAFF[idx] = { ...DEPARTMENT_STAFF[idx], name, deg, role, phd };
+  // Save to Firebase
+  const ok = await fbSet('/departmentStaff/'+staffId, DEPARTMENT_STAFF[idx]);
+  document.getElementById('_staffEdModal')?.remove();
+  document.body.style.overflow = '';
+  renderStaffMgmt();
+  adminToast(ok ? '&#10003; Staff profile updated!' : 'Updated locally (Firebase offline).');
+}
+
+
+async function loadDepartmentStaffOverrides(){
+  try {
+    const d = await fbGet('/departmentStaff');
+    if(!d || typeof d !== 'object') return;
+    Object.entries(d).forEach(([id, override])=>{
+      const idx = DEPARTMENT_STAFF.findIndex(s=>s.id===id);
+      if(idx>=0) DEPARTMENT_STAFF[idx] = { ...DEPARTMENT_STAFF[idx], ...override };
+    });
+  } catch(e){}
+}
 
 // ── EXPOSE TO WINDOW ──
 window.toggleNav=toggleNav; window.openLogin=openLogin; window.closeLogin=closeLogin;
@@ -5465,6 +6911,31 @@ window.qEdAddQ=qEdAddQ;
 window.qEdDelQ=qEdDelQ;
 window.qEdUpdate=qEdUpdate;
 window.saveQEditor=saveQEditor;
+window.showCalendarTab=showCalendarTab;
+window.toggleCalEditor=toggleCalEditor;
+window.calSetupSemester=calSetupSemester;
+window.calEdSelectMonth=calEdSelectMonth;
+window.calEdClickDay=calEdClickDay;
+window.calSaveToDB=calSaveToDB;
+window.calRenderEdGrid=calRenderEdGrid;
+window._quizSelectMcq=_quizSelectMcq;
+window._quizSaveCurrent=_quizSaveCurrent;
+window._quizFinalSubmit=_quizFinalSubmit;
+window.saveEmailConfig=saveEmailConfig;
+window.testEmailConfig=testEmailConfig;
+window.renderEmailComposer=renderEmailComposer;
+window.ecToggleRecipient=ecToggleRecipient;
+window.ecToggleYear=ecToggleYear;
+window.ecToggleFaculty=ecToggleFaculty;
+window.ecQuickSelect=ecQuickSelect;
+window.ecSendEmails=ecSendEmails;
+window.ecClearComposer=ecClearComposer;
+window.ecRemovePill=ecRemovePill;
+window.openUserEditor=openUserEditor;
+window.closeUserEditor=closeUserEditor;
+window.saveUserEdit=saveUserEdit;
+window.openStaffEditor=openStaffEditor;
+window._saveStaffEdit=_saveStaffEdit;
 if(typeof openLesson!=='undefined') window.openLesson=openLesson;
 if(typeof openLessonByTopic!=='undefined') window.openLessonByTopic=openLessonByTopic;
 window.retryLessonLoad=retryLessonLoad;
@@ -5491,7 +6962,7 @@ if(typeof editUnitName!=='undefined') window.editUnitName=editUnitName;
 // ACADEMIC CALENDAR DATA (from official NASC PDF 2025-2026 Even Sem)
 // type: 'working'|'weekend'|'holiday_gov'|'holiday_col'|'exam'|'event'
 // ═══════════════════════════════════════════════════════════════════
-const ACADEMIC_CALENDAR = [
+let ACADEMIC_CALENDAR = [
   // DECEMBER 2025
   {d:'2025-12-01',day:'Mon',wk:1,ord:'I',event:'Commencement of Even Semester / World AIDS Day',type:'event'},
   {d:'2025-12-02',day:'Tue',wk:2,ord:'II',event:'National Pollution Control Day',type:'working'},
@@ -5651,7 +7122,7 @@ const ACADEMIC_CALENDAR = [
 ];
 
 // Build a lookup map for fast calendar checks
-const CAL_MAP = {};
+let CAL_MAP = {};
 ACADEMIC_CALENDAR.forEach(e=>{ CAL_MAP[e.d]=e; });
 
 // Get calendar entry for a date string
@@ -5666,7 +7137,7 @@ function isCalHoliday(ds){
 // CALENDAR RENDER (Faculty panel + Student portal)
 // ═══════════════════════════════════════════════════════════════════
 const CAL_MONTHS = ['December 2025','January 2026','February 2026','March 2026','April 2026'];
-const CAL_MONTH_KEYS = ['2025-12','2026-01','2026-02','2026-03','2026-04'];
+let CAL_MONTH_KEYS = ['2025-12','2026-01','2026-02','2026-03','2026-04'];
 let calViewMonth = '2026-03'; // default to current month
 
 function buildCalendarHTML(monthKey, forStudent){
@@ -5880,6 +7351,7 @@ function renderStaffMgmt(){
           <option value="3" ${(staffRoles.classIncharge[3]||'')=== s.id?'selected':''}>III Year</option>
           <option value="0">Remove Incharge</option>
         </select>
+        <button onclick="openStaffEditor('${s.id}')" style="font-size:0.7rem;padding:0.25rem 0.6rem;background:#e0f2fe;color:var(--sky);border:1px solid #bae6fd;border-radius:5px;cursor:pointer;font-weight:700;">&#9998; Edit</button>
       </div>
     </div>`;
   }).join('');
@@ -6514,17 +7986,19 @@ function showMalpracticeWarn(msg){
 }
 
 async function runQuiz(lessonName, unitName, subjectName, topics, quizType, lessonContent){
-  // Load questions from Firebase (set by faculty/developer)
   const cl = currentLesson;
-  let questions = null;
+  let rawData = null;
 
   if(cl){
-    const yr = currentUserInfo?.yearOfStudy || 2;
-    const type = cl._isTopic ? 'topic' : 'unit-lesson';
-    questions = await loadLessonQuestions(yr, cl.si, cl.ui, cl._ti, cl._localLi!==undefined?cl._localLi:cl.li, cl._isTopic?'topic':'unit');
+    rawData = await loadLessonQuestions(
+      currentUserInfo?.yearOfStudy || 2,
+      cl.si, cl.ui, cl._ti,
+      cl._localLi!==undefined ? cl._localLi : cl.li,
+      cl._isTopic ? 'topic' : 'unit'
+    );
   }
 
-  if(!questions || !questions.length){
+  if(!rawData || !rawData.questions || !rawData.questions.length){
     document.getElementById('quizBody').innerHTML = `
       <div style="text-align:center;padding:2.5rem 1rem;">
         <div style="font-size:2.5rem;margin-bottom:0.8rem;">📭</div>
@@ -6535,10 +8009,37 @@ async function runQuiz(lessonName, unitName, subjectName, topics, quizType, less
     return;
   }
 
+  let questions = [...rawData.questions];
+  const showCount = rawData.showCount || 0;
+
+  // ── Shuffle questions (Fisher-Yates) ──
+  for(let i=questions.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [questions[i], questions[j]] = [questions[j], questions[i]];
+  }
+
+  // ── Pick random subset if showCount is set ──
+  if(showCount > 0 && showCount < questions.length){
+    questions = questions.slice(0, showCount);
+  }
+
+  // ── Shuffle MCQ options (keeping correct answer tracked) ──
+  questions = questions.map(q=>{
+    if(q.type !== 'mcq') return q;
+    const origCorrectText = q.options[q.correct]; // track by text
+    const shuffled = [...q.options];
+    for(let i=shuffled.length-1; i>0; i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+    }
+    const newCorrect = shuffled.indexOf(origCorrectText);
+    return {...q, options: shuffled, correct: newCorrect};
+  });
+
   currentQuizQuestions = questions;
   quizTimeLeft = quizType==='unit' ? 25*60 : 15*60;
   startQuizTimer();
-  renderQuizQuestions(questions);
+  renderQuizOneByOne(questions);
 }
 
 function startQuizTimer(){
@@ -7034,12 +8535,19 @@ function viewAnswers(ek, pk){
     </div>
 
     <!-- Add question controls -->
-    <div style="padding:1rem 1.4rem;border-bottom:2px solid #e8edf2;background:#f8faff;display:flex;flex-wrap:wrap;gap:0.6rem;align-items:center;">
+    <div style="padding:0.8rem 1.4rem;border-bottom:2px solid #e8edf2;background:#f8faff;display:flex;flex-wrap:wrap;gap:0.6rem;align-items:center;">
       <span style="font-size:0.8rem;font-weight:700;color:var(--navy);">Add Question:</span>
       <button onclick="qEdAddQ('mcq')" style="background:var(--sky);color:#fff;border:none;border-radius:6px;padding:0.38rem 0.9rem;font-size:0.8rem;cursor:pointer;font-weight:600;">＋ MCQ</button>
       <button onclick="qEdAddQ('five')" style="background:#c9882a;color:#fff;border:none;border-radius:6px;padding:0.38rem 0.9rem;font-size:0.8rem;cursor:pointer;font-weight:600;">＋ 5-Mark</button>
       <button onclick="qEdAddQ('eight')" style="background:#2d6a4f;color:#fff;border:none;border-radius:6px;padding:0.38rem 0.9rem;font-size:0.8rem;cursor:pointer;font-weight:600;">＋ 8-Mark</button>
-      <span style="margin-left:auto;font-size:0.75rem;color:var(--muted);" id="qEdCount">0 questions</span>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:0.5rem;">
+        <label style="font-size:0.75rem;color:var(--muted);white-space:nowrap;">Show students:</label>
+        <input id="qEdShowCount" type="number" min="1" max="50" value="0" title="How many questions each student sees (0 = all). Shown in random order."
+          style="width:52px;border:1px solid #cdd5e0;border-radius:5px;padding:0.28rem 0.4rem;font-size:0.78rem;text-align:center;">
+        <span style="font-size:0.72rem;color:var(--muted);">of</span>
+        <span id="qEdCount" style="font-size:0.78rem;font-weight:700;color:var(--navy);">0</span>
+        <span style="font-size:0.72rem;color:var(--muted);">questions</span>
+      </div>
     </div>
 
     <!-- Questions list -->
@@ -7056,5 +8564,26 @@ function viewAnswers(ek, pk){
   </div>
 </div>
 
+
+<!-- ══ USER EDITOR MODAL ══ -->
+<div id="userEditorModal" style="position:fixed;inset:0;z-index:100002;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;padding:1rem;box-sizing:border-box;">
+  <div style="background:#fff;border-radius:14px;width:100%;max-width:520px;box-shadow:0 24px 64px rgba(0,0,0,0.35);overflow:hidden;">
+    <!-- Header -->
+    <div style="background:var(--navy);color:#fff;padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-family:'Merriweather',serif;font-size:0.95rem;font-weight:700;" id="ueModalTitle">Edit User</div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.6);" id="ueModalSub">Modify user details &amp; permissions</div>
+      </div>
+      <button onclick="closeUserEditor()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:0.82rem;">✕</button>
+    </div>
+    <!-- Body -->
+    <div style="padding:1.3rem 1.4rem;max-height:75vh;overflow-y:auto;" id="ueModalBody">
+      <!-- Rendered by openUserEditor() -->
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
+
+
