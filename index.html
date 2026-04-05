@@ -88,6 +88,10 @@ button.dht.active{background:var(--gold);border-color:var(--gold);color:#fff;box
 
 /* ── FULL-WIDTH PAGE LAYOUT ── */
 
+.sidebar{display:none!important;}
+.page-layout{display:block;width:100%;max-width:1280px;margin:0 auto;padding:1.5rem 2.5rem;box-sizing:border-box;}
+.content-panel{width:100%;}
+
 @media(max-width:768px){
   .college-header{flex-wrap:wrap;padding:0.75rem 1rem;}
   .ch-right{display:none;}
@@ -3719,14 +3723,15 @@ let currentUserObj=null;     // full user record (includes isDev, role)
 function getAllUsers(){ return[...BASE_USERS,...extraUsers]; }
 function getStudentsByYear(yr){
   return getAllUsers().filter(u=>{
-    if(u.role!=='student')return false;
+    if(u.role!=='student') return false;
+    // yearOverride takes priority over email-derived year
+    if(u.yearOverride && [1,2,3].includes(u.yearOverride)) return u.yearOverride === yr;
     const m=u.email.split('@')[0].split('.')[0].match(/^(\d+)/);
-    if(!m)return false;
-    return(2026-(parseInt(m[1])+2000))===yr;
+    if(!m) return false;
+    return (2026-(parseInt(m[1])+2000)) === yr;
   }).sort((a,b)=>{
-    // Sort alphabetically by display name
-    const na=parseProfile(a.email,a.displayName).name.toLowerCase();
-    const nb=parseProfile(b.email,b.displayName).name.toLowerCase();
+    const na=parseProfile(a.email,a.displayName,a).name.toLowerCase();
+    const nb=parseProfile(b.email,b.displayName,b).name.toLowerCase();
     return na.localeCompare(nb);
   });
 }
@@ -3813,13 +3818,16 @@ async function doLogin(){
   }
 }
 
-function parseProfile(email,displayName){
+function parseProfile(email,displayName,userObj){
   const local=email.split('@')[0],parts=local.split('.');
   const reg=parts[0],nm=parts[1]||'user';
   const name=displayName||(nm.split('_').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '));
   const init=nm.split('_').map(w=>w.charAt(0).toUpperCase()).join('');
   const m=reg.match(/^(\d+)/); const yc=m?parseInt(m[1]):24;
-  const yr=2026-(yc+2000);
+  let yr=2026-(yc+2000);
+  // Check for year override (set by Dev/HOD via User Editor)
+  const uObj = userObj || getAllUsers().find(u=>u.email.toLowerCase()===email.toLowerCase());
+  if(uObj && uObj.yearOverride && [1,2,3].includes(uObj.yearOverride)) yr = uObj.yearOverride;
   const yl={1:'I Year',2:'II Year',3:'III Year'};
   return{name,init,reg:reg.toUpperCase(),yearLabel:yl[yr]||(yr+' Year'),yearOfStudy:yr};
 }
@@ -4212,7 +4220,7 @@ async function addFlashNews(){
   await fbSet('/flashNews/'+id, item);
   document.getElementById('fnInput').value='';
   renderFacFlashList(); renderFacFlash(); renderStudentFlash(); adminToast('Flash news added! \u2705');
-  notifyFlashNews(txt);
+  promptEmailNotify('flash', {txt});
 }
 async function deleteFlash(id){
   flashNewsData=flashNewsData.filter(i=>i.id!==id);
@@ -4242,6 +4250,7 @@ async function addNotification(){
   await fbSet('/notifications/'+id, item);
   document.getElementById('nfTitle').value=''; document.getElementById('nfDesc').value='';
   renderFacNotifList(); renderStudentNotifs(); adminToast('Notification added! \u2705');
+  promptEmailNotify('notification', {title, desc, type});
 }
 async function deleteNotif(id){
   notificationsData=notificationsData.filter(n=>n.id!==id);
@@ -4323,6 +4332,7 @@ async function saveSyllabusLessons(yr, si){
   });
   const ok=await fbSet('/syllabusLessons/'+yr+'/'+sk, payload);
   if(!ok) adminToast('❌ Lesson not saved — update Firebase Rules to ".write":true (Security tab)');
+  else promptEmailNotify('syllabus', {yr, subjName: sylData[yr][si].name});
 }
 
 // ─────────────────────────────────────
@@ -4539,7 +4549,7 @@ async function saveTimetable(){
   adminToast('Saving timetable…');
   const ok=await fbSet('/timetable',ttData);
   adminToast(ok?'Timetable saved permanently! ✅':'Timetable saved locally (Firebase offline).');
-  if(ok) notifyTimetableUpdate(facTTYear);
+  if(ok) promptEmailNotify('timetable', {yr:facTTYear});
 }
 
 // ── Faculty Subject Admin ──
@@ -4745,7 +4755,7 @@ async function saveStudentMarks(email){
     if(verify){
       marksCache[ek]=verify;
       adminToast('✅ Marks saved permanently!');
-      const _mProf=parseProfile(email,''); notifyMarksUpdate(email, _mProf.name, facMarksYear);
+      const _mProf=parseProfile(email,''); promptEmailNotify('marks', {studentEmail:email, studentName:_mProf.name, yr:facMarksYear});
       if(currentUserInfo&&currentUserInfo.email.toLowerCase()===email.toLowerCase()) renderStudentMarks(currentUserInfo);
     } else {
       adminToast('⚠️ Write OK but read failed — check Firebase rules allow .read:true');
@@ -5553,14 +5563,21 @@ async function loadLessonQuestions(yr, si, ui, ti, li, type){
 // Returns array of years [1,2,3] where current faculty has subject assignments
 function getAssignedYearsForFaculty(){
   if(currentIsDev || isHod()) return [1,2,3];
+  // Check allowedYears stored on the faculty user object (set by Dev/HOD)
+  const facUser = getAllUsers().find(u=>u.email.toLowerCase()===currentFacEmail.toLowerCase());
+  if(facUser && Array.isArray(facUser.allowedYears) && facUser.allowedYears.length){
+    return facUser.allowedYears.filter(y=>[1,2,3].includes(y));
+  }
+  // Fallback: derive from subject assignments in facData
   const assigned = [];
   [1,2,3].forEach(yr=>{
     const rows = facData[yr]||[];
     const namePart = (currentFacEmail.split('.')[1]||'').split('@')[0].toLowerCase();
-    const found = rows.some(a=>a.faculty && namePart && a.faculty.toLowerCase().includes(namePart));
-    if(found) assigned.push(yr);
+    const byEmail = rows.some(a=>a.facultyEmail && a.facultyEmail.toLowerCase()===currentFacEmail.toLowerCase());
+    const byName  = rows.some(a=>a.faculty && namePart && a.faculty.toLowerCase().includes(namePart));
+    if(byEmail || byName) assigned.push(yr);
   });
-  return assigned.length ? assigned : [1,2,3]; // fallback all years if no match
+  return assigned.length ? assigned : [1,2,3];
 }
 
 function isHod(){
@@ -6662,15 +6679,41 @@ function openUserEditor(email){
       </div>
     </div>
 
-    <div style="display:flex;gap:1.2rem;margin-bottom:0.8rem;flex-wrap:wrap;">
-      <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--navy);cursor:pointer;">
-        <input type="checkbox" id="ueIsDev" ${u.isDev?'checked':''} style="width:15px;height:15px;accent-color:#c9882a;cursor:pointer;" ${isBuiltIn&&!currentIsDev?'disabled':''}>
-        ⭐ Developer Access
-      </label>
-      ${isBuiltIn?'<span style="font-size:0.72rem;color:var(--muted);align-self:center;">(Built-in: role &amp; permissions are editable, password changes saved to Firebase)</span>':''}
-    </div>
+    ${u.role==='student'?`
+    <div style="margin-bottom:0.8rem;padding:0.8rem 1rem;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;">📅 Year of Study Override</div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.4rem;">
+        <label id="ueYL1" style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;border:1.5px solid #e2e8f0;border-radius:7px;padding:0.35rem 0.9rem;font-size:0.8rem;font-weight:700;color:var(--navy);background:#fff;">
+          <input type="radio" name="ueYearRadio" value="1" style="display:none;" onchange="ueHighlightYear(1)"> I Year
+        </label>
+        <label id="ueYL2" style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;border:1.5px solid #e2e8f0;border-radius:7px;padding:0.35rem 0.9rem;font-size:0.8rem;font-weight:700;color:var(--navy);background:#fff;">
+          <input type="radio" name="ueYearRadio" value="2" style="display:none;" onchange="ueHighlightYear(2)"> II Year
+        </label>
+        <label id="ueYL3" style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;border:1.5px solid #e2e8f0;border-radius:7px;padding:0.35rem 0.9rem;font-size:0.8rem;font-weight:700;color:var(--navy);background:#fff;">
+          <input type="radio" name="ueYearRadio" value="3" style="display:none;" onchange="ueHighlightYear(3)"> III Year
+        </label>
+      </div>
+      <div style="font-size:0.68rem;color:#1e40af;">Override if student was held back or promoted.</div>
+    </div>`:''}
 
     ${facPermsHtml}
+
+    ${isFaculty?`
+    <div style="margin-bottom:0.8rem;padding:0.8rem 1rem;background:#fef9ee;border:1px solid #fde68a;border-radius:8px;">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;">🎓 Year Access — Which years can this faculty access?</div>
+      <div style="display:flex;gap:1.2rem;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.8rem;font-weight:700;color:var(--navy);">
+          <input type="checkbox" id="ueFacYr1" style="width:15px;height:15px;accent-color:var(--sky);cursor:pointer;"> I Year
+        </label>
+        <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.8rem;font-weight:700;color:var(--navy);">
+          <input type="checkbox" id="ueFacYr2" style="width:15px;height:15px;accent-color:var(--sky);cursor:pointer;"> II Year
+        </label>
+        <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.8rem;font-weight:700;color:var(--navy);">
+          <input type="checkbox" id="ueFacYr3" style="width:15px;height:15px;accent-color:var(--sky);cursor:pointer;"> III Year
+        </label>
+      </div>
+      <div style="font-size:0.68rem;color:#92400e;margin-top:0.4rem;">Unchecked years are hidden from this faculty in Marks, Attendance, Progress and Syllabus.</div>
+    </div>`:''}
 
     <div style="display:flex;gap:0.6rem;justify-content:flex-end;margin-top:1.2rem;padding-top:1rem;border-top:1px solid #e8edf2;">
       <button onclick="closeUserEditor()" style="background:#e8edf2;border:none;border-radius:7px;padding:0.5rem 1.2rem;cursor:pointer;font-size:0.85rem;">Cancel</button>
@@ -6680,6 +6723,22 @@ function openUserEditor(email){
   const modal = document.getElementById('userEditorModal');
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
+
+  // Pre-select student year radio
+  if(u.role==='student'){
+    const curYr = u.yearOverride || parseProfile(u.email,u.displayName,u).yearOfStudy;
+    const radio = document.querySelector(`input[name="ueYearRadio"][value="${curYr}"]`);
+    if(radio){ radio.checked=true; ueHighlightYear(curYr); }
+  }
+
+  // Pre-check faculty year access checkboxes
+  if(isFaculty){
+    const allowedYrs = u.allowedYears || [1,2,3];
+    [1,2,3].forEach(y=>{
+      const cb = document.getElementById('ueFacYr'+y);
+      if(cb) cb.checked = allowedYrs.includes(y);
+    });
+  }
 }
 
 function closeUserEditor(){
@@ -6711,6 +6770,29 @@ async function saveUserEdit(){
     if(el) permissions[k] = el.checked;
   });
 
+  // Student year override
+  let yearOverride = undefined;
+  if(u.role==='student'){
+    const selectedYrRadio = document.querySelector('input[name="ueYearRadio"]:checked');
+    if(selectedYrRadio){
+      const selectedYr = parseInt(selectedYrRadio.value);
+      const emailYr = parseProfile(u.email,u.displayName,u).yearOfStudy;
+      yearOverride = selectedYr !== emailYr ? selectedYr : undefined;
+    }
+  }
+
+  // Faculty allowed years
+  let allowedYears = undefined;
+  if(newRole==='faculty' || u.role==='faculty'){
+    const yr1 = document.getElementById('ueFacYr1')?.checked;
+    const yr2 = document.getElementById('ueFacYr2')?.checked;
+    const yr3 = document.getElementById('ueFacYr3')?.checked;
+    if(yr1!==undefined || yr2!==undefined || yr3!==undefined){
+      allowedYears = [yr1?1:null, yr2?2:null, yr3?3:null].filter(Boolean);
+      if(allowedYears.length===3) allowedYears = undefined; // all years = no restriction
+    }
+  }
+
   // Hash new password if provided
   let newHash = u.password;
   if(newPwd) newHash = await hashPassword(newPwd);
@@ -6720,12 +6802,15 @@ async function saveUserEdit(){
     ...u,
     displayName: newName || u.displayName,
     password: newHash,
-    role: isBuiltIn >= 0 ? u.role : newRole,  // built-in role can't change
-    isDev: newIsDev,
+    role: isBuiltIn >= 0 ? u.role : newRole,
+    isDev: newIsDev || undefined,
     permissions: (newRole==='faculty'||u.role==='faculty') ? permissions : undefined,
+    yearOverride: yearOverride,
+    allowedYears: allowedYears,
   };
-  if(!updated.isDev) delete updated.isDev;
-  if(!updated.permissions || Object.keys(updated.permissions).length===0) delete updated.permissions;
+  // Clean undefined fields
+  Object.keys(updated).forEach(k=>{ if(updated[k]===undefined) delete updated[k]; });
+  if(updated.permissions && Object.keys(updated.permissions).length===0) delete updated.permissions;
 
   // Update in BASE_USERS (in-memory) or extraUsers + Firebase
   if(isBuiltIn >= 0){
@@ -6839,6 +6924,106 @@ async function loadDepartmentStaffOverrides(){
   } catch(e){}
 }
 
+
+function ueHighlightYear(yr){
+  [1,2,3].forEach(y=>{
+    const lbl = document.getElementById('ueYL'+y);
+    if(!lbl) return;
+    const active = y===yr;
+    lbl.style.background = active?'var(--sky)':'#fff';
+    lbl.style.color = active?'#fff':'var(--navy)';
+    lbl.style.borderColor = active?'var(--sky)':'#e2e8f0';
+  });
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// EMAIL PROMPT — Ask faculty/HOD/Dev to send email after an update
+// Shows a dismissible banner at the bottom of the faculty portal
+// ═══════════════════════════════════════════════════════════════════
+function promptEmailNotify(type, data){
+  if(!emailCfg.enabled) return; // Email not configured — skip prompt
+
+  // Build context message
+  let subject = '', message = '', recipients = [];
+  const yrLabel = (yr) => ['I','II','III'][yr-1]+' Year';
+
+  if(type === 'flash'){
+    subject = 'Flash News — NASC Biotech Department';
+    message = `New flash news from the Department of Biotechnology:\n\n"${data.txt}"`;
+    recipients = _allStudents();
+  } else if(type === 'notification'){
+    const typeLabels = {exam:'📝 Exam',event:'📅 Event',notice:'📌 Notice',holiday:'🎉 Holiday'};
+    const tl = typeLabels[data.type]||'🔔 Notification';
+    subject = `${tl}: ${data.title}`;
+    message = `${data.title}${data.desc?'\n\n'+data.desc:''}`;
+    recipients = _allStudents();
+  } else if(type === 'timetable'){
+    subject = `Timetable Updated — ${yrLabel(data.yr)} B.Sc. Biotechnology`;
+    message = `The class timetable for ${yrLabel(data.yr)} has been updated. Please log in to your student portal to view the updated timetable.`;
+    recipients = _studentsForYear(data.yr);
+  } else if(type === 'syllabus'){
+    subject = `Syllabus Updated — ${data.subjName}`;
+    message = `The syllabus for "${data.subjName}" has been updated. Please log in to your student portal to view the latest lessons and study materials.`;
+    recipients = _studentsForYear(data.yr);
+  } else if(type === 'marks'){
+    subject = 'Internal Assessment Marks Updated';
+    message = `Your Internal Assessment (IA) marks have been updated. Please log in to your student portal to view your marks.`;
+    recipients = [{ email: data.studentEmail, name: data.studentName }];
+  }
+
+  if(!recipients.length) return;
+
+  // Remove any existing prompt banner
+  document.getElementById('_emailPromptBanner')?.remove();
+
+  const banner = document.createElement('div');
+  banner.id = '_emailPromptBanner';
+  banner.style.cssText = 'position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);z-index:99999;width:calc(100% - 2rem);max-width:560px;background:#fff;border:2px solid var(--sky);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);padding:0.9rem 1.1rem;display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;animation:slideUp 0.25s ease;';
+  banner.innerHTML = `
+    <div style="flex:1;min-width:180px;">
+      <div style="font-size:0.82rem;font-weight:700;color:var(--navy);margin-bottom:0.2rem;">📧 Send Email Notification?</div>
+      <div style="font-size:0.73rem;color:var(--muted);">Notify <strong>${recipients.length}</strong> recipient${recipients.length!==1?'s':''} about this update.</div>
+    </div>
+    <div style="display:flex;gap:0.5rem;flex-shrink:0;">
+      <button onclick="_sendPromptEmail()" style="background:var(--sky);color:#fff;border:none;border-radius:7px;padding:0.45rem 1.1rem;font-size:0.8rem;font-weight:700;cursor:pointer;">📧 Send</button>
+      <button onclick="document.getElementById('_emailPromptBanner').remove()" style="background:#e8edf2;color:var(--navy);border:none;border-radius:7px;padding:0.45rem 0.9rem;font-size:0.8rem;cursor:pointer;">Skip</button>
+    </div>`;
+
+  // Store pending email data
+  window._pendingEmail = { subject, message, recipients };
+  document.getElementById('facPortalOverlay')?.appendChild(banner) || document.body.appendChild(banner);
+
+  // Auto-dismiss after 12 seconds
+  setTimeout(()=>{ document.getElementById('_emailPromptBanner')?.remove(); }, 12000);
+}
+
+async function _sendPromptEmail(){
+  const banner = document.getElementById('_emailPromptBanner');
+  if(banner){ banner.innerHTML = '<div style="padding:0.3rem 0.5rem;font-size:0.8rem;color:var(--navy);font-weight:600;">📧 Sending…</div>'; }
+  const {subject, message, recipients} = window._pendingEmail || {};
+  if(!subject || !recipients?.length){ banner?.remove(); return; }
+
+  let sent=0, failed=0;
+  for(const {email, name} of recipients){
+    const ok = await _sendEmail(email, name, subject, message);
+    if(ok) sent++; else failed++;
+    await new Promise(r=>setTimeout(r,300));
+  }
+
+  document.getElementById('_emailPromptBanner')?.remove();
+  adminToast(`📧 ${sent} email${sent!==1?'s':''} sent${failed?' ('+failed+' failed)':''}. ✅`);
+  window._pendingEmail = null;
+}
+
+// CSS for banner animation
+if(!document.getElementById('_emailPromptStyle')){
+  const s = document.createElement('style');
+  s.id = '_emailPromptStyle';
+  s.textContent = '@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+  document.head.appendChild(s);
+}
+
 // ── EXPOSE TO WINDOW ──
 window.toggleNav=toggleNav; window.openLogin=openLogin; window.closeLogin=closeLogin;
 window.selectRole=selectRole; window.goBack=goBack; window.doLogin=doLogin;
@@ -6936,6 +7121,9 @@ window.closeUserEditor=closeUserEditor;
 window.saveUserEdit=saveUserEdit;
 window.openStaffEditor=openStaffEditor;
 window._saveStaffEdit=_saveStaffEdit;
+window.ueHighlightYear=ueHighlightYear;
+window.promptEmailNotify=promptEmailNotify;
+window._sendPromptEmail=_sendPromptEmail;
 if(typeof openLesson!=='undefined') window.openLesson=openLesson;
 if(typeof openLessonByTopic!=='undefined') window.openLessonByTopic=openLessonByTopic;
 window.retryLessonLoad=retryLessonLoad;
@@ -8585,5 +8773,3 @@ function viewAnswers(ek, pk){
 
 </body>
 </html>
-
-
