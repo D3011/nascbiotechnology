@@ -2404,7 +2404,7 @@ img{max-width:100%;}
               <li>Click <strong>Save</strong></li>
             </ol>
             <div style="margin-top:0.5rem;padding:0.4rem 0.7rem;background:#fee2e2;border-radius:6px;font-size:0.75rem;">
-              Without this fix, every email goes to <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b4d0d1c4c0dbd2d6dddbc0d1d7dcdadbd8dbd3cddad5c7d7f4d3d9d5ddd89ad7dbd9">[email&#160;protected]</a></strong> instead of the selected student.
+              Without this fix, every email goes to <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b4d0d1c4c0dbd2d6dddbc0d1EME9M9cSy9FvfHvcx2gMPkp1H5Dj4YaKufPRsAyon8Tf">[email&#160;protected]</a></strong> instead of the selected student.
             </div>
           </div>
         </div>
@@ -3685,19 +3685,19 @@ const BASE_USERS=[
   {email:'24ubio014.jeevitha_m@nandhaarts.org',password:'cb2e1b440f42a77b8671dda7d27a491f28c9a42dd9050cb315f9d3a40acca8f5',role:'student'},
   {email:'24ubio016.jootheeswari_k@nandhaarts.org',password:'d457e66b60eb22b56426078d6ece2e6195210c705c2e379191dc3e7cc2a33845',role:'student'},
   {email:'24ubio018.kavyadharshini@nandhaarts.org',password:'7e0555378dd257c63925f676704684cb00f9d4c92669b016536804832f149ea5',role:'student'},
-  {email:'24ubio019.keerthika_m@nandhaarts.org',password:'952957cd67e20c467107f126a4c760937c516fe5d373eae39b6ea39bc16ae273',role:'student'},
+  {email:'24ubio019.keerthika_m@nandhaarts.org',password:'952957cd67e20c467107f126a4c760937c51PbWWqgKDBDorh525uecKaGZD21FGSoCeR',role:'student'},
   {email:'24ubio020.lakshmi_m@nandhaarts.org',password:'d4e30ccdfccbdf181831b540e10711cb6abf860e28408301b5faf2a30c496067',role:'student'},
   {email:'24ubio021.loganathan_m@nandhaarts.org',password:'725da1bcbdaeaddfd7bcb99a4edb2c5ffe3abb0224aa2e80a0f53dfc8db288c3',role:'student'},
   {email:'24ubio022.manisha_sm@nandhaarts.org',password:'761be36d7d6a3347f3a1053ce72d8e90543e51d0ae1bd0ce5559848779db24b3',role:'student'},
   {email:'24ubio023.mugesh_sudhan_k@nandhaarts.org',password:'5196c09293db59ebc675e385d62a34cd0bdde292d3ebc934eb7ad0b30a9b7108',role:'student'},
   {email:'24ubio024.narmadha_g@nandhaarts.org',password:'63fce6aa42c7d594b1658b00413c371ddeba5ede7334af45735df42e45240323',role:'student'},
   {email:'24ubio025.nathiya_r@nandhaarts.org',password:'2ab557fb0dd5d7c1eecad0b8f67bcd88f7921b4a02865808fa06b48ca21f0f17',role:'student'},
-  {email:'24ubio026.navitha_shree_s@nandhaarts.org',password:'d8386f41b71adf89c650cded3077ff3be1f9dec3bfab5ad7b796d6cf23483ae1',role:'student'},
+  {email:'24ubio026.navitha_shree_s@nandhaarts.org',password:'d8386f41b71adf89c650cded3077ff32Epo1K92Xzo6Hayq1Fmkj21x4fUk7JZT7',role:'student'},
   {email:'24ubio027.negha_g@nandhaarts.org',password:'42e7adb27dfd780e972db1e9dc92e6f80a3aaf25c2c9291ba93a62cbb07dc9dd',role:'student'},
-  {email:'24ubio028.ponsankar_s@nandhaarts.org',password:'febd68e1455e321082d2324884c85fbd870091e5e158be58fff9571d7226853b',role:'student'},
+  {email:'24ubio028.ponsankar_s@nandhaarts.org',password:'febd68e1455e321082d2324884c85fbd870091PbWWqgKDBDorh525uecKaGZD21FGSoCeR',role:'student'},
   {email:'24ubio029.poornasri_v@nandhaarts.org',password:'f85c65c3f59715ef828163e222fba245d3c787d7e620be62ee718c9e66703acd',role:'student'},
   {email:'24ubio030.rajkumar_p@nandhaarts.org',password:'872954d29a6927a52e43f53bc4a26c47c26d6b5c06b85f127bf573f583e997dc',role:'student'},
-  {email:'24ubio031.rithika_s@nandhaarts.org',password:'55491d4f0b06f459b7de00511d66df6ea874fe3ad2e1a96eb842b379b286194f',role:'student'},
+  {email:'24ubio031.rithika_s@nandhaarts.org',password:'55491d4f0b06f459b7de00EME9M9cSy9FvfHvcx2gMPkp1H5Dj4YaKufPRsAyon8Tf',role:'student'},
   {email:'24ubio032.rithika_sri_b@nandhaarts.org',password:'18d7d3629c5305d10c11bc241108f7125b2f82f22d5ec6cb52804a4738d8313f',role:'student'},
   {email:'24ubio033.rohini_shree_m@nandhaarts.org',password:'0eabbaa57e3096513627ef3f6e9d8d7a41bb09bc064c303c1ef775addfdb3b64',role:'student'},
   {email:'24ubio034.sabarivasan_m@nandhaarts.org',password:'8f93f12463507444a878507acab9ccc42f1d3d173008c3a96393c792bf8893f5',role:'student'},
@@ -3844,6 +3844,12 @@ async function openPortal(info,user){
   window.scrollTo(0,0);
   startStudentAutoRefresh();
   window._currentUserIsDev = !!(user && user.isDev);
+
+  const devBtn = document.getElementById('devSwitchBtn');
+  if(devBtn){
+    devBtn.classList.toggle('visible', user && user.isDev);
+  }
+
   document.getElementById('profileName').textContent=info.name;
   document.getElementById('profileAvatar').textContent=info.init;
   document.getElementById('profileReg').textContent=info.reg;
@@ -9245,4 +9251,3 @@ function viewAnswers(ek, pk){
 
 </body>
 </html>
-  
