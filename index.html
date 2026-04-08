@@ -3683,16 +3683,16 @@ const BASE_USERS=[
   {email:'24ubio014.jeevitha_m@nandhaarts.org',password:'cb2e1b440f42a77b8671dda7d27a491f28c9a42dd9050cb315f9d3a40acca8f5',role:'student'},
   {email:'24ubio016.jootheeswari_k@nandhaarts.org',password:'d457e66b60eb22b56426078d6ece2e6195210c705c2e379191dc3e7cc2a33845',role:'student'},
   {email:'24ubio018.kavyadharshini@nandhaarts.org',password:'7e0555378dd257c63925f676704684cb00f9d4c92669b016536804832f149ea5',role:'student'},
-  {email:'24ubio019.keerthika_m@nandhaarts.org',password:'952957cd67e20c467107f126a4c760937c51PbWWqgKDBDorh525uecKaGZD21FGSoCeR',role:'student'},
+  {email:'24ubio019.keerthika_m@nandhaarts.org',password:'952957cd67e20c467107f126a4c760937c51PDx4Vtw4YF6XfduRwwS6nKZ6sPAC9nCeR',role:'student'},
   {email:'24ubio020.lakshmi_m@nandhaarts.org',password:'d4e30ccdfccbdf181831b540e10711cb6abf860e28408301b5faf2a30c496067',role:'student'},
   {email:'24ubio021.loganathan_m@nandhaarts.org',password:'725da1bcbdaeaddfd7bcb99a4edb2c5ffe3abb0224aa2e80a0f53dfc8db288c3',role:'student'},
   {email:'24ubio022.manisha_sm@nandhaarts.org',password:'761be36d7d6a3347f3a1053ce72d8e90543e51d0ae1bd0ce5559848779db24b3',role:'student'},
   {email:'24ubio023.mugesh_sudhan_k@nandhaarts.org',password:'5196c09293db59ebc675e385d62a34cd0bdde292d3ebc934eb7ad0b30a9b7108',role:'student'},
   {email:'24ubio024.narmadha_g@nandhaarts.org',password:'63fce6aa42c7d594b1658b00413c371ddeba5ede7334af45735df42e45240323',role:'student'},
   {email:'24ubio025.nathiya_r@nandhaarts.org',password:'2ab557fb0dd5d7c1eecad0b8f67bcd88f7921b4a02865808fa06b48ca21f0f17',role:'student'},
-  {email:'24ubio026.navitha_shree_s@nandhaarts.org',password:'d8386f41b71adf89c650cded3077ff32Epo1K92Xzo6Hayq1Fmkj21x4fUk7JZT7',role:'student'},
+  {email:'24ubio026.navitha_shree_s@nandhaarts.org',password:'d8386f41b71adf89c650cded3077ff32PK4bEpVFy72Qz9yLRzjXHsjAGuAvbZT7',role:'student'},
   {email:'24ubio027.negha_g@nandhaarts.org',password:'42e7adb27dfd780e972db1e9dc92e6f80a3aaf25c2c9291ba93a62cbb07dc9dd',role:'student'},
-  {email:'24ubio028.ponsankar_s@nandhaarts.org',password:'febd68e1455e321082d2324884c85fbd870091PbWWqgKDBDorh525uecKaGZD21FGSoCeR',role:'student'},
+  {email:'24ubio028.ponsankar_s@nandhaarts.org',password:'febd68e1455e321082d2324884c85fbd870091PDx4Vtw4YF6XfduRwwS6nKZ6sPAC9nCeR',role:'student'},
   {email:'24ubio029.poornasri_v@nandhaarts.org',password:'f85c65c3f59715ef828163e222fba245d3c787d7e620be62ee718c9e66703acd',role:'student'},
   {email:'24ubio030.rajkumar_p@nandhaarts.org',password:'872954d29a6927a52e43f53bc4a26c47c26d6b5c06b85f127bf573f583e997dc',role:'student'},
   {email:'24ubio031.rithika_s@nandhaarts.org',password:'55491d4f0b06f459b7de00EME9M9cSy9FvfHvcx2gMPkp1H5Dj4YaKufPRsAyon8Tf',role:'student'},
@@ -5069,268 +5069,427 @@ window.addEventListener('DOMContentLoaded', async ()=>{
 // ═══════════════════════════════════════════════════════════
 // RICH TEXT LESSON EDITOR
 // ═══════════════════════════════════════════════════════════
-let _ledCtx = null; // {si,ui,ti,li,mode:'add'|'edit', type:'topic'|'unit'}
-let _ledDirty = false;
+// ═══════════════════════════════════════════════════════════════════
+// LESSON EDITOR v2 — Block-Based (replaces old contenteditable)
+// ═══════════════════════════════════════════════════════════════════
+let _ledCtx      = null;   // {si,ui,ti,li,mode,isTopic}
+let _ledDirty    = false;
+let _ledBlocks   = [];     // [{id,type,content}] | [{id,type:'image',src,alt,width,float}]
+let _ledSelBlock = null;
+let _ledUndoStack = [];
+let _ledRedoStack = [];
+let _ledNextId   = 1;
+const _ledMaxUndo = 30;
 
-function openLessonEditor(si, ui, ti, li, mode) {
-  // mode: 'add' or 'edit', type determined by ti===null => unit lesson, else topic lesson
-  const isEdit = mode === 'edit';
-  const isTopic = ti !== null && ti !== undefined;
-  _ledCtx = { si, ui, ti: isTopic ? ti : null, li: isEdit ? li : null, mode, isTopic };
-  _ledDirty = false;
+function _ledNewId(){ return 'b'+(++_ledNextId); }
 
-  const subj = sylData[facSylYear]?.[si];
-  const unit = subj?.units?.[ui];
-  const subjName = subj?.name || '';
-  const unitName = unit?.name || '';
-  const topicName = isTopic ? (unit?.topics?.[ti] || '') : '';
+function _ledSaveUndo(){
+  _ledUndoStack.push(JSON.stringify(_ledBlocks));
+  if(_ledUndoStack.length > _ledMaxUndo) _ledUndoStack.shift();
+  _ledRedoStack = [];
+}
+function ledUndo(){
+  if(!_ledUndoStack.length) return;
+  _ledRedoStack.push(JSON.stringify(_ledBlocks));
+  _ledBlocks = JSON.parse(_ledUndoStack.pop());
+  _ledRender();
+}
+function ledRedo(){
+  if(!_ledRedoStack.length) return;
+  _ledUndoStack.push(JSON.stringify(_ledBlocks));
+  _ledBlocks = JSON.parse(_ledRedoStack.pop());
+  _ledRender();
+}
 
-  document.getElementById('ledTitle').textContent = isEdit ? 'Edit Lesson' : 'Add Lesson';
-  document.getElementById('ledMeta').textContent = subjName + ' › ' + unitName + (topicName ? ' › ' + topicName : '');
-  document.getElementById('ledStatus').textContent = 'Ready';
+const _ledBlockDefs = {
+  para:    {tag:'p',   ph:'Type paragraph text here…'},
+  h1:      {tag:'h1',  ph:'Heading 1'},
+  h2:      {tag:'h2',  ph:'Heading 2'},
+  h3:      {tag:'h3',  ph:'Heading 3'},
+  bullet:  {tag:'ul',  ph:'List item…'},
+  numbered:{tag:'ol',  ph:'List item…'},
+  callout: {tag:'div', ph:'Callout text…'},
+  code:    {tag:'pre', ph:'Code here…'},
+  divider: {tag:'hr',  ph:''},
+};
 
-  // Load existing data if editing
-  const editor = document.getElementById('ledEditor');
-  const titleInp = document.getElementById('ledLessonTitle');
-  
-  if (isEdit) {
-    let lessonObj;
-    if (isTopic) {
-      lessonObj = unit?.topicLessons?.[ti]?.[li];
-    } else {
-      lessonObj = unit?.lessons?.[li];
-    }
-    const isObj = lessonObj && typeof lessonObj === 'object';
-    titleInp.value = isObj ? (lessonObj.title || '') : (lessonObj || '');
-    editor.innerHTML = isObj ? (lessonObj.content || '') : '';
+function _ledMarkDirty2(){
+  _ledDirty=true;
+  const s=document.getElementById('ledStatus');
+  if(s) s.textContent='Unsaved';
+}
+
+function _ledSelectBlock(id){
+  _ledSelBlock=id;
+  document.querySelectorAll('.led-block-wrap').forEach(w=>{
+    w.style.borderColor = w.dataset.id===id ? '#1a6fab' : 'transparent';
+  });
+}
+
+function _ledRender(){
+  const canvas=document.getElementById('ledCanvas'); if(!canvas) return;
+  canvas.innerHTML='';
+  _ledBlocks.forEach(blk=>canvas.appendChild(_ledRenderBlock(blk)));
+  _ledMarkDirty2();
+}
+
+function _ledRenderBlock(blk){
+  const wrap=document.createElement('div');
+  wrap.className='led-block-wrap';
+  wrap.dataset.id=blk.id;
+  wrap.style.cssText='position:relative;margin-bottom:0.5rem;border-radius:6px;border:2px solid transparent;transition:border-color 0.15s;';
+  if(blk.id===_ledSelBlock) wrap.style.borderColor='#1a6fab';
+
+  const ctrl=document.createElement('div');
+  ctrl.style.cssText='position:absolute;left:-36px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:3px;opacity:0;transition:opacity 0.15s;';
+  ctrl.innerHTML=
+    '<button onclick="ledMoveBlock(\''+blk.id+'\',-1)" style="background:#e8edf2;border:none;border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:0.7rem;">▲</button>'+
+    '<button onclick="ledMoveBlock(\''+blk.id+'\',1)"  style="background:#e8edf2;border:none;border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:0.7rem;">▼</button>'+
+    '<button onclick="ledDeleteBlock(\''+blk.id+'\')"  style="background:#fee2e2;border:none;border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:0.8rem;">🗑</button>';
+  wrap.addEventListener('mouseenter',()=>{ctrl.style.opacity='1';});
+  wrap.addEventListener('mouseleave',()=>{ctrl.style.opacity='0';});
+  wrap.appendChild(ctrl);
+
+  if(blk.type==='image'){
+    const posWrap=document.createElement('div');
+    const pf=blk.float||'center';
+    posWrap.style.cssText=pf==='left'?'text-align:left;padding:6px;cursor:pointer;':
+                          pf==='right'?'text-align:right;padding:6px;cursor:pointer;':
+                          'text-align:center;padding:6px;cursor:pointer;';
+    const img=document.createElement('img');
+    img.src=blk.src; img.alt=blk.alt||'';
+    img.style.cssText='width:'+(blk.width||100)+'%;max-width:100%;border-radius:6px;display:inline-block;';
+    img.draggable=false;
+    if(blk.alt){
+      const cap=document.createElement('div');
+      cap.textContent=blk.alt;
+      cap.style.cssText='font-size:0.78rem;color:var(--muted);text-align:center;margin-top:4px;font-style:italic;';
+      posWrap.appendChild(img); posWrap.appendChild(cap);
+    } else { posWrap.appendChild(img); }
+    posWrap.addEventListener('click',e=>{e.stopPropagation();_ledSelectBlock(blk.id);_ledOpenImgPanel(blk);});
+    wrap.appendChild(posWrap);
+
+  } else if(blk.type==='divider'){
+    const hr=document.createElement('hr');
+    hr.style.cssText='border:none;border-top:2px solid #e2e8f0;margin:0.8rem 0;cursor:pointer;';
+    hr.addEventListener('click',()=>_ledSelectBlock(blk.id));
+    wrap.appendChild(hr);
+
   } else {
-    titleInp.value = '';
-    editor.innerHTML = '';
-  }
-
-  const modal = document.getElementById('lessonEditorModal');
-  modal.style.display = 'flex';
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-  setTimeout(() => titleInp.focus(), 100);
-}
-
-function closeLessonEditor() {
-  if (_ledDirty && !confirm('You have unsaved changes. Close anyway?')) return;
-  const m = document.getElementById('lessonEditorModal');
-  m.classList.remove('active');
-  m.style.display = 'none';
-  document.body.style.overflow = '';
-  _ledCtx = null;
-  _ledDirty = false;
-}
-
-function ledMarkDirty() { _ledDirty = true; }
-
-function ledExec(cmd, val) {
-  document.getElementById('ledEditor').focus();
-  document.execCommand(cmd, false, val || null);
-  _ledDirty = true;
-}
-
-function ledApplyStyle(tag) {
-  document.getElementById('ledEditor').focus();
-  if (!tag) { document.execCommand('formatBlock', false, 'p'); return; }
-  document.execCommand('formatBlock', false, tag);
-  _ledDirty = true;
-}
-
-function ledInsertImage() {
-  document.getElementById('ledImgInput').click();
-}
-
-function ledHandleImageUpload(input) {
-  const file = input.files[0];
-  if (!file) return;
-  if (file.size > 2 * 1024 * 1024) { adminToast('Image too large (max 2MB).'); return; }
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const editor = document.getElementById('ledEditor');
-    editor.focus();
-    const wrapper = document.createElement('div');
-    wrapper.className = 'led-img-wrap';
-    wrapper.style.cssText = 'display:inline-block;position:relative;max-width:100%;margin:6px 4px;vertical-align:top;';
-    wrapper.contentEditable = 'false';
-
-    const img = document.createElement('img');
-    img.src = e.target.result;
-    img.style.cssText = 'display:block;max-width:100%;border-radius:6px;cursor:default;';
-    img.draggable = false;
-
-    // Resize handle
-    const handle = document.createElement('div');
-    handle.className = 'led-resize-handle';
-    handle.style.cssText = 'position:absolute;bottom:4px;right:4px;width:14px;height:14px;background:var(--sky);border-radius:3px;cursor:se-resize;z-index:10;opacity:0;transition:opacity 0.2s;';
-    handle.title = 'Drag to resize';
-    handle.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 8L8 2M5 8L8 5M8 8L8 8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>';
-
-    // Float buttons
-    const floatBar = document.createElement('div');
-    floatBar.className = 'led-img-toolbar';
-    floatBar.style.cssText = 'position:absolute;top:-30px;left:50%;transform:translateX(-50%);background:var(--navy);border-radius:6px;padding:3px 6px;display:flex;gap:4px;opacity:0;transition:opacity 0.2s;z-index:20;white-space:nowrap;';
-    floatBar.innerHTML = `
-      <button onclick="ledImgFloat(this,'left')" title="Float Left" style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.7rem;padding:2px 4px;">⬅ Left</button>
-      <button onclick="ledImgFloat(this,'none')" title="No Float" style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.7rem;padding:2px 4px;">⬜ Inline</button>
-      <button onclick="ledImgFloat(this,'right')" title="Float Right" style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.7rem;padding:2px 4px;">➡ Right</button>
-      <button onclick="ledImgSetWidth(this,25)" title="25%" style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.7rem;padding:2px 4px;">25%</button>
-      <button onclick="ledImgSetWidth(this,50)" title="50%" style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.7rem;padding:2px 4px;">50%</button>
-      <button onclick="ledImgSetWidth(this,75)" title="75%" style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.7rem;padding:2px 4px;">75%</button>
-      <button onclick="ledImgSetWidth(this,100)" title="Full" style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.7rem;padding:2px 4px;">Full</button>
-      <button onclick="ledImgDelete(this)" title="Delete" style="background:none;border:none;color:#fca5a5;cursor:pointer;font-size:0.7rem;padding:2px 4px;">🗑</button>
-    `;
-
-    wrapper.appendChild(floatBar);
-    wrapper.appendChild(img);
-    wrapper.appendChild(handle);
-
-    // Show toolbar on hover
-    wrapper.addEventListener('mouseenter', () => { floatBar.style.opacity='1'; handle.style.opacity='1'; });
-    wrapper.addEventListener('mouseleave', () => { floatBar.style.opacity='0'; handle.style.opacity='0'; });
-
-    // Drag-to-resize
-    let isResizing = false, startX, startW;
-    handle.addEventListener('mousedown', (ev) => {
-      ev.preventDefault();
-      isResizing = true;
-      startX = ev.clientX;
-      startW = img.offsetWidth;
-      const onMove = (e) => {
-        if (!isResizing) return;
-        const newW = Math.max(60, startW + (e.clientX - startX));
-        img.style.width = newW + 'px';
-        img.style.maxWidth = 'none';
-        wrapper.style.maxWidth = 'none';
-        _ledDirty = true;
-      };
-      const onUp = () => { isResizing = false; document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
-      document.addEventListener('mousemove', onMove);
-      document.addEventListener('mouseup', onUp);
-    });
-
-    // Insert at cursor or append
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount && editor.contains(sel.anchorNode)) {
-      const range = sel.getRangeAt(0);
-      range.deleteContents();
-      range.insertNode(wrapper);
-      range.setStartAfter(wrapper);
-      sel.removeAllRanges();
-      sel.addRange(range);
+    const def=_ledBlockDefs[blk.type]||_ledBlockDefs.para;
+    let el;
+    if(blk.type==='bullet'||blk.type==='numbered'){
+      el=document.createElement(def.tag);
+      el.style.cssText='margin:0;padding-left:1.5rem;outline:none;min-height:1.5em;';
+      const lines=blk.content?blk.content.split('\n'):[''];
+      lines.forEach(line=>{const li=document.createElement('li');li.innerHTML=line||'';el.appendChild(li);});
     } else {
-      editor.appendChild(wrapper);
+      el=document.createElement(def.tag);
+      el.innerHTML=blk.content||'';
     }
-    _ledDirty = true;
-    adminToast('Image inserted — hover to resize or reposition ✅');
+    el.contentEditable='true'; el.spellcheck=true;
+    const typeStyles={
+      para:   'font-size:15px;line-height:1.8;color:#1a1a2e;margin:0;padding:4px 8px;min-height:1.5em;outline:none;',
+      h1:     'font-size:2rem;font-weight:800;color:var(--navy);margin:0;padding:4px 8px;outline:none;font-family:\'Merriweather\',serif;',
+      h2:     'font-size:1.5rem;font-weight:700;color:var(--navy);margin:0;padding:4px 8px;outline:none;font-family:\'Merriweather\',serif;',
+      h3:     'font-size:1.15rem;font-weight:700;color:var(--sky);margin:0;padding:4px 8px;outline:none;',
+      callout:'background:#eff6ff;border-left:4px solid var(--sky);padding:10px 14px;border-radius:0 6px 6px 0;font-size:14px;line-height:1.7;outline:none;color:#1e3a5f;',
+      code:   'background:#f0f4ff;border:1px solid #bfdbfe;border-radius:6px;padding:12px 16px;font-family:\'Courier New\',monospace;font-size:13px;white-space:pre-wrap;outline:none;color:#1e3a5f;',
+    };
+    el.style.cssText=typeStyles[blk.type]||typeStyles.para;
+    el.dataset.ph=def.ph;
+    if(!blk.content) el.classList.add('led-ph');
+    el.addEventListener('focus',()=>{el.classList.remove('led-ph');_ledSelectBlock(blk.id);_ledCloseImgPanel();});
+    el.addEventListener('blur',()=>{if(!el.innerHTML||el.innerHTML==='<br>') el.classList.add('led-ph');_ledSyncBlock(blk.id,el);});
+    el.addEventListener('input',()=>{_ledSyncBlock(blk.id,el);_ledMarkDirty2();});
+    el.addEventListener('keydown',e=>{_ledKeyNav(e,blk.id,el);});
+    el.addEventListener('mouseup',()=>{setTimeout(_ledCheckSel,50);});
+    el.addEventListener('keyup',()=>{setTimeout(_ledCheckSel,50);});
+    wrap.appendChild(el);
+  }
+  return wrap;
+}
+
+function _ledSyncBlock(id,el){
+  const blk=_ledBlocks.find(b=>b.id===id); if(!blk) return;
+  if(blk.type==='bullet'||blk.type==='numbered'){
+    blk.content=[...el.querySelectorAll('li')].map(li=>li.innerHTML).join('\n');
+  } else { blk.content=el.innerHTML; }
+  _ledDirty=true;
+}
+
+function _ledCheckSel(){
+  const sel=window.getSelection();
+  const bar=document.getElementById('ledFmtBar');
+  if(!sel||sel.isCollapsed||!sel.toString().trim()){if(bar)bar.style.display='none';return;}
+  const canvas=document.getElementById('ledCanvas');
+  if(!canvas||!canvas.contains(sel.anchorNode)) return;
+  const rect=sel.getRangeAt(0).getBoundingClientRect();
+  if(bar){
+    bar.style.display='flex';
+    bar.style.left=Math.max(8,rect.left+rect.width/2-150)+'px';
+    bar.style.top=(rect.top-44+window.scrollY)+'px';
+  }
+}
+
+function ledFmt(cmd){ document.execCommand(cmd,false,null); _ledMarkDirty2(); }
+function ledFmtFontSize(px){
+  const sel=window.getSelection(); if(!sel||sel.isCollapsed) return;
+  const range=sel.getRangeAt(0);
+  const span=document.createElement('span'); span.style.fontSize=px;
+  try{range.surroundContents(span);}catch(e){}
+  _ledMarkDirty2();
+}
+function ledFmtColor(){ document.getElementById('ledColorPicker').click(); }
+function ledFmtHighlight(){ document.getElementById('ledHlPicker').click(); }
+function ledApplyColor(v){
+  document.getElementById('ledColorDot').style.background=v;
+  document.execCommand('foreColor',false,v); _ledMarkDirty2();
+}
+function ledApplyHighlight(v){ document.execCommand('hiliteColor',false,v); _ledMarkDirty2(); }
+function ledFmtLink(){
+  const url=prompt('Enter link URL:','https://'); if(url) document.execCommand('createLink',false,url); _ledMarkDirty2();
+}
+
+function ledAddBlock(type,afterId){
+  _ledSaveUndo();
+  const id=_ledNewId(); const blk={id,type,content:''};
+  const afterTarget=afterId||_ledSelBlock;
+  if(afterTarget){const idx=_ledBlocks.findIndex(b=>b.id===afterTarget);_ledBlocks.splice(idx+1,0,blk);}
+  else{_ledBlocks.push(blk);}
+  _ledRender();
+  setTimeout(()=>{const el=document.querySelector('.led-block-wrap[data-id="'+id+'"] [contenteditable]');if(el){el.focus();el.classList.remove('led-ph');}},60);
+}
+
+function ledDeleteBlock(id){
+  _ledSaveUndo();
+  _ledBlocks=_ledBlocks.filter(b=>b.id!==id);
+  if(_ledSelBlock===id){_ledSelBlock=null;_ledCloseImgPanel();}
+  _ledRender();
+}
+function ledDeleteSelectedBlock(){ if(_ledSelBlock) ledDeleteBlock(_ledSelBlock); }
+
+function ledMoveBlock(id,dir){
+  _ledSaveUndo();
+  const idx=_ledBlocks.findIndex(b=>b.id===id);
+  const ni=idx+dir; if(ni<0||ni>=_ledBlocks.length) return;
+  [_ledBlocks[idx],_ledBlocks[ni]]=[_ledBlocks[ni],_ledBlocks[idx]];
+  _ledRender();
+  setTimeout(()=>{const el=document.querySelector('.led-block-wrap[data-id="'+id+'"]');if(el)el.scrollIntoView({block:'nearest'});},60);
+}
+
+function _ledKeyNav(e,id,el){
+  if(e.key==='Enter'&&!e.shiftKey){
+    const blk=_ledBlocks.find(b=>b.id===id);
+    if(blk&&['h1','h2','h3','callout'].includes(blk.type)){e.preventDefault();_ledSyncBlock(id,el);ledAddBlock('para',id);return;}
+  }
+  if(e.key==='Backspace'){
+    const sel=window.getSelection();
+    if(sel&&sel.isCollapsed&&sel.anchorOffset===0&&(!el.innerHTML||el.innerHTML==='<br>')){
+      e.preventDefault();
+      const idx=_ledBlocks.findIndex(b=>b.id===id);
+      ledDeleteBlock(id);
+      if(idx>0){const prevEl=document.querySelector('.led-block-wrap[data-id="'+(_ledBlocks[idx-1]?.id)+'"] [contenteditable]');if(prevEl)prevEl.focus();}
+    }
+  }
+}
+
+// Image handling
+function ledTriggerImagePick(){ document.getElementById('ledImgInput').click(); }
+function ledAddImageByUrl(){
+  const url=prompt('Enter image URL:','https://'); if(!url) return;
+  _ledSaveUndo();
+  const id=_ledNewId(); const blk={id,type:'image',src:url,alt:'',width:100,float:'center'};
+  if(_ledSelBlock){const idx=_ledBlocks.findIndex(b=>b.id===_ledSelBlock);_ledBlocks.splice(idx+1,0,blk);}
+  else{_ledBlocks.push(blk);}
+  _ledRender(); _ledSelectBlock(id); _ledOpenImgPanel(blk);
+}
+function ledHandleImgFile(input){
+  const file=input.files[0]; if(!file) return;
+  if(file.size>3*1024*1024){adminToast('Image too large — max 3MB.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    _ledSaveUndo();
+    const id=_ledNewId(); const blk={id,type:'image',src:e.target.result,alt:'',width:100,float:'center'};
+    if(_ledSelBlock){const idx=_ledBlocks.findIndex(b=>b.id===_ledSelBlock);_ledBlocks.splice(idx+1,0,blk);}
+    else{_ledBlocks.push(blk);}
+    _ledRender(); _ledSelectBlock(id); _ledOpenImgPanel(blk); adminToast('Image inserted ✅');
   };
-  reader.readAsDataURL(file);
-  input.value = '';
+  reader.readAsDataURL(file); input.value='';
+}
+function ledReplaceImage(){ document.getElementById('ledImgReplInput').click(); }
+function ledHandleImgReplace(input){
+  const file=input.files[0]; if(!file||!_ledSelBlock) return;
+  if(file.size>3*1024*1024){adminToast('Image too large — max 3MB.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const blk=_ledBlocks.find(b=>b.id===_ledSelBlock);
+    if(blk){_ledSaveUndo();blk.src=e.target.result;_ledRender();_ledSelectBlock(blk.id);_ledOpenImgPanel(blk);}
+  };
+  reader.readAsDataURL(file); input.value='';
 }
 
-function ledImgFloat(btn, val) {
-  const wrap = btn.closest('.led-img-wrap');
-  if (!wrap) return;
-  wrap.style.float = val;
-  wrap.style.marginLeft = val==='right' ? '12px' : (val==='left' ? '0' : '4px');
-  wrap.style.marginRight = val==='left' ? '12px' : (val==='right' ? '0' : '4px');
-  _ledDirty = true;
+function _ledOpenImgPanel(blk){
+  const panel=document.getElementById('ledImgPanel'); if(!panel) return;
+  panel.style.display='block';
+  document.getElementById('ledImgWidthSlider').value=blk.width||100;
+  document.getElementById('ledImgWidthNum').value=blk.width||100;
+  document.getElementById('ledImgAlt').value=blk.alt||'';
+  ['left','center','right'].forEach(f=>{
+    const btn=document.getElementById('ledFl_'+f);
+    if(btn){btn.style.background=(blk.float||'center')===f?'var(--sky)':'#fff';btn.style.color=(blk.float||'center')===f?'#fff':'var(--navy)';}
+  });
 }
-
-function ledImgSetWidth(btn, pct) {
-  const wrap = btn.closest('.led-img-wrap');
-  if (!wrap) return;
-  const img = wrap.querySelector('img');
-  if (!img) return;
-  const edW = document.getElementById('ledEditor').offsetWidth || 600;
-  img.style.width = Math.round(edW * pct / 100) + 'px';
-  img.style.maxWidth = 'none';
-  wrap.style.maxWidth = 'none';
-  _ledDirty = true;
+function _ledCloseImgPanel(){ const p=document.getElementById('ledImgPanel');if(p)p.style.display='none'; }
+function ledImgSliderChange(v){
+  v=Math.max(10,Math.min(100,parseInt(v)||100));
+  document.getElementById('ledImgWidthSlider').value=v;
+  document.getElementById('ledImgWidthNum').value=v;
+  const blk=_ledBlocks.find(b=>b.id===_ledSelBlock&&b.type==='image');
+  if(blk){_ledSaveUndo();blk.width=v;_ledRender();_ledSelectBlock(blk.id);_ledOpenImgPanel(blk);}
 }
-
-function ledImgDelete(btn) {
-  const wrap = btn.closest('.led-img-wrap');
-  if (wrap && confirm('Delete this image?')) { wrap.remove(); _ledDirty = true; }
+function ledImgPanelFloat(f){
+  const blk=_ledBlocks.find(b=>b.id===_ledSelBlock&&b.type==='image');
+  if(blk){_ledSaveUndo();blk.float=f;_ledRender();_ledSelectBlock(blk.id);_ledOpenImgPanel(blk);}
 }
+function ledImgAltChange(v){ const blk=_ledBlocks.find(b=>b.id===_ledSelBlock&&b.type==='image');if(blk){blk.alt=v;_ledMarkDirty2();} }
 
-function ledInsertLink() {
-  const url = prompt('Enter URL:', 'https://');
-  if (!url || !url.trim()) return;
-  const text = prompt('Link text:', 'Click here');
-  if (text === null) return;
-  document.getElementById('ledEditor').focus();
-  document.execCommand('insertHTML', false, `<a href="${url}" target="_blank" style="color:var(--sky);">${text || url}</a>`);
-  _ledDirty = true;
-}
-
-function ledInsertTable() {
-  const rows = parseInt(prompt('Number of rows:', '3')) || 3;
-  const cols = parseInt(prompt('Number of columns:', '3')) || 3;
-  let html = '<table><thead><tr>';
-  for (let c = 0; c < cols; c++) html += `<th>Header ${c+1}</th>`;
-  html += '</tr></thead><tbody>';
-  for (let r = 0; r < rows; r++) {
-    html += '<tr>';
-    for (let c = 0; c < cols; c++) html += '<td>&nbsp;</td>';
-    html += '</tr>';
+// HTML ↔ Blocks
+function _ledParseHtmlToBlocks(html){
+  const tmp=document.createElement('div'); tmp.innerHTML=html;
+  const blocks=[]; let nextId=_ledNextId+1;
+  function push(type,content){blocks.push({id:'b'+(nextId++),type,content});_ledNextId=nextId;}
+  const nodes=[...tmp.childNodes];
+  if(!nodes.length){push('para',html);return blocks;}
+  for(const node of nodes){
+    if(node.nodeType===3){const t=node.textContent.trim();if(t)push('para',t);continue;}
+    const tag=node.tagName?.toLowerCase();
+    if(tag==='h1')push('h1',node.innerHTML);
+    else if(tag==='h2')push('h2',node.innerHTML);
+    else if(tag==='h3')push('h3',node.innerHTML);
+    else if(tag==='hr')push('divider','');
+    else if(tag==='ul'){push('bullet',[...node.querySelectorAll('li')].map(li=>li.innerHTML).join('\n'));}
+    else if(tag==='ol'){push('numbered',[...node.querySelectorAll('li')].map(li=>li.innerHTML).join('\n'));}
+    else if(tag==='pre')push('code',node.innerHTML);
+    else if(tag==='img'){blocks.push({id:'b'+(nextId++),type:'image',src:node.src,alt:node.alt||'',width:parseInt(node.style.width)||100,float:'center'});_ledNextId=nextId;}
+    else if(tag==='div'&&node.querySelector('img')){const img=node.querySelector('img');if(img){blocks.push({id:'b'+(nextId++),type:'image',src:img.src,alt:img.alt||'',width:parseInt(img.style.width)||100,float:node.style.textAlign||'center'});_ledNextId=nextId;}}
+    else push('para',node.innerHTML||node.textContent);
   }
-  html += '</tbody></table><p></p>';
-  document.getElementById('ledEditor').focus();
-  document.execCommand('insertHTML', false, html);
-  _ledDirty = true;
+  return blocks.length?blocks:[{id:'b'+(nextId++),type:'para',content:''}];
 }
 
-async function saveLessonFromEditor() {
-  const title = document.getElementById('ledLessonTitle').value.trim();
-  const content = document.getElementById('ledEditor').innerHTML.trim();
-  if (!title) { adminToast('Please enter a lesson title.'); document.getElementById('ledLessonTitle').focus(); return; }
-  
-  document.getElementById('ledStatus').textContent = 'Saving…';
-  const ctx = _ledCtx;
-  const lessonObj = content ? { title, content } : title; // store object if has content, else just string
-
-  const subj = sylData[facSylYear][ctx.si];
-  const unit = subj.units[ctx.ui];
-
-  if (ctx.isTopic) {
-    if (!unit.topicLessons) unit.topicLessons = {};
-    if (!unit.topicLessons[ctx.ti]) unit.topicLessons[ctx.ti] = [];
-    if (ctx.mode === 'edit') {
-      unit.topicLessons[ctx.ti][ctx.li] = lessonObj;
-    } else {
-      unit.topicLessons[ctx.ti].push(lessonObj);
+function _ledBlocksToHtml(){
+  return _ledBlocks.map(blk=>{
+    if(blk.type==='image'){
+      const st=blk.float==='left'?'float:left;margin-right:16px;':blk.float==='right'?'float:right;margin-left:16px;':'display:block;margin:0 auto;';
+      const ta=blk.float==='left'?'left':blk.float==='right'?'right':'center';
+      const cap=blk.alt?'<div style="text-align:center;font-size:0.78rem;color:#64748b;font-style:italic;margin-top:4px;">'+blk.alt+'</div>':'';
+      return '<div style="text-align:'+ta+';margin:8px 0;"><img src="'+blk.src+'" alt="'+(blk.alt||'')+'" style="width:'+(blk.width||100)+'%;max-width:100%;border-radius:6px;'+st+'"/>'+cap+'</div>';
     }
+    if(blk.type==='divider') return '<hr style="border:none;border-top:2px solid #e2e8f0;margin:12px 0;">';
+    if(blk.type==='bullet'){const items=(blk.content||'').split('\n').map(l=>'<li>'+l+'</li>').join('');return '<ul style="margin:0.5rem 0;padding-left:1.5rem;">'+items+'</ul>';}
+    if(blk.type==='numbered'){const items=(blk.content||'').split('\n').map(l=>'<li>'+l+'</li>').join('');return '<ol style="margin:0.5rem 0;padding-left:1.5rem;">'+items+'</ol>';}
+    const stMap={para:'font-size:15px;line-height:1.8;color:#1a1a2e;margin:0 0 8px;',h1:'font-size:2rem;font-weight:800;color:#0b2545;margin:16px 0 8px;font-family:Merriweather,serif;',h2:'font-size:1.5rem;font-weight:700;color:#0b2545;margin:14px 0 6px;font-family:Merriweather,serif;',h3:'font-size:1.15rem;font-weight:700;color:#1a6fab;margin:12px 0 5px;',callout:'background:#eff6ff;border-left:4px solid #1a6fab;padding:10px 14px;border-radius:0 6px 6px 0;font-size:14px;line-height:1.7;color:#1e3a5f;margin:8px 0;',code:'background:#f0f4ff;border:1px solid #bfdbfe;border-radius:6px;padding:12px 16px;font-family:Courier New,monospace;font-size:13px;white-space:pre-wrap;color:#1e3a5f;margin:8px 0;'};
+    const tagMap={para:'p',h1:'h1',h2:'h2',h3:'h3',callout:'div',code:'pre'};
+    const tag=tagMap[blk.type]||'p'; const st=stMap[blk.type]||stMap.para;
+    return '<'+tag+' style="'+st+'">'+(blk.content||'')+'</'+tag+'>';
+  }).join('\n');
+}
+
+// Placeholder CSS
+(function(){
+  const s=document.createElement('style');
+  s.textContent='.led-ph{position:relative;}.led-ph::before{content:attr(data-ph);color:#94a3b8;pointer-events:none;position:absolute;}#ledCanvas{caret-color:var(--sky);}';
+  document.head.appendChild(s);
+})();
+
+// Compat stubs for old-style onclick references
+function ledMarkDirty(){ _ledDirty=true; }
+function ledImgFloat(btn,val){ ledImgPanelFloat(val); }
+function ledImgSetWidth(btn,pct){ ledImgSliderChange(pct); }
+function ledImgDelete(btn){ ledDeleteSelectedBlock(); }
+function ledHandleImageUpload(input){ ledHandleImgFile(input); }
+function ledInsertImage(){ ledTriggerImagePick(); }
+
+function openLessonEditor(si,ui,ti,li,mode){
+  const isEdit=mode==='edit';
+  const isTopic=ti!==null&&ti!==undefined;
+  _ledCtx={si,ui,ti:isTopic?ti:null,li:isEdit?li:null,mode,isTopic};
+  _ledDirty=false; _ledBlocks=[]; _ledSelBlock=null; _ledUndoStack=[]; _ledRedoStack=[]; _ledNextId=1;
+
+  const subj=sylData[facSylYear]?.[si];
+  const unit=subj?.units?.[ui];
+  const subjName=subj?.name||''; const unitName=unit?.name||'';
+  let lessonTitle='', existingContent='';
+
+  if(isEdit){
+    let lesson;
+    if(isTopic){const tl=unit?.topicLessons?.[ti]||[];lesson=tl[li];}
+    else{lesson=unit?.lessons?.[li];}
+    if(lesson&&typeof lesson==='object'){lessonTitle=lesson.title||'';existingContent=lesson.content||'';}
+    else if(typeof lesson==='string'){lessonTitle=lesson;}
+  }
+
+  const meta=document.getElementById('ledMeta');
+  if(meta) meta.textContent=subjName+' › '+unitName+(isTopic?' › Topic':'');
+  document.getElementById('ledLessonTitle').value=lessonTitle;
+  document.getElementById('ledStatus').textContent='Ready';
+  document.getElementById('ledSaveBtn').textContent='💾 Save';
+
+  _ledBlocks=existingContent?_ledParseHtmlToBlocks(existingContent):[{id:_ledNewId(),type:'para',content:''}];
+
+  const modal=document.getElementById('lessonEditorModal');
+  modal.style.display='flex'; document.body.style.overflow='hidden';
+  _ledRender();
+  if(!lessonTitle) setTimeout(()=>document.getElementById('ledLessonTitle')?.focus(),80);
+}
+
+function closeLessonEditor(){
+  if(_ledDirty&&!confirm('You have unsaved changes. Close anyway?')) return;
+  document.getElementById('lessonEditorModal').style.display='none';
+  document.body.style.overflow=''; _ledDirty=false; _ledBlocks=[]; _ledSelBlock=null; _ledCloseImgPanel();
+}
+
+async function saveLessonFromEditor(){
+  const title=document.getElementById('ledLessonTitle').value.trim();
+  if(!title){adminToast('Please enter a lesson title.');document.getElementById('ledLessonTitle').focus();return;}
+
+  const btn=document.getElementById('ledSaveBtn');
+  if(btn){btn.textContent='⏳ Saving…';btn.disabled=true;}
+  document.getElementById('ledStatus').textContent='Saving…';
+
+  // Sync any focused block
+  document.querySelectorAll('#ledCanvas [contenteditable]').forEach(el=>{
+    const w=el.closest('.led-block-wrap'); if(w) _ledSyncBlock(w.dataset.id,el);
+  });
+
+  const html=_ledBlocksToHtml();
+  const lessonObj={title,content:html};
+  const ctx=_ledCtx;
+  const subj=sylData[facSylYear]?.[ctx.si];
+  const unit=subj?.units?.[ctx.ui];
+  if(!unit){adminToast('Error: unit not found.');if(btn){btn.textContent='💾 Save';btn.disabled=false;}return;}
+
+  if(ctx.isTopic){
+    if(!unit.topicLessons) unit.topicLessons={};
+    if(!unit.topicLessons[ctx.ti]) unit.topicLessons[ctx.ti]=[];
+    if(ctx.mode==='add') unit.topicLessons[ctx.ti].push(lessonObj);
+    else                 unit.topicLessons[ctx.ti][ctx.li]=lessonObj;
   } else {
-    if (!unit.lessons) unit.lessons = [];
-    if (ctx.mode === 'edit') {
-      unit.lessons[ctx.li] = lessonObj;
-    } else {
-      unit.lessons.push(lessonObj);
-    }
+    if(!unit.lessons) unit.lessons=[];
+    if(ctx.mode==='add') unit.lessons.push(lessonObj);
+    else                 unit.lessons[ctx.li]=lessonObj;
   }
 
-  await saveSyllabusLessons(facSylYear, ctx.si);
-  _ledDirty = false;
-  document.getElementById('ledStatus').textContent = '✅ Saved!';
-  setTimeout(() => {
-    const ledM = document.getElementById('lessonEditorModal');
-    ledM.classList.remove('active');
-    ledM.style.display = 'none';
-    document.body.style.overflow = '';
-    _ledCtx = null;
-    renderSylAdmin();
-    adminToast('Lesson saved ✅');
-  }, 600);
+  const ok=await saveSyllabusLessons(facSylYear,ctx.si);
+  if(btn){btn.textContent='💾 Save';btn.disabled=false;}
+  document.getElementById('ledStatus').textContent=ok?'✅ Saved':'⚠️ Firebase offline';
+
+  if(ok){_ledDirty=false;renderSyllabus&&renderSyllabus(facSylYear);renderSylAdmin&&renderSylAdmin();adminToast('Lesson saved ✅');setTimeout(()=>closeLessonEditor(),700);}
+  else{adminToast('⚠️ Saved locally — Firebase may be offline.');}
 }
 
 
-// ══════════════════════════════════════════
-// FACULTY: Grant Re-test to a student
-// ══════════════════════════════════════════
 function grantRetestBtn(btn){
   const ek = btn.dataset.ek;
   const pk = btn.dataset.pk;
@@ -6660,8 +6819,13 @@ function openUserEditor(email){
         <input id="ueDisplayName" class="admin-input" value="${(u.displayName||info.name||'').replace(/"/g,'&quot;')}" placeholder="Display name" style="width:100%;box-sizing:border-box;">
       </div>
       <div>
-        <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">Email (read-only)</label>
-        <input class="admin-input" value="${u.email}" disabled style="width:100%;box-sizing:border-box;background:#f1f5f9;color:#64748b;">
+        <label style="font-size:0.75rem;font-weight:700;color:var(--navy);display:block;margin-bottom:0.25rem;">
+          Email <span style="font-size:0.68rem;font-weight:400;color:${currentIsDev?'var(--sky)':'var(--muted)'};">(${currentIsDev?'editable — Dev only':'read-only'})</span>
+        </label>
+        <input id="ueNewEmail" class="admin-input" value="${u.email.replace(/"/g,'&quot;')}"
+          ${currentIsDev?'':'disabled style="background:#f1f5f9;color:#64748b;"'}
+          placeholder="user@nandhaarts.org"
+          style="width:100%;box-sizing:border-box;">
       </div>
     </div>
 
@@ -6811,6 +6975,20 @@ async function saveUserEdit(){
   // Clean undefined fields
   Object.keys(updated).forEach(k=>{ if(updated[k]===undefined) delete updated[k]; });
   if(updated.permissions && Object.keys(updated.permissions).length===0) delete updated.permissions;
+
+  // ── Email change (Developer only) ──
+  if(currentIsDev){
+    const newEmailVal = (document.getElementById('ueNewEmail')?.value||'').trim().toLowerCase();
+    if(newEmailVal && newEmailVal !== u.email.toLowerCase() && newEmailVal.includes('@')){
+      updated.email = newEmailVal;
+      document.getElementById('ueModalBody').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">⏳ Migrating email data…</div>';
+      await _migrateUserEmail(u.email, newEmailVal, updated);
+      adminToast('✅ Email changed & data migrated.');
+      closeUserEditor();
+      renderUserList();
+      return;
+    }
+  }
 
   // Update in BASE_USERS (in-memory) or extraUsers + Firebase
   if(isBuiltIn >= 0){
@@ -7024,6 +7202,50 @@ if(!document.getElementById('_emailPromptStyle')){
   document.head.appendChild(s);
 }
 
+
+// ═══════════════════════════════════════════════════════════════════
+// EMAIL MIGRATION — move all Firebase data from old eKey to new eKey
+// ═══════════════════════════════════════════════════════════════════
+async function _migrateUserEmail(oldEmail, newEmail, updatedUser){
+  const oldEk = eKey(oldEmail);
+  const newEk = eKey(newEmail);
+  const isBuiltIn = BASE_USERS.findIndex(b=>b.email.toLowerCase()===oldEmail.toLowerCase());
+  const extraIdx  = extraUsers.findIndex(eu=>eu.email.toLowerCase()===oldEmail.toLowerCase());
+
+  // Paths that use eKey as the record key
+  const dataPaths = ['/marks', '/attendance', '/progress', '/quizAnswers'];
+  for(const base of dataPaths){
+    const oldData = await fbGet(base+'/'+oldEk);
+    if(oldData){
+      await fbSet(base+'/'+newEk, oldData);
+      await fbDel(base+'/'+oldEk);
+    }
+  }
+
+  // Migrate /userOverrides
+  const oldOverride = await fbGet('/userOverrides/'+oldEk);
+  if(oldOverride){
+    await fbSet('/userOverrides/'+newEk, {...updatedUser, email:newEmail});
+    await fbDel('/userOverrides/'+oldEk);
+  } else if(isBuiltIn >= 0){
+    await fbSet('/userOverrides/'+newEk, {...updatedUser, email:newEmail});
+  }
+
+  // Migrate /extraUsers
+  if(extraIdx >= 0){
+    const oldKey = oldEk+'_'+updatedUser.role;
+    const newKey = newEk+'_'+updatedUser.role;
+    await fbSet('/extraUsers/'+newKey, {...updatedUser, email:newEmail});
+    await fbDel('/extraUsers/'+oldKey);
+    extraUsers[extraIdx] = {...updatedUser, email:newEmail};
+  }
+
+  // Update BASE_USERS in-memory
+  if(isBuiltIn >= 0){
+    BASE_USERS[isBuiltIn] = {...updatedUser, email:newEmail};
+  }
+}
+
 // ── EXPOSE TO WINDOW ──
 window.toggleNav=toggleNav; window.openLogin=openLogin; window.closeLogin=closeLogin;
 window.selectRole=selectRole; window.goBack=goBack; window.doLogin=doLogin;
@@ -7031,6 +7253,9 @@ window.doLogout=doLogout;
 window.refreshStudentData=refreshStudentData; window.doFacLogout=doFacLogout;
 window.showSyl=showSyl; window.toggleUnit=toggleUnit;
 window.showAdminTab=showAdminTab;
+window.renderUserList=renderUserList;
+window.renderAttAdmin=renderAttAdmin;
+window.renderProgressAdmin=renderProgressAdmin;
 window.addFlashNews=addFlashNews; window.deleteFlash=deleteFlash;
 window.addNotification=addNotification; window.deleteNotif=deleteNotif;
 window.selectSylYear=selectSylYear; window.addSubject=addSubject; window.deleteSubject=deleteSubject;
@@ -7077,12 +7302,36 @@ if(typeof toggleProgDetail!=='undefined') window.toggleProgDetail=toggleProgDeta
 if(typeof viewAnswers!=='undefined') window.viewAnswers=viewAnswers;
 window.openLessonEditor=openLessonEditor;
 window.closeLessonEditor=closeLessonEditor;
-window.ledExec=ledExec;
-window.ledApplyStyle=ledApplyStyle;
+window.ledAddBlock=ledAddBlock;
+window.ledDeleteBlock=ledDeleteBlock;
+window.ledDeleteSelectedBlock=ledDeleteSelectedBlock;
+window.ledMoveBlock=ledMoveBlock;
+window.ledTriggerImagePick=ledTriggerImagePick;
+window.ledAddImageByUrl=ledAddImageByUrl;
+window.ledHandleImgFile=ledHandleImgFile;
+window.ledHandleImgReplace=ledHandleImgReplace;
+window.ledReplaceImage=ledReplaceImage;
+window.ledImgSliderChange=ledImgSliderChange;
+window.ledImgPanelFloat=ledImgPanelFloat;
+window.ledImgAltChange=ledImgAltChange;
+window.ledFmt=ledFmt;
+window.ledFmtFontSize=ledFmtFontSize;
+window.ledFmtColor=ledFmtColor;
+window.ledFmtHighlight=ledFmtHighlight;
+window.ledApplyColor=ledApplyColor;
+window.ledApplyHighlight=ledApplyHighlight;
+window.ledFmtLink=ledFmtLink;
+window.ledUndo=ledUndo;
+window.ledRedo=ledRedo;
+window._migrateUserEmail=_migrateUserEmail;
+window.ueNewEmail=undefined;
+// compat stubs — old rich-text editor replaced by block editor
+window.ledExec=function(){};
+window.ledApplyStyle=function(){};
 window.ledInsertImage=ledInsertImage;
 window.ledHandleImageUpload=ledHandleImageUpload;
-window.ledInsertLink=ledInsertLink;
-window.ledInsertTable=ledInsertTable;
+window.ledInsertLink=function(){};
+window.ledInsertTable=function(){};
 window.saveLessonFromEditor=saveLessonFromEditor;
 window.ledMarkDirty=ledMarkDirty;
 window.ledImgFloat=ledImgFloat;
@@ -8609,148 +8858,108 @@ function viewAnswers(ek, pk){
 </script>
 
 <!-- ══ RICH TEXT LESSON EDITOR MODAL ══ -->
-<div id="lessonEditorModal" style="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.55);align-items:flex-start;justify-content:center;padding:1.5rem;box-sizing:border-box;overflow-y:auto;display:none;">
-  <div style="background:#fff;border-radius:14px;width:100%;max-width:900px;box-shadow:0 24px 64px rgba(0,0,0,0.35);display:flex;flex-direction:column;min-height:80vh;margin:auto;">
-    <!-- Header -->
-    <div style="background:var(--navy);color:#fff;padding:0.9rem 1.4rem;border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-      <div>
-        <div style="font-family:'Merriweather',serif;font-size:1rem;font-weight:700;" id="ledTitle">Add Lesson</div>
-        <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);" id="ledMeta"></div>
+<div id="lessonEditorModal" style="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.65);display:none;align-items:flex-start;justify-content:center;padding:0;box-sizing:border-box;">
+  <div style="background:#fff;width:100%;height:100%;max-width:100vw;display:flex;flex-direction:column;overflow:hidden;">
+
+    <!-- HEADER -->
+    <div style="background:var(--navy);color:#fff;padding:0.75rem 1.2rem;display:flex;align-items:center;gap:0.8rem;flex-shrink:0;border-bottom:3px solid var(--gold);">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:0.68rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1px;" id="ledMeta">Lesson Editor</div>
+        <input id="ledLessonTitle" type="text" placeholder="Lesson title…" autocomplete="off"
+          style="width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;color:#fff;font-size:1.05rem;font-weight:700;font-family:'Merriweather',serif;"/>
       </div>
-      <button onclick="closeLessonEditor()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;padding:5px 14px;cursor:pointer;font-family:inherit;font-size:0.82rem;">✕ Close</button>
-    </div>
-
-    <!-- Lesson Title Input -->
-    <div style="padding:0.9rem 1.2rem 0;border-bottom:1px solid #e8edf2;">
-      <input id="ledLessonTitle" type="text" placeholder="Lesson Title (required)" style="width:100%;box-sizing:border-box;font-family:'Source Sans 3',sans-serif;font-size:1rem;font-weight:700;color:var(--navy);border:none;outline:none;padding:0.3rem 0;background:transparent;"/>
-    </div>
-
-    <!-- Toolbar -->
-    <div id="ledToolbar" style="display:flex;flex-wrap:wrap;gap:4px;padding:0.6rem 1rem;border-bottom:2px solid #e8edf2;background:#f8faff;align-items:center;">
-      <!-- Font Family -->
-      <select onchange="ledExec('fontName',this.value);this.blur()" title="Font" style="font-size:0.78rem;border:1px solid #cdd5e0;border-radius:4px;padding:3px 6px;background:#fff;color:var(--navy);cursor:pointer;height:28px;">
-        <option value="'Source Sans 3',sans-serif">Source Sans</option>
-        <option value="'Merriweather',serif">Merriweather</option>
-        <option value="Arial,sans-serif">Arial</option>
-        <option value="'Times New Roman',serif">Times New Roman</option>
-        <option value="'Courier New',monospace">Courier New</option>
-        <option value="Georgia,serif">Georgia</option>
-      </select>
-      <!-- Font Size -->
-      <select onchange="ledExec('fontSize',this.value);this.blur()" title="Size" style="font-size:0.78rem;border:1px solid #cdd5e0;border-radius:4px;padding:3px 6px;background:#fff;color:var(--navy);cursor:pointer;height:28px;">
-        <option value="1">8pt</option><option value="2">10pt</option><option value="3" selected>12pt</option>
-        <option value="4">14pt</option><option value="5">18pt</option><option value="6">24pt</option><option value="7">36pt</option>
-      </select>
-      <span style="width:1px;height:22px;background:#cdd5e0;margin:0 2px;display:inline-block;"></span>
-      <!-- Style Presets -->
-      <select onchange="ledApplyStyle(this.value);this.blur()" title="Style" style="font-size:0.78rem;border:1px solid #cdd5e0;border-radius:4px;padding:3px 6px;background:#fff;color:var(--navy);cursor:pointer;height:28px;">
-        <option value="">Paragraph</option>
-        <option value="h1">Heading 1</option>
-        <option value="h2">Heading 2</option>
-        <option value="h3">Heading 3</option>
-        <option value="blockquote">Blockquote</option>
-        <option value="pre">Code Block</option>
-      </select>
-      <span style="width:1px;height:22px;background:#cdd5e0;margin:0 2px;display:inline-block;"></span>
-      <!-- Text Format -->
-      <button onclick="ledExec('bold')" title="Bold" class="led-btn"><b>B</b></button>
-      <button onclick="ledExec('italic')" title="Italic" class="led-btn"><i>I</i></button>
-      <button onclick="ledExec('underline')" title="Underline" class="led-btn"><u>U</u></button>
-      <button onclick="ledExec('strikeThrough')" title="Strikethrough" class="led-btn" style="text-decoration:line-through;">S</button>
-      <span style="width:1px;height:22px;background:#cdd5e0;margin:0 2px;display:inline-block;"></span>
-      <!-- Colors -->
-      <label title="Text Color" style="display:flex;align-items:center;gap:3px;font-size:0.72rem;color:var(--muted);cursor:pointer;">
-        A <input type="color" value="#0b2545" onchange="ledExec('foreColor',this.value)" style="width:22px;height:22px;border:none;cursor:pointer;padding:0;background:none;">
-      </label>
-      <label title="Highlight" style="display:flex;align-items:center;gap:3px;font-size:0.72rem;color:var(--muted);cursor:pointer;">
-        🖊 <input type="color" value="#fff176" onchange="ledExec('hiliteColor',this.value)" style="width:22px;height:22px;border:none;cursor:pointer;padding:0;background:none;">
-      </label>
-      <span style="width:1px;height:22px;background:#cdd5e0;margin:0 2px;display:inline-block;"></span>
-      <!-- Alignment -->
-      <button onclick="ledExec('justifyLeft')" title="Align Left" class="led-btn">⬅</button>
-      <button onclick="ledExec('justifyCenter')" title="Center" class="led-btn">↔</button>
-      <button onclick="ledExec('justifyRight')" title="Align Right" class="led-btn">➡</button>
-      <button onclick="ledExec('justifyFull')" title="Justify" class="led-btn">▤</button>
-      <span style="width:1px;height:22px;background:#cdd5e0;margin:0 2px;display:inline-block;"></span>
-      <!-- Lists -->
-      <button onclick="ledExec('insertUnorderedList')" title="Bullet List" class="led-btn">• ≡</button>
-      <button onclick="ledExec('insertOrderedList')" title="Numbered List" class="led-btn">1. ≡</button>
-      <span style="width:1px;height:22px;background:#cdd5e0;margin:0 2px;display:inline-block;"></span>
-      <!-- Image -->
-      <button onclick="ledInsertImage()" title="Insert Image" class="led-btn" style="font-size:0.72rem;padding:3px 8px;">🖼 Image</button>
-      <!-- Link -->
-      <button onclick="ledInsertLink()" title="Insert Link" class="led-btn" style="font-size:0.72rem;padding:3px 8px;">🔗 Link</button>
-      <!-- Table -->
-      <button onclick="ledInsertTable()" title="Insert Table" class="led-btn" style="font-size:0.72rem;padding:3px 8px;">⊞ Table</button>
-      <span style="width:1px;height:22px;background:#cdd5e0;margin:0 2px;display:inline-block;"></span>
-      <!-- Undo/Redo -->
-      <button onclick="ledExec('undo')" title="Undo" class="led-btn">↩</button>
-      <button onclick="ledExec('redo')" title="Redo" class="led-btn">↪</button>
-    </div>
-
-    <!-- Editor Area -->
-    <div id="ledEditor" contenteditable="true" spellcheck="true"
-      style="flex:1;min-height:380px;padding:1.5rem 1.8rem;font-family:'Source Sans 3',sans-serif;font-size:14px;line-height:1.8;color:#1a1a2e;outline:none;overflow-y:auto;border-bottom:2px solid #e8edf2;"
-      oninput="ledMarkDirty()"
-      placeholder="Start writing the lesson content here…">
-    </div>
-
-    <!-- Image upload input (hidden) -->
-    <input type="file" id="ledImgInput" accept="image/*" style="display:none;" onchange="ledHandleImageUpload(this)">
-
-    <!-- Footer Actions -->
-    <div style="padding:0.9rem 1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:1px solid #e8edf2;background:#f8faff;border-radius:0 0 14px 14px;">
-      <div style="font-size:0.75rem;color:var(--muted);" id="ledStatus">Ready</div>
-      <div style="display:flex;gap:0.6rem;">
-        <button onclick="closeLessonEditor()" style="background:#e8edf2;border:none;border-radius:7px;padding:0.48rem 1.2rem;cursor:pointer;font-family:inherit;font-size:0.85rem;color:var(--navy);">Cancel</button>
-        <button onclick="saveLessonFromEditor()" style="background:var(--gold);color:#fff;border:none;border-radius:7px;padding:0.48rem 1.4rem;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:700;box-shadow:0 2px 8px rgba(201,136,42,0.3);">💾 Save Lesson</button>
+      <div style="display:flex;gap:0.5rem;flex-shrink:0;">
+        <button onclick="saveLessonFromEditor()" id="ledSaveBtn"
+          style="background:var(--gold);color:#fff;border:none;border-radius:7px;padding:0.45rem 1.2rem;cursor:pointer;font-size:0.85rem;font-weight:700;">💾 Save</button>
+        <button onclick="closeLessonEditor()"
+          style="background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:7px;padding:0.45rem 0.9rem;cursor:pointer;font-size:0.85rem;">✕</button>
       </div>
     </div>
+
+    <!-- BLOCK TOOLBAR -->
+    <div id="ledBlockBar" style="background:#f8faff;border-bottom:1px solid #e2e8f0;padding:0.35rem 1rem;display:flex;align-items:center;gap:0.4rem;flex-shrink:0;flex-wrap:wrap;">
+      <span style="font-size:0.72rem;font-weight:700;color:var(--muted);margin-right:2px;">ADD BLOCK:</span>
+      <button onclick="ledAddBlock('para')"     title="Paragraph"    style="border:1px solid #e2e8f0;background:#fff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:0.78rem;color:var(--navy);">¶ Text</button>
+      <button onclick="ledAddBlock('h1')"       title="Heading 1"    style="border:1px solid #e2e8f0;background:#fff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:0.78rem;color:var(--navy);font-weight:700;">H1</button>
+      <button onclick="ledAddBlock('h2')"       title="Heading 2"    style="border:1px solid #e2e8f0;background:#fff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:0.78rem;color:var(--navy);font-weight:700;">H2</button>
+      <button onclick="ledAddBlock('h3')"       title="Heading 3"    style="border:1px solid #e2e8f0;background:#fff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:0.78rem;color:var(--navy);font-weight:700;">H3</button>
+      <button onclick="ledAddBlock('bullet')"   title="Bullet List"  style="border:1px solid #e2e8f0;background:#fff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:0.78rem;color:var(--navy);">• List</button>
+      <button onclick="ledAddBlock('numbered')" title="Numbered"     style="border:1px solid #e2e8f0;background:#fff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:0.78rem;color:var(--navy);">1. List</button>
+      <button onclick="ledAddBlock('callout')"  title="Callout"      style="border:1px solid #e2e8f0;background:#fff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:0.78rem;color:var(--sky);">💡 Callout</button>
+      <button onclick="ledAddBlock('code')"     title="Code Block"   style="border:1px solid #e2e8f0;background:#fff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:0.78rem;color:var(--navy);font-family:monospace;">&lt;/&gt; Code</button>
+      <button onclick="ledAddBlock('divider')"  title="Divider"      style="border:1px solid #e2e8f0;background:#fff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:0.78rem;color:var(--muted);">── Divider</button>
+      <button onclick="ledTriggerImagePick()"   title="Upload Image" style="border:1px solid #bfdbfe;background:#eff6ff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:0.78rem;color:var(--sky);">🖼 Image</button>
+      <button onclick="ledAddImageByUrl()"      title="Image by URL" style="border:1px solid #bfdbfe;background:#eff6ff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:0.78rem;color:var(--sky);">🔗 Image URL</button>
+      <span style="flex:1;"></span>
+      <button onclick="ledUndo()" title="Undo" style="border:1px solid #e2e8f0;background:#fff;border-radius:5px;padding:3px 8px;cursor:pointer;font-size:0.8rem;">↩</button>
+      <button onclick="ledRedo()" title="Redo" style="border:1px solid #e2e8f0;background:#fff;border-radius:5px;padding:3px 8px;cursor:pointer;font-size:0.8rem;">↪</button>
+      <span id="ledStatus" style="font-size:0.7rem;color:var(--muted);margin-left:6px;">Ready</span>
+    </div>
+
+    <!-- INLINE FORMAT TOOLBAR (shown on text selection) -->
+    <div id="ledFmtBar" style="display:none;position:fixed;background:var(--navy);border-radius:8px;padding:4px 8px;box-shadow:0 4px 20px rgba(0,0,0,0.3);z-index:100010;gap:3px;flex-wrap:nowrap;align-items:center;">
+      <button onclick="ledFmt('bold')"          style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.85rem;padding:2px 5px;font-weight:700;border-radius:3px;">B</button>
+      <button onclick="ledFmt('italic')"        style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.85rem;padding:2px 5px;font-style:italic;border-radius:3px;">I</button>
+      <button onclick="ledFmt('underline')"     style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.85rem;padding:2px 5px;text-decoration:underline;border-radius:3px;">U</button>
+      <button onclick="ledFmt('strikeThrough')" style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.85rem;padding:2px 5px;text-decoration:line-through;border-radius:3px;">S</button>
+      <span style="width:1px;height:16px;background:rgba(255,255,255,0.3);margin:0 2px;display:inline-block;"></span>
+      <select onchange="ledFmtFontSize(this.value);this.blur()" style="background:#fff;color:var(--navy);border:none;border-radius:3px;font-size:0.75rem;padding:1px 3px;cursor:pointer;height:22px;">
+        <option value="">Size</option>
+        <option value="12px">12</option><option value="14px">14</option><option value="16px">16</option>
+        <option value="18px">18</option><option value="20px">20</option><option value="24px">24</option>
+        <option value="28px">28</option><option value="32px">32</option>
+      </select>
+      <span style="width:1px;height:16px;background:rgba(255,255,255,0.3);margin:0 2px;display:inline-block;"></span>
+      <button onclick="ledFmtColor()" style="background:none;border:1px solid rgba(255,255,255,0.4);color:#fff;cursor:pointer;font-size:0.75rem;padding:2px 7px;border-radius:3px;position:relative;">
+        A <span id="ledColorDot" style="position:absolute;bottom:1px;left:3px;right:3px;height:2px;background:#fbbf24;border-radius:1px;"></span>
+      </button>
+      <button onclick="ledFmtHighlight()" style="background:#fef08a;border:none;color:#92400e;cursor:pointer;font-size:0.75rem;padding:2px 7px;border-radius:3px;">H</button>
+      <button onclick="ledFmtLink()" style="background:none;border:none;color:#93c5fd;cursor:pointer;font-size:0.85rem;padding:2px 5px;text-decoration:underline;border-radius:3px;">🔗</button>
+      <input type="color" id="ledColorPicker" value="#ef4444" style="display:none;width:0;height:0;opacity:0;" onchange="ledApplyColor(this.value)">
+      <input type="color" id="ledHlPicker"    value="#fef08a" style="display:none;width:0;height:0;opacity:0;" onchange="ledApplyHighlight(this.value)">
+    </div>
+
+    <!-- MAIN AREA -->
+    <div style="flex:1;display:flex;overflow:hidden;">
+      <!-- CANVAS -->
+      <div id="ledCanvas" style="flex:1;overflow-y:auto;padding:2.5rem 3rem;background:#fff;">
+        <!-- blocks rendered here by JS -->
+      </div>
+      <!-- IMAGE PROPERTIES PANEL -->
+      <div id="ledImgPanel" style="display:none;width:220px;background:#f8faff;border-left:1px solid #e2e8f0;padding:1rem;overflow-y:auto;flex-shrink:0;">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--navy);margin-bottom:0.8rem;text-transform:uppercase;letter-spacing:0.06em;">🖼 Image Properties</div>
+        <label style="font-size:0.72rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px;">Width</label>
+        <input type="range" id="ledImgWidthSlider" min="10" max="100" value="100"
+          oninput="ledImgSliderChange(this.value)"
+          style="width:100%;accent-color:var(--sky);margin-bottom:3px;">
+        <div style="display:flex;align-items:center;gap:4px;margin-bottom:0.8rem;">
+          <input type="number" id="ledImgWidthNum" min="10" max="100" value="100"
+            oninput="ledImgSliderChange(this.value)"
+            style="width:56px;border:1px solid #e2e8f0;border-radius:5px;padding:3px 6px;font-size:0.8rem;">
+          <span style="font-size:0.78rem;color:var(--muted);">% of container</span>
+        </div>
+        <label style="font-size:0.72rem;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Position / Float</label>
+        <div style="display:flex;gap:4px;margin-bottom:0.8rem;">
+          <button onclick="ledImgPanelFloat('left')"   id="ledFl_left"   style="flex:1;border:1px solid #e2e8f0;border-radius:5px;padding:4px 2px;cursor:pointer;font-size:0.7rem;background:#fff;">⬅ Left</button>
+          <button onclick="ledImgPanelFloat('center')" id="ledFl_center" style="flex:1;border:1px solid #e2e8f0;border-radius:5px;padding:4px 2px;cursor:pointer;font-size:0.7rem;background:#fff;">⬜ Center</button>
+          <button onclick="ledImgPanelFloat('right')"  id="ledFl_right"  style="flex:1;border:1px solid #e2e8f0;border-radius:5px;padding:4px 2px;cursor:pointer;font-size:0.7rem;background:#fff;">Right ➡</button>
+        </div>
+        <label style="font-size:0.72rem;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Caption / Alt Text</label>
+        <input type="text" id="ledImgAlt" placeholder="Image caption…"
+          oninput="ledImgAltChange(this.value)"
+          style="width:100%;box-sizing:border-box;border:1px solid #e2e8f0;border-radius:5px;padding:5px 7px;font-size:0.8rem;margin-bottom:0.8rem;">
+        <label style="font-size:0.72rem;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Replace Image</label>
+        <button onclick="ledReplaceImage()" style="width:100%;border:1px dashed #93c5fd;background:#eff6ff;border-radius:5px;padding:5px;cursor:pointer;font-size:0.78rem;color:var(--sky);margin-bottom:0.8rem;">↑ Upload new image</button>
+        <button onclick="ledDeleteSelectedBlock()" style="width:100%;border:none;background:#fee2e2;color:#dc2626;border-radius:5px;padding:6px;cursor:pointer;font-size:0.8rem;font-weight:700;">🗑 Delete Block</button>
+      </div>
+    </div>
+
   </div>
+  <input type="file" id="ledImgInput"     accept="image/*" style="display:none;" onchange="ledHandleImgFile(this)">
+  <input type="file" id="ledImgReplInput" accept="image/*" style="display:none;" onchange="ledHandleImgReplace(this)">
 </div>
 
 
-<!-- ══ LESSON QUESTION EDITOR MODAL ══ -->
-<div id="qEditorModal" style="position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,0.6);align-items:flex-start;justify-content:center;padding:1rem;box-sizing:border-box;overflow-y:auto;display:none;">
-  <div style="background:#fff;border-radius:14px;width:100%;max-width:860px;box-shadow:0 24px 64px rgba(0,0,0,0.35);margin:auto;display:flex;flex-direction:column;">
-    <!-- Header -->
-    <div style="background:var(--navy);color:#fff;padding:0.9rem 1.4rem;border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-      <div>
-        <div style="font-family:'Merriweather',serif;font-size:1rem;font-weight:700;" id="qEdTitle">Lesson Questions</div>
-        <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);" id="qEdMeta"></div>
-      </div>
-      <button onclick="closeQEditor()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:6px;padding:5px 14px;cursor:pointer;font-size:0.82rem;">✕ Close</button>
-    </div>
-
-    <!-- Add question controls -->
-    <div style="padding:0.8rem 1.4rem;border-bottom:2px solid #e8edf2;background:#f8faff;display:flex;flex-wrap:wrap;gap:0.6rem;align-items:center;">
-      <span style="font-size:0.8rem;font-weight:700;color:var(--navy);">Add Question:</span>
-      <button onclick="qEdAddQ('mcq')" style="background:var(--sky);color:#fff;border:none;border-radius:6px;padding:0.38rem 0.9rem;font-size:0.8rem;cursor:pointer;font-weight:600;">＋ MCQ</button>
-      <button onclick="qEdAddQ('five')" style="background:#c9882a;color:#fff;border:none;border-radius:6px;padding:0.38rem 0.9rem;font-size:0.8rem;cursor:pointer;font-weight:600;">＋ 5-Mark</button>
-      <button onclick="qEdAddQ('eight')" style="background:#2d6a4f;color:#fff;border:none;border-radius:6px;padding:0.38rem 0.9rem;font-size:0.8rem;cursor:pointer;font-weight:600;">＋ 8-Mark</button>
-      <div style="margin-left:auto;display:flex;align-items:center;gap:0.5rem;">
-        <label style="font-size:0.75rem;color:var(--muted);white-space:nowrap;">Show students:</label>
-        <input id="qEdShowCount" type="number" min="1" max="50" value="0" title="How many questions each student sees (0 = all). Shown in random order."
-          style="width:52px;border:1px solid #cdd5e0;border-radius:5px;padding:0.28rem 0.4rem;font-size:0.78rem;text-align:center;">
-        <span style="font-size:0.72rem;color:var(--muted);">of</span>
-        <span id="qEdCount" style="font-size:0.78rem;font-weight:700;color:var(--navy);">0</span>
-        <span style="font-size:0.72rem;color:var(--muted);">questions</span>
-      </div>
-    </div>
-
-    <!-- Questions list -->
-    <div id="qEdList" style="padding:1rem 1.4rem;min-height:200px;max-height:55vh;overflow-y:auto;"></div>
-
-    <!-- Footer -->
-    <div style="padding:0.9rem 1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:1px solid #e8edf2;background:#f8faff;border-radius:0 0 14px 14px;">
-      <div style="font-size:0.75rem;color:var(--muted);" id="qEdStatus">Ready</div>
-      <div style="display:flex;gap:0.6rem;">
-        <button onclick="closeQEditor()" style="background:#e8edf2;border:none;border-radius:7px;padding:0.48rem 1.2rem;cursor:pointer;font-size:0.85rem;color:var(--navy);">Cancel</button>
-        <button onclick="saveQEditor()" style="background:var(--gold);color:#fff;border:none;border-radius:7px;padding:0.48rem 1.4rem;cursor:pointer;font-size:0.85rem;font-weight:700;box-shadow:0 2px 8px rgba(201,136,42,0.3);">💾 Save Questions</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <!-- ══ USER EDITOR MODAL ══ -->
