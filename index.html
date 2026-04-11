@@ -273,9 +273,9 @@ footer{background:var(--navy);margin-top:2rem;}
 .f-bdg{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#a0b8d0;padding:0.15rem 0.55rem;border-radius:3px;font-size:0.65rem;font-weight:700;}
 
 /* ── STICKY CALL ── */
-.sticky-cta{position:fixed;bottom:1.5rem;right:1.5rem;z-index:300;}
-.scall{display:inline-flex;align-items:center;gap:0.4rem;background:var(--sky);color:#fff;padding:0.65rem 1.2rem;border-radius:4px;font-size:0.8rem;font-weight:700;text-decoration:none;box-shadow:0 6px 20px rgba(11,37,69,0.3);transition:all 0.25s;}
-.scall:hover{background:var(--navy);}
+
+
+
 
 /* ── LOGIN STYLES ── (preserved) */
 .login-btn{background:var(--gold)!important;color:#fff!important;border-color:var(--gold)!important;font-weight:700!important;}
@@ -785,15 +785,9 @@ footer{background:var(--navy);}
 .footer-dev strong{color:var(--gold-lt);font-weight:700;}
 
 /* ══ STICKY CTA ══ */
-.sticky-cta{position:fixed;bottom:1.5rem;right:1.5rem;z-index:300;}
-.scall{
-  display:inline-flex;align-items:center;gap:0.5rem;
-  background:var(--sky);color:#fff;
-  padding:0.7rem 1.3rem;border-radius:4px;
-  font-size:0.82rem;font-weight:700;text-decoration:none;
-  box-shadow:0 6px 20px rgba(11,37,69,0.3);transition:all 0.25s;
-}
-.scall:hover{background:var(--navy);}
+
+
+
 
 /* ══ REVEAL ══ */
 .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
@@ -1954,7 +1948,6 @@ img{max-width:100%;}
     </div>
   </div>
 </footer>
-<div class="sticky-cta"><a href="tel:+917373724422" class="scall">📞 Call Now</a></div>
 
 <div id="facPortalOverlay">
 
@@ -3489,7 +3482,7 @@ async function testFbConnection(){
 
   for(let attempt=1; attempt<=3; attempt++){
     try{
-      const r=await fetch(DB+'/.json?shallow=true?ts='+Date.now());
+      const r=await safeFetch(DB+'/.json?shallow=true?ts='+Date.now());
       if(r.status===401||r.status===403){ FB_ONLINE=false; showFbBanner('denied'); return; }
       if(r.ok){
         FB_ONLINE=true; showFbBanner('online');
@@ -3507,24 +3500,39 @@ async function testFbConnection(){
 
 // ── Firebase path encoder: encodes each segment for safe URLs ──
 function fbPath(path){
-  // Encode each Firebase path segment safely, guarding against URIError
-  return path.split('/').map(seg => {
-    if(seg === '') return '';
-    // Strip Firebase-illegal key chars: . # $ [ ]  and control chars
-    var safe = '';
+  // Build a safe Firebase REST URL path.
+  // Each segment: keep only ASCII letters, digits, underscore, dash, percent.
+  // This prevents URIError from lone surrogates, emoji, or control chars.
+  return path.split('/').map(function(seg){
+    if(seg==='') return '';
+    var out='';
     for(var i=0;i<seg.length;i++){
-      var code=seg.charCodeAt(i);
-      if(code<32||code===127||seg[i]==='.'||seg[i]==='#'||seg[i]==='$'||seg[i]==='['||seg[i]===']'){
-        safe+='_';
-      } else { safe+=seg[i]; }
+      var cc=seg.charCodeAt(i);
+      // Skip lone surrogates (0xD800-0xDFFF) — these cause URIError
+      if(cc>=0xD800&&cc<=0xDFFF){ out+='_'; continue; }
+      // Skip control chars and Firebase-illegal key chars
+      if(cc<32||cc===127||seg[i]==='.'||seg[i]==='#'||seg[i]==='$'||seg[i]==='['||seg[i]===']'){ out+='_'; continue; }
+      out+=seg[i];
     }
-    try{ return encodeURIComponent(safe); }
-    catch(e){ return safe.replace(/[^A-Za-z0-9_\-]/g,'_'); }
+    // Now safe to encode — wrap in try-catch as final guard
+    try{ return encodeURIComponent(out); }
+    catch(e){ return out.replace(/[^A-Za-z0-9_-]/g,'_'); }
   }).join('/');
+}
+// Safe fetch wrapper — silently returns null on URI errors
+async function safeFetch(url, opts){
+  try{ return await fetch(url, opts||{}); }
+  catch(e){
+    if(e instanceof URIError||e.message&&e.message.includes('URI')){
+      console.warn('[safeFetch] URI error, skipping:', url.substring(0,80));
+      return null;
+    }
+    throw e;
+  }
 }
 async function fbGet(path){
   try{
-    const r=await fetch(DB+fbPath(path)+'.json?ts='+Date.now());
+    const r=await safeFetch(DB+fbPath(path)+'.json?ts='+Date.now());
     if(!r.ok) return null;
     const data=await r.json();
     if(!FB_ONLINE){FB_ONLINE=true;showFbBanner('online');}
@@ -3538,7 +3546,7 @@ async function fbGet(path){
 
 async function fbPush(path,data){
   try{
-    const r=await fetch(DB+fbPath(path)+'.json',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json'}});
+    const r=await safeFetch(DB+fbPath(path)+'.json',{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'application/json'}});
     if(!r.ok) return null;
     return await r.json();
   }catch(e){ return null; }
@@ -3546,7 +3554,7 @@ async function fbPush(path,data){
 
 async function fbSet(path,data){
   try{
-    const r=await fetch(DB+fbPath(path)+'.json',{method:'PUT',body:JSON.stringify(data),headers:{'Content-Type':'application/json'}});
+    const r=await safeFetch(DB+fbPath(path)+'.json',{method:'PUT',body:JSON.stringify(data),headers:{'Content-Type':'application/json'}});
     if(!r.ok){ console.warn('[fbSet fail]',path,r.status); return null; }
     if(!FB_ONLINE){ FB_ONLINE=true; showFbBanner('online'); }
     return await r.json();
@@ -3555,7 +3563,7 @@ async function fbSet(path,data){
 
 async function fbDel(path){
   try{
-    const r=await fetch(DB+fbPath(path)+'.json',{method:'DELETE'});
+    const r=await safeFetch(DB+fbPath(path)+'.json',{method:'DELETE'});
     if(!r.ok) return null;
     if(!FB_ONLINE){ FB_ONLINE=true; showFbBanner('online'); }
     return true;
@@ -3765,7 +3773,7 @@ async function saveExtraUserToFB(user){
   // Direct fetch — bypasses FB_ONLINE guard so saves always reach Firebase
   const k = eKey(user.email)+'_'+user.role;
   try{
-    const r=await fetch(DB+'/extraUsers/'+k+'.json',{
+    const r=await safeFetch(DB+fbPath('/extraUsers/'+k)+'.json',{
       method:'PUT',
       body:JSON.stringify(user),
       headers:{'Content-Type':'application/json'}
@@ -3781,7 +3789,7 @@ async function saveExtraUserToFB(user){
 async function deleteExtraUserFromFB(user){
   const k = eKey(user.email)+'_'+user.role;
   try{
-    await fetch(DB+'/extraUsers/'+k+'.json',{method:'DELETE'});
+    await safeFetch(DB+fbPath('/extraUsers/'+k)+'.json',{method:'DELETE'});
   }catch(e){}
 }
 
