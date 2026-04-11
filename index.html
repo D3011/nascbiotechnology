@@ -1950,7 +1950,7 @@ img{max-width:100%;}
     <div class="footer-bottom-inner">
       <div class="copy">Copyright © 2025 Nandha Arts &amp; Science College (AUTONOMOUS). All Rights Reserved.</div>
       <div class="f-badges"><span class="f-bdg">NAAC B+</span><span class="f-bdg">AICTE</span><span class="f-bdg">AUTONOMOUS</span><span class="f-bdg">UGC RECOGNIZED</span></div>
-      <div class="dev">Website by <strong>Deepak</strong></div>
+      <div class="dev">Website by <a href="https://codecraftsolutionserode.vercel.app/" target="_blank" rel="noopener" style="color:var(--gold2);font-weight:700;text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">CodeCraftSolutions</a></div>
     </div>
   </div>
 </footer>
@@ -3421,8 +3421,8 @@ async function hashPassword(plain){
 }
 
 // Firebase key helpers — Firebase keys can't have . # $ [ ] /
-function eKey(email){ return email.toLowerCase().replace(/\./g,'_').replace(/@/g,'--'); }
-function sKey(subj){ return subj.replace(/[^a-zA-Z0-9\u0B80-\u0BFF]/g,'_').substring(0,64); }
+function eKey(email){ return email.toLowerCase().replace(/\./g,'_').replace(/@/g,'--').replace(/[^a-z0-9_\-]/g,'_'); }
+function sKey(subj){ return subj.replace(/[^a-zA-Z0-9]/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,'').substring(0,60)||'subj'; }
 
 // ── Firebase connection state ──
 let FB_ONLINE = false;   // set after successful ping
@@ -3507,8 +3507,20 @@ async function testFbConnection(){
 
 // ── Firebase path encoder: encodes each segment for safe URLs ──
 function fbPath(path){
-  // path like "/syllabusLessons/2/Tamil" → each segment URL-encoded
-  return path.split('/').map(seg => seg==='' ? '' : encodeURIComponent(seg)).join('/');
+  // Encode each Firebase path segment safely, guarding against URIError
+  return path.split('/').map(seg => {
+    if(seg === '') return '';
+    // Strip Firebase-illegal key chars: . # $ [ ]  and control chars
+    var safe = '';
+    for(var i=0;i<seg.length;i++){
+      var code=seg.charCodeAt(i);
+      if(code<32||code===127||seg[i]==='.'||seg[i]==='#'||seg[i]==='$'||seg[i]==='['||seg[i]===']'){
+        safe+='_';
+      } else { safe+=seg[i]; }
+    }
+    try{ return encodeURIComponent(safe); }
+    catch(e){ return safe.replace(/[^A-Za-z0-9_\-]/g,'_'); }
+  }).join('/');
 }
 async function fbGet(path){
   try{
@@ -3813,7 +3825,7 @@ async function doLogin(){
     // Pure faculty dev — open faculty portal
     openFacPortal(info, user);
   } else {
-    // Student (including isDev students like Deepak)
+    // Student (including isDev student-devs)
     openPortal(info, user);
   }
 }
